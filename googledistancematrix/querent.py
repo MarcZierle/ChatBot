@@ -8,6 +8,10 @@ class Querent():
     Used to prepare the local part for an HTTP(S) connection to use the Google Distance Matrix API service.
     Returned objects will always be in JSON format only. Units will always be metric.
     Transit modes will be via public transportation and/or walking.
+
+    And yes, according to
+    `Google Ngram <https://books.google.com/ngrams/graph?content=queryer%2Cquerier%2Cquerist%2C(querant%2Bquerent)&year_start=1960&year_end=2000&corpus=15&smoothing=3&share=&direct_url=t1%3B%2Cquerier%3B%2Cc0%3B.t1%3B%2Cquerist%3B%2Cc0%3B.t1%3B%2C%28querant%20%2B%20querent%29%3B%2Cc0>`_
+    the proper naming for somone who is querying for something may be called a querent (querant). :D
     """
 
     # base query-URL
