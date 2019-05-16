@@ -15,18 +15,20 @@ class Querent():
     the proper naming for somone who is querying for something may be called a querent (querant). :D
     """
 
-    # base query-URL
+    # base query URL
     base_url = ("https://maps.googleapis.com/maps/api/distancematrix"
                 "/json?"
                 "units=metric"
                 "&language=en"
                 "&region=de")
 
+
     class TravelMode(Enum):
         TRANSIT = "transit"
         WALKING = "walking"
         DRIVING = "driving"
         BICYCLING = "bicycling"
+
 
     def __init__(self, api_key):
         """
@@ -38,7 +40,7 @@ class Querent():
             The API key used for querying the Google Distance Matrix API service.
         """
         self.api_key = api_key
-        self.travel_mode = "transit"
+        self.travel_mode = Querent.TravelMode.WALKING
 
 
     def gettraveldetails(self, origins, destinations, departure_time='', arrival_time=''):
@@ -94,8 +96,8 @@ class Querent():
         return Querent.__sendurlrequest(query_url)
 
 
-    def settravelmode(mode):
-        self.travel_mode = mode
+    def settravelmode(self, mode):
+        self.travel_mode = mode.value
 
 
     def __sendurlrequest(url_str):
@@ -115,7 +117,6 @@ class Querent():
         response = ur.urlopen(url_str)
         #print(url_str)
         return json.loads(response.read())
-
 
 
     def __listtostring(lst):
@@ -138,7 +139,7 @@ class Querent():
             return lst
         else:
             raise Exception ("Type may be list or string only.")
-googledistancematrix
+
 
     def __datetimetoseconds(date):
         """
