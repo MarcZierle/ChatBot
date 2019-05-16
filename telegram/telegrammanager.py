@@ -1,4 +1,5 @@
 import urllib.parse as up
+import urllib.request as ur, json
 
 class TelegramManager():
 
@@ -8,36 +9,55 @@ class TelegramManager():
         self.api_key = api_key
         self.offset = 0
         self.timeout = 500
+        self.allowed_updates = ["message"]
 
         self.users = {}
         self.user_status = {}
         self.user_messages = {}
 
-        print(self.__build_url())
+        #print(self.getnewmessages())
+        print(self.__build_getupdates_url())
 
 
     def restore(self):
         return
 
-    def __build_url(self):
+    def __build_getupdates_url(self):
         return up.quote((
             TelegramManager.base_url + self.api_key +
             "/getUpdates" +
             "?offset=" + str(self.offset) +
-            "&timeout=" + str(self.timeout)
+            "&timeout=" + str(self.timeout) +
+            "&allowed_updates" + str(self.allowed_updates)
             ), safe='/:?&=.,+-_%|')
+
+    def __build_sendmessage_url(self, userid, msg): 
+        return up.quote(("https://api.telegram.org/bot"
+                 + self.api_key
+                 + "/sendMessage"
+                 + "?chat_id=" + str(userid)
+                 + "&text=" + msg
+                  ), safe='/:?&=.,+-_%|')
 
     def fetchnewmessages(self):
         return
 
-    def getnewmessages(self):
-        return
+    def getnewmessages(self): 
+        response = json.loads(ur.urlopen(self.__build_getupdates_url()).read())
+        #print(json.dumps(response, sort_keys=True, indent=4))
+        response_list = []
+        for message in response["result"] :
+            new_element = {message["message"]["chat"]["id"]:message["message"]["text"]}
+            response_list.append(new_element)
+        return response_list
 
     def sendmessage(self, userid, msg):
-        return
+        #print(self.__build_sendmessage_url(userid, msg))
+        ur.urlopen(self.__build_sendmessage_url(userid, msg))
 
     def __get_user_status(self, userid):
-        return
+        if userid in self.user_status :
+            return self.user_status(userid)
 
     def __set_user_status(self, userid, status):
         return
