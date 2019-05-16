@@ -22,4 +22,4 @@ details = gdm_querent.gettraveldetails(
 
 print(details['rows'][0]['elements'][0]['duration']['text'])
 
-tgm = TelegramManager( api_key=settings.TELEGRAM_API_KEY )
+tgm = TelegramManager( api_key=settings.TELEGRAM_API_KEY 
