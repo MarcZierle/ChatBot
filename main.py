@@ -10,6 +10,8 @@ import telegram as tg
 from telegram import telegrammanager
 from telegram.telegrammanager import TelegramManager
 
+import time
+
 import settings
 settings.init()
 
@@ -26,7 +28,13 @@ settings.init()
 
 tgm = TelegramManager( api_key=settings.TELEGRAM_API_KEY )
 print(tgm.getnewmessages())
-#tgm.sendmessage(
-#    userid = "127069982",
-#    msg = "Hi there"
-#    )
+i = 1
+while(i < 5) :
+    tgm.sendmessage(
+    userid = "",
+    msg = "Good night ^^"
+    )
+    time.sleep(5)
+    print(i)
+    i = i+1
+    
