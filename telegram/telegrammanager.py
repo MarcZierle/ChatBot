@@ -9,7 +9,7 @@ class TelegramManager():
         self.api_key = api_key
         self.offset = 0
         self.timeout = 500
-        self.allowed_updates = ["message"]
+        self.allowed_updates = "message"
 
         self.users = {}
         self.user_status = {}
@@ -28,7 +28,7 @@ class TelegramManager():
             "/getUpdates" +
             "?offset=" + str(self.offset) +
             "&timeout=" + str(self.timeout) +
-            "&allowed_updates" + str(self.allowed_updates)
+            "&allowed_updates=" + self.allowed_updates
             ), safe='/:?&=.,+-_%|')
 
     def __build_sendmessage_url(self, userid, msg): 
@@ -44,11 +44,12 @@ class TelegramManager():
 
     def getnewmessages(self): 
         response = json.loads(ur.urlopen(self.__build_getupdates_url()).read())
-        #print(json.dumps(response, sort_keys=True, indent=4))
+        print(json.dumps(response, sort_keys=True, indent=4))
         response_list = []
         for message in response["result"] :
-            new_element = {message["message"]["chat"]["id"]:message["message"]["text"]}
-            response_list.append(new_element)
+            if "text" in message["message"] :
+                new_element = {message["message"]["chat"]["id"]:message["message"]["text"]}
+                response_list.append(new_element)
         return response_list
 
     def sendmessage(self, userid, msg):
