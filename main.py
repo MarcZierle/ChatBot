@@ -4,6 +4,10 @@ import googledistancematrix as gdm
 from googledistancematrix import querent
 from googledistancematrix.querent import Querent
 
+import telegram as tg
+from telegram import telegrammanager
+from telegram.telegrammanager import TelegramManager
+
 import settings
 settings.init()
 
@@ -17,3 +21,5 @@ details = gdm_querent.gettraveldetails(
 )
 
 print(details['rows'][0]['elements'][0]['duration']['text'])
+
+tgm = TelegramManager( api_key=settings.TELEGRAM_API_KEY )
