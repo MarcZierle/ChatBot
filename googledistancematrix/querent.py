@@ -2,6 +2,7 @@ import urllib.parse as up
 import urllib.request as ur, json
 import datetime
 from datetime import timezone
+from enum import Enum
 
 class Querent():
     """
@@ -19,8 +20,13 @@ class Querent():
                 "/json?"
                 "units=metric"
                 "&language=en"
-                "&region=de"
-                "&mode=transit|walking")
+                "&region=de")
+
+    class TravelMode(Enum):
+        TRANSIT = "transit"
+        WALKING = "walking"
+        DRIVING = "driving"
+        BICYCLING = "bicycling"
 
     def __init__(self, api_key):
         """
@@ -32,6 +38,7 @@ class Querent():
             The API key used for querying the Google Distance Matrix API service.
         """
         self.api_key = api_key
+        self.travel_mode = "transit"
 
 
     def gettraveldetails(self, origins, destinations, departure_time='', arrival_time=''):
@@ -73,16 +80,22 @@ class Querent():
         # build the query url
         query_url = (Querent.base_url +
             "&key=" +
-            self.api_key +
+                self.api_key +
             "&origins=" +
-            Querent.__listtostring(origins) +
+                Querent.__listtostring(origins) +
             "&destinations=" +
-            Querent.__listtostring(destinations) +
+                Querent.__listtostring(destinations) +
+            "&mode=" +
+                self.travel_mode +
             time)
         # escape any character that needs to be
         query_url = up.quote(query_url, safe='/:?&=.,+-_%|') # characters to be preserved when escaping the url
 
         return Querent.__sendurlrequest(query_url)
+
+
+    def settravelmode(mode):
+        self.travel_mode = mode
 
 
     def __sendurlrequest(url_str):
@@ -100,6 +113,7 @@ class Querent():
                 A JSON-object / dictionary of the response.
         """
         response = ur.urlopen(url_str)
+        #print(url_str)
         return json.loads(response.read())
 
 
@@ -124,7 +138,7 @@ class Querent():
             return lst
         else:
             raise Exception ("Type may be list or string only.")
-
+googledistancematrix
 
     def __datetimetoseconds(date):
         """
