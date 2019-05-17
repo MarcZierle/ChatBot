@@ -27,14 +27,17 @@ settings.init()
 #print(details['rows'][0]['elements'][0]['duration']['text'])
 
 tgm = TelegramManager( api_key=settings.TELEGRAM_API_KEY )
-print(tgm.getnewmessages())
-i = 1
-while(i < 5) :
-    tgm.sendmessage(
-    userid = "",
-    msg = "Good night ^^"
-    )
-    time.sleep(5)
-    print(i)
-    i = i+1
+print(tgm.user_messages)
+
+
+#print(tgm.getnewmessages())
+#i = 1
+#while(i < 5) :
+#    tgm.sendmessage(
+#    userid = "127069982",
+#    msg = "Good morning ^^"
+#    )
+#    time.sleep(5)
+    #print(i)
+#    i = i+1
     
