@@ -8,14 +8,17 @@ class TelegramManager():
     def __init__(self, api_key):
         self.api_key = api_key
         self.offset = 0
-        self.timeout = 500
+        self.timeout = 10
         self.allowed_updates = "message"
 
         self.users = {}
         self.user_status = {}
-        self.user_messages = {}
+        self.user_messages = []
 
-        #print(self.getnewmessages())
+        self.getnewmessages()
+        print("OK")
+        print(self.__get_next_message(127069982))
+        print("OK")
         print(self.__build_getupdates_url())
 
 
@@ -40,20 +43,21 @@ class TelegramManager():
                   ), safe='/:?&=.,+-_%|')
 
     def fetchnewmessages(self):
-        return
+        return getnewmessages()
 
     def getnewmessages(self): 
         response = json.loads(ur.urlopen(self.__build_getupdates_url()).read())
-        print(json.dumps(response, sort_keys=True, indent=4))
+        #print(json.dumps(response, sort_keys=True, indent=4))
         response_list = []
         for message in response["result"] :
             if "text" in message["message"] :
-                new_element = {message["message"]["chat"]["id"]:message["message"]["text"]}
+                new_element = {"userid":message["message"]["chat"]["id"],"message":message["message"]["text"]}
                 response_list.append(new_element)
-        return response_list
+        if len(response["result"]) > 0 :
+            self.offset = response["result"][-1]["update_id"] +1
+        self.user_messages = response_list
 
     def sendmessage(self, userid, msg):
-        #print(self.__build_sendmessage_url(userid, msg))
         ur.urlopen(self.__build_sendmessage_url(userid, msg))
 
     def __get_user_status(self, userid):
@@ -64,7 +68,14 @@ class TelegramManager():
         return
 
     def __add_new_user(self, userid):
-        return
+        if userid not in self.users :
+            self.users.append(userid)
 
     def __get_next_message(self, userid):
+        #print(userid)
+        #print(self.user_messages)
+        #if userid in self.user_messages["userid"] :
+        #    return self.user_messages[userid]
+        #else :
+        #    return "Nope"
         return
