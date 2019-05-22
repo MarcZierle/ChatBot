@@ -13,13 +13,20 @@ class TelegramManager():
 
         self.users = {}
         self.user_status = {}
-        self.user_messages = []
+        self.user_messages = {}
 
-        self.getnewmessages()
-        print("OK")
-        print(self.__get_next_message(127069982))
-        print("OK")
-        print(self.__build_getupdates_url())
+        self.fetchnewmessages()
+        self.getnewmessages(___)
+        txt = self.__get_next_message(___)
+        while txt is not None :
+            print(txt)
+            txt = self.__get_next_message(___)
+        
+        
+        #print("OK")
+        #print(self.__get_next_message(______))
+        #print("OK")
+        #print(self.__build_getupdates_url())
 
 
     def restore(self):
@@ -43,19 +50,24 @@ class TelegramManager():
                   ), safe='/:?&=.,+-_%|')
 
     def fetchnewmessages(self):
-        return getnewmessages()
-
-    def getnewmessages(self): 
         response = json.loads(ur.urlopen(self.__build_getupdates_url()).read())
         #print(json.dumps(response, sort_keys=True, indent=4))
         response_list = []
         for message in response["result"] :
             if "text" in message["message"] :
-                new_element = {"userid":message["message"]["chat"]["id"],"message":message["message"]["text"]}
-                response_list.append(new_element)
+                uid = message["message"]["chat"]["id"]
+                txt = message["message"]["text"]
+                if uid in self.user_messages :
+                    self.user_messages[uid].append(txt)
+                else :
+                    self.user_messages[uid] = [txt]
         if len(response["result"]) > 0 :
             self.offset = response["result"][-1]["update_id"] +1
-        self.user_messages = response_list
+            if len(response["result"]) >= 99 :
+                self.fetchnewmessages()
+
+    def getnewmessages(self, userid): 
+        return self.user_messages[userid]
 
     def sendmessage(self, userid, msg):
         ur.urlopen(self.__build_sendmessage_url(userid, msg))
@@ -65,17 +77,13 @@ class TelegramManager():
             return self.user_status(userid)
 
     def __set_user_status(self, userid, status):
-        return
+        self.user_status = status
 
     def __add_new_user(self, userid):
         if userid not in self.users :
             self.users.append(userid)
 
     def __get_next_message(self, userid):
-        #print(userid)
-        #print(self.user_messages)
-        #if userid in self.user_messages["userid"] :
-        #    return self.user_messages[userid]
-        #else :
-        #    return "Nope"
-        return
+        if userid in self.user_messages :
+            if len(self.user_messages[userid]) > 0 :
+                return self.user_messages[userid].pop(0)
