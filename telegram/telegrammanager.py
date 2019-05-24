@@ -8,25 +8,12 @@ class TelegramManager():
     def __init__(self, api_key):
         self.api_key = api_key
         self.offset = 0
-        self.timeout = 10
+        self.timeout = 100
         self.allowed_updates = "message"
 
-        self.users = {}
+        self.users = []
         self.user_status = {}
         self.user_messages = {}
-
-        self.fetchnewmessages()
-        self.getnewmessages(___)
-        txt = self.__get_next_message(___)
-        while txt is not None :
-            print(txt)
-            txt = self.__get_next_message(___)
-        
-        
-        #print("OK")
-        #print(self.__get_next_message(______))
-        #print("OK")
-        #print(self.__build_getupdates_url())
 
 
     def restore(self):
@@ -41,7 +28,7 @@ class TelegramManager():
             "&allowed_updates=" + self.allowed_updates
             ), safe='/:?&=.,+-_%|')
 
-    def __build_sendmessage_url(self, userid, msg): 
+    def __build_sendmessage_url(self, userid, msg):
         return up.quote(("https://api.telegram.org/bot"
                  + self.api_key
                  + "/sendMessage"
@@ -52,22 +39,28 @@ class TelegramManager():
     def fetchnewmessages(self):
         response = json.loads(ur.urlopen(self.__build_getupdates_url()).read())
         #print(json.dumps(response, sort_keys=True, indent=4))
-        response_list = []
+        #response_list = []
         for message in response["result"] :
             if "text" in message["message"] :
-                uid = message["message"]["chat"]["id"]
+                uid = message["message"]["from"]["id"]
                 txt = message["message"]["text"]
                 if uid in self.user_messages :
                     self.user_messages[uid].append(txt)
                 else :
                     self.user_messages[uid] = [txt]
+                    self.users.append(uid)
         if len(response["result"]) > 0 :
-            self.offset = response["result"][-1]["update_id"] +1
+            self.offset = response["result"][-1]["update_id"] + 1
+            #print(self.offset)
             if len(response["result"]) >= 99 :
                 self.fetchnewmessages()
 
-    def getnewmessages(self, userid): 
-        return self.user_messages[userid]
+    def getnewmessages(self, userid):
+        if userid in self.user_messages:
+            msgs = self.user_messages[userid]
+            self.user_messages[userid] = []
+            return msgs
+        return None
 
     def sendmessage(self, userid, msg):
         ur.urlopen(self.__build_sendmessage_url(userid, msg))

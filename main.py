@@ -10,6 +10,8 @@ import telegram as tg
 from telegram import telegrammanager
 from telegram.telegrammanager import TelegramManager
 
+import logging
+
 import time
 
 import settings
@@ -27,17 +29,23 @@ settings.init()
 #print(details['rows'][0]['elements'][0]['duration']['text'])
 
 tgm = TelegramManager( api_key=settings.TELEGRAM_API_KEY )
-#print(tgm.user_messages)
 
+while True:
+    logging.debug("Fetching new messages...")
+    tgm.fetchnewmessages()
+    logging.debug("Fetching done!")
 
-#print(tgm.getnewmessages())
-#i = 1
-#while(i < 5) :
-#    tgm.sendmessage(
-#    userid = "______",
-#    msg = "."
-#    )
-#    time.sleep(1)
-#    print(i)
-#    i = i+1
-    
+    logging.debug("Checking new messages...")
+    for user in tgm.users:
+        logging.debug("Checking new messages for user " + str(user))
+        msgs = tgm.getnewmessages(user)
+
+        if len(msgs) > 0:
+            for msg in msgs:
+                logging.debug("Processing message \"" + msg + "\"")
+                # process msg in new thread if status is IDLE
+                tgm.sendmessage(user, "hi")
+
+        logging.debug("User messages done! [" + str(user) + "]")
+
+    logging.debug("Checking done!")
