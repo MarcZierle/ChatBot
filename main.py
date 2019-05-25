@@ -1,4 +1,4 @@
-import datetime as dt
+import datetime as dt, logging, time
 
 import googledistancematrix as gdm
 from googledistancematrix import querent
@@ -8,9 +8,7 @@ import telegram as tg
 from telegram import telegrammanager
 from telegram.telegrammanager import TelegramManager
 
-import logging
-
-import time
+from scheduler import scheduler
 
 import settings
 settings.init()
@@ -18,6 +16,10 @@ settings.init()
 
 gdm_querent = gdm.querent.Querent( api_key=settings.GOOGLE_DISTANCE_MATRIX_API_KEY )
 gdm_querent.settravelmode(Querent.TravelMode.TRANSIT)
+
+sched = scheduler.Scheduler(gdm_querent)
+
+exit()
 
 #details = gdm_querent.gettraveldetails(
 #    origins = ["Rudower Chaussee 25"],
