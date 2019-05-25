@@ -44,7 +44,7 @@ while True:
             for msg in msgs:
                 logging.debug("Processing message \"" + msg + "\"")
                 # process msg in new thread if status is IDLE
-                tgm.sendmessage(user, "hi")
+                tgm.sendmessage(user, "Hello, human.")
 
         logging.debug("User messages done! [" + str(user) + "]")
 
