@@ -1,5 +1,3 @@
-# Download: pip install python-dotenv
-
 import datetime as dt
 
 import googledistancematrix as gdm
@@ -57,12 +55,15 @@ def simple_message_processing(userid, msg):
             destinations = destinations[userid]
         )
 
+        print (travel_details)
+
         ret_code = travel_details['rows'][0]['elements'][0]['status']
         if ret_code != "ZERO_RESULTS" and ret_code != "NOT_FOUND":
             time = travel_details['rows'][0]['elements'][0]['duration']['text']
             response = ("Very good. It will take you " + time + " from "
-                        + origins[userid] + " to " + destinations[userid] + "."
-                        " You might now enter a next starting location.")
+                        + travel_details['origin_addresses'][0] + " to "
+                        + travel_details['destination_addresses'][0] + "."
+                        + " You might now enter a next starting location.")
         else:
             response = ("Sorry. No routes could be found." +
                         " But feel free to enter a new starting location.")
@@ -103,7 +104,3 @@ while True:
         logging.debug("User messages done! [" + str(user) + "]")
 
     logging.debug("Checking done!")
-
-
-def simple_message_processing(userid, msg):
-    return "Hello"
