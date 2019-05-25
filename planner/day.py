@@ -1,4 +1,4 @@
-from scheduler.event import Event
+from planner.event import Event
 
 class Day():
 

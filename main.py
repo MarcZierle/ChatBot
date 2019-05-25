@@ -8,7 +8,9 @@ import telegram as tg
 from telegram import telegrammanager
 from telegram.telegrammanager import TelegramManager
 
-from scheduler import scheduler
+from planner import scheduler
+from planner.scheduler import Scheduler
+from planner.event import Event
 
 import settings
 settings.init()
@@ -17,7 +19,51 @@ settings.init()
 gdm_querent = gdm.querent.Querent( api_key=settings.GOOGLE_DISTANCE_MATRIX_API_KEY )
 gdm_querent.settravelmode(Querent.TravelMode.TRANSIT)
 
-sched = scheduler.Scheduler(gdm_querent)
+planner = Scheduler(gdm_querent)
+
+planner.add_day(25, 5, 2019)
+planner.add_day(26, 5, 2019)
+planner.add_day(27, 5, 2019)
+planner.add_day(28, 5, 2019)
+
+planner.add_event(Event(
+    "Datenbanken Vorlesung",
+    Event.EventType.SPECIFIC,
+    Scheduler.to_minutes(11, 0),
+    Scheduler.to_minutes(13, 0),
+    place="Rudower Chaussee 25 Berlin"
+), [27, 5, 2019])
+
+planner.add_event(Event(
+    "Datenbanken Übung",
+    Event.EventType.SPECIFIC,
+    Scheduler.to_minutes(11, 0),
+    Scheduler.to_minutes(13, 0),
+    place="Rudower Chaussee 25 Berlin"
+), [28, 5, 2019])
+
+planner.add_event(Event(
+    "C++ Vorlesung",
+    Event.EventType.SPECIFIC,
+    Scheduler.to_minutes(13, 0),
+    Scheduler.to_minutes(15, 0),
+    place="Rudower Chaussee 26 Berlin"
+), [28, 5, 2019])
+
+planner.add_event(Event(
+    "Datenbanken Vorlesung",
+    Event.EventType.SPECIFIC,
+    Scheduler.to_minutes(15, 0),
+    Scheduler.to_minutes(17, 0),
+    place="Rudower Chaussee 25 Berlin"
+), [28, 5, 2019])
+
+planner.add_event(Event(
+    "Kuchenbacken",
+    Event.EventType.UNSPECIFIC,
+    duration = Scheduler.to_minutes(2, 30),
+    place = "Str. d. Pariser Kommune 30"
+))
 
 exit()
 
