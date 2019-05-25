@@ -37,7 +37,7 @@ class TelegramManager():
                   ), safe='/:?&=.,+-_%|')
 
     def fetchnewmessages(self):
-        response = json.loads(ur.urlopen(self.__build_getupdates_url()).read())
+        response = json.loads(ur.urlopen(self.__build_getupdates_url()).read().decode('utf-8'))
         #print(json.dumps(response, sort_keys=True, indent=4))
         #response_list = []
         for message in response["result"] :
