@@ -1,7 +1,7 @@
 import logging, datetime as dt
 
-from scheduler.day import Day
-from scheduler.event import Event
+from planner.event import Event
+from planner.day import Day
 
 class Scheduler():
 
@@ -13,7 +13,11 @@ class Scheduler():
         self.__events = []
 
 
-    def add_event(self, event):
+    def add_day(self, day, month, year):
+        pass
+
+
+    def add_event(self, event, date=[]):
         pass
 
 
