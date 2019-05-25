@@ -2,6 +2,11 @@
 .env
 env
 
+*.pub
+*.priv
+*.pass
+*.sh
+
 # see https://github.com/martinohanlon/flightlight/issues/1
 # Byte-compiled / optimized / DLL files
 __pycache__/
