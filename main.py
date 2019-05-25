@@ -36,6 +36,10 @@ def simple_message_processing(userid, msg):
     origins = simple_message_processing.origins
     destinations = simple_message_processing.destinations
 
+    if msg == "/reset":
+        status[userid] = 0
+        return "Ok. Chat for user " + userid + " reset."
+
     if userid not in status:
         status[userid] = 0
 
