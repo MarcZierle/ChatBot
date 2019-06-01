@@ -1,5 +1,7 @@
 import datetime as dt, logging, time
 
+import os
+
 import googledistancematrix as gdm
 from googledistancematrix import querent
 from googledistancematrix.querent import Querent
@@ -19,53 +21,52 @@ settings.init()
 gdm_querent = gdm.querent.Querent( api_key=settings.GOOGLE_DISTANCE_MATRIX_API_KEY )
 gdm_querent.settravelmode(Querent.TravelMode.TRANSIT)
 
-planner = Scheduler(gdm_querent)
+##planner = Scheduler(gdm_querent)
+##
+##planner.add_day(25, 5, 2019)
+##planner.add_day(26, 5, 2019)
+##planner.add_day(27, 5, 2019)
+##planner.add_day(28, 5, 2019)
+##
+##planner.add_event(Event(
+##    "Datenbanken Vorlesung",
+##    Event.EventType.SPECIFIC,
+##    Scheduler.to_minutes(11, 0),
+##    Scheduler.to_minutes(13, 0),
+##    place="Rudower Chaussee 25 Berlin"
+##), [27, 5, 2019])
+##
+##planner.add_event(Event(
+##    "Datenbanken Übung",
+##    Event.EventType.SPECIFIC,
+##    Scheduler.to_minutes(11, 0),
+##    Scheduler.to_minutes(13, 0),
+##    place="Rudower Chaussee 25 Berlin"
+##), [28, 5, 2019])
+##
+##planner.add_event(Event(
+##    "C++ Vorlesung",
+##    Event.EventType.SPECIFIC,
+##    Scheduler.to_minutes(13, 0),
+##    Scheduler.to_minutes(15, 0),
+##    place="Rudower Chaussee 26 Berlin"
+##), [28, 5, 2019])
+##
+##planner.add_event(Event(
+##    "Datenbanken Vorlesung",
+##    Event.EventType.SPECIFIC,
+##    Scheduler.to_minutes(15, 0),
+##    Scheduler.to_minutes(17, 0),
+##    place="Rudower Chaussee 25 Berlin"
+##), [28, 5, 2019])
+##
+##planner.add_event(Event(
+##    "Kuchenbacken",
+##    Event.EventType.UNSPECIFIC,
+##    duration = Scheduler.to_minutes(2, 30),
+##    place = "Str. d. Pariser Kommune 30"
+##))
 
-planner.add_day(25, 5, 2019)
-planner.add_day(26, 5, 2019)
-planner.add_day(27, 5, 2019)
-planner.add_day(28, 5, 2019)
-
-planner.add_event(Event(
-    "Datenbanken Vorlesung",
-    Event.EventType.SPECIFIC,
-    Scheduler.to_minutes(11, 0),
-    Scheduler.to_minutes(13, 0),
-    place="Rudower Chaussee 25 Berlin"
-), [27, 5, 2019])
-
-planner.add_event(Event(
-    "Datenbanken Übung",
-    Event.EventType.SPECIFIC,
-    Scheduler.to_minutes(11, 0),
-    Scheduler.to_minutes(13, 0),
-    place="Rudower Chaussee 25 Berlin"
-), [28, 5, 2019])
-
-planner.add_event(Event(
-    "C++ Vorlesung",
-    Event.EventType.SPECIFIC,
-    Scheduler.to_minutes(13, 0),
-    Scheduler.to_minutes(15, 0),
-    place="Rudower Chaussee 26 Berlin"
-), [28, 5, 2019])
-
-planner.add_event(Event(
-    "Datenbanken Vorlesung",
-    Event.EventType.SPECIFIC,
-    Scheduler.to_minutes(15, 0),
-    Scheduler.to_minutes(17, 0),
-    place="Rudower Chaussee 25 Berlin"
-), [28, 5, 2019])
-
-planner.add_event(Event(
-    "Kuchenbacken",
-    Event.EventType.UNSPECIFIC,
-    duration = Scheduler.to_minutes(2, 30),
-    place = "Str. d. Pariser Kommune 30"
-))
-
-exit()
 
 #details = gdm_querent.gettraveldetails(
 #    origins = ["Rudower Chaussee 25"],
@@ -132,23 +133,37 @@ simple_message_processing.destinations = {}
 
 tgm = TelegramManager( api_key=settings.TELEGRAM_API_KEY )
 
-while True:
+
+for x in range(0,2):
     logging.debug("Fetching new messages...")
-    tgm.fetchnewmessages()
+    tgm.fetch_new_messages()
     logging.debug("Fetching done!")
 
     logging.debug("Checking new messages...")
-    for user in tgm.users:
+    for user in tgm.get_users() :
         logging.debug("Checking new messages for user " + str(user))
-        msgs = tgm.getnewmessages(user)
+        msgs = tgm.get_new_messages(user)
 
         if len(msgs) > 0:
             for msg in msgs:
                 logging.debug("Processing message \"" + msg + "\"")
-
-                response = simple_message_processing(user, msg)
-                tgm.sendmessage(user, response)
+                response = "OK"
+                #response = simple_message_processing(user, msg)
+                tgm.send_message(user, response)
 
         logging.debug("User messages done! [" + str(user) + "]")
 
     logging.debug("Checking done!")
+
+path = os.getcwd()
+tlgr_storage_path = path + "/storage/telegram/"
+#logging.debug(tlgr_storage_path)
+#filename = "telegram.pkl"
+#logging.debug(os.name)
+#path = path + "/" + filename
+    
+#logging.debug(filepath)
+tgm.store(tlgr_storage_path)
+tgm.restore(tlgr_storage_path)
+
+
