@@ -65,6 +65,8 @@ planner.add_event(Event(
     place = "Str. d. Pariser Kommune 30"
 ))
 
+print(planner)
+
 exit()
 
 #details = gdm_querent.gettraveldetails(
