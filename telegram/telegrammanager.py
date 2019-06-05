@@ -1,8 +1,8 @@
-import urllib.parse as up
-import urllib.request as ur, json
 import pickle
 import os
 import logging
+import requests
+from datetime import datetime
 
 class TelegramManager():
 
@@ -17,6 +17,7 @@ class TelegramManager():
         self.__users = []
         self.__user_status = {}
         self.__user_messages = {}
+        self.__chatlog = {}
 
 
     def restore(self, path):
@@ -24,8 +25,6 @@ class TelegramManager():
         self.__user_messages= {}
         if os.name == "nt" :
             path = path.replace("/", "\\")
-            logging.debug(path)
-            logging.debug(os.name)
             
         try :
             self.__offset = pickle.load(open(path + "offset.pkl","rb"))
@@ -59,47 +58,54 @@ class TelegramManager():
         pickle.dump(self.__user_messages, open(path + "user_messages.pkl", "wb"),protocol=pickle.HIGHEST_PROTOCOL)
         
     def __build_get_updates_url(self):
-        return up.quote((
+        return (
             TelegramManager.base_url + self.__api_key +
             "/getUpdates" +
             "?offset=" + str(self.__offset) +
             "&timeout=" + str(self.__timeout) +
             "&allowed_updates=" + self.__allowed_updates
-            ), safe='/:?&=.,+-_%|')
+            )
 
     def __build_send_message_url(self, userid, msg):
-        return up.quote(("https://api.telegram.org/bot"
+        return ("https://api.telegram.org/bot"
                  + self.__api_key
                  + "/sendMessage"
                  + "?chat_id=" + str(userid)
                  + "&text=" + msg
-                  ), safe='/:?&=.,+-_%|')
-##    def __build_send_file_url(userid, filepath) :
-##        return up.quote(("https://api.telegram.org/bot"
-##                 + self.__api_key
-##                 + "/sendDocument"
-##                 + "?chat_id=" + str(userid)
-##                 + "&document=Content-Disposition: file; filename=\"" + filepath + "\""
-##                 + "Content-Type: image/gifContent-Transfer-Encoding: binary
+                  )
+    
+    def __build_send_file_url(self, userid) :
+        return ("https://api.telegram.org/bot"
+                 + self.__api_key
+                 + "/sendDocument"
+                 + "?chat_id=" + str(userid))
         
-
+    def __build_send_photo_url(self, userid) :
+        return ("https://api.telegram.org/bot"
+                 + self.__api_key
+                 + "/sendPhoto"
+                 + "?chat_id=" + str(userid))
 
     def fetch_new_messages(self):
-        response = json.loads(ur.urlopen(self.__build_get_updates_url()).read().decode('utf-8'))
+        response = (requests.get(self.__build_get_updates_url())).json()
         #print(json.dumps(response, sort_keys=True, indent=4))
-        #response_list = []
         for message in response["result"] :
             if "text" in message["message"] :
                 uid = message["message"]["from"]["id"]
                 txt = message["message"]["text"]
+                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                chatlog_string = current_time + ": " + str(uid) + ": " + txt
                 if uid in self.__user_messages :
                     self.__user_messages[uid].append(txt)
+                    self.__chatlog[uid].append(chatlog_string)
                 else :
                     self.__user_messages[uid] = [txt]
+                    self.__chatlog[uid] = [chatlog_string]
                     self.__users.append(uid)
+                
+                
         if len(response["result"]) > 0 :
             self.__offset = response["result"][-1]["update_id"] + 1
-            #print(self.__offset)
             if len(response["result"]) >= 99 :
                 self.fetch_new_messages()
 
@@ -112,15 +118,25 @@ class TelegramManager():
 
     def send_message(self, userid, msg):
         url = self.__build_send_message_url(userid, msg)
-        ur.urlopen(url)
+        requests.post(url)
 
     def send_file(self, userid, filepath) :
-        url = self.__build_send_file_url(userid, filepath)
-        ur.urlopen(url)
-                                         
+        url = self.__build_send_file_url(userid)
+        files = {"document":open(filepath,"rb")}
+        requests.post(url,files = files)
+    
+
+    def send_photo(self, userid, filepath) :
+        url = self.__build_send_photo_url(userid)
+        files = {"photo":open(filepath,"rb")}
+        requests.post(url,files = files)
+        
     def get_users(self) :
         return self.__users
-
+    
+    def get_chatlog(self) :
+        return self.__chatlog
+    
     def __get_user_status(self, userid):
         if userid in self.__user_status :
             return self.__user_status(userid)
