@@ -7,11 +7,13 @@ class QuerentParser():
 
         self.__durations = []
         for elem in json['rows']:
-            self.__durations.append(round(elem['elements'][0]['duration']['value']/60))
+            for dur in elem['elements']:
+                self.__durations.append(round(dur['duration']['value']/60))
 
         self.__distances = []
         for elem in json['rows']:
-            self.__distances.append(round(elem['elements'][0]['distance']['value']))
+            for dist in elem['elements']:
+                self.__distances.append(round(dist['distance']['value']))
 
 
     # in minutes
