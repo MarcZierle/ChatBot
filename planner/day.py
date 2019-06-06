@@ -26,7 +26,7 @@ class Day():
 
 
     def num_events(self):
-        return len(self.__events)
+        return len([e for e in self.__events if not e.is_travelling()])
 
 
     def get_next_event(self):
