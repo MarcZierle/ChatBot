@@ -12,6 +12,8 @@ def init():
     TELEGRAM_API_KEY                = os.getenv("TELEGRAM_API_KEY")
 
     logging.basicConfig(level=logging.DEBUG)
+    logging.getLogger("requests").setLevel(logging.WARNING)
+    logging.getLogger("urllib3").setLevel(logging.WARNING)
     atexit.register(exit_handler)
 
 def exit_handler():
