@@ -34,6 +34,10 @@ class Event():
         self.__place = place
 
 
+    def get_name(self):
+        return self.__name
+
+
     def get_start(self):
         return self.__start
 
@@ -44,6 +48,10 @@ class Event():
 
     def get_duration(self):
         return self.__duration
+
+
+    def get_place(self):
+        return self.__place
 
 
     def is_specific(self):
@@ -71,4 +79,6 @@ class Event():
             +str(endH).zfill(2)+":"+str(endM).zfill(2)
             +"\t"+
             self.__name
+            +"\t"+
+            self.__place
         )

@@ -43,7 +43,7 @@ class Querent():
         self.travel_mode = Querent.TravelMode.WALKING
 
 
-    def gettraveldetails(self, origins, destinations, departure_time='', arrival_time=''):
+    def get_travel_details(self, origins, destinations, departure_time='', arrival_time=''):
         """
         Receive all travel details in respect to a specific traveling route
         given by it's origin, destination and time of departure / arrival.

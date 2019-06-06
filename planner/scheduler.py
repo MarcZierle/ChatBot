@@ -3,17 +3,19 @@ import logging, datetime as dt
 from planner.event import Event
 from planner.day import Day
 
+from googledistancematrix.querent_parser import QuerentParser
+
 class Scheduler():
 
     def __init__(self, querent):
         self.__querent = querent
-        self.__time_begin_day = Scheduler.to_minutes(8, 0)    # 8 A.M.
-        self.__time_end_day   = Scheduler.to_minutes(20, 0)   # 8 P.M.
+        self.__time_begin_day = to_minutes(8, 0)    # 8 A.M.
+        self.__time_end_day   = to_minutes(20, 0)   # 8 P.M.
         self.__days = []
         self.__events = []
         self.__unplanned_events = []    # list of events that need to be planned
         self.__home = "Berlin"      # start everday at this location
-        self.__max_events = 5       # maximum number of events per day
+        self.__max_events = 8       # maximum number of events per day
         self.__max_rest_time = 30   # maximum amount of time (min) for a break btw events
         self.__min_rest_time = 5    # minimum amount of time (min) for a break btw events
 
@@ -50,27 +52,126 @@ class Scheduler():
         # mark all events as unplanned
         self.__unplanned_events = [e for e in self.__events if not e.is_specific()]
 
-        # 1. calc shortest distance btw. all events and home, rank them
-        # 2. if day has specific events:
-        #   2.1 check for first element that fits btw first specific event and home
-        # else:
-        #   2.2 add nearest event
-        # [2.1 / 2.2: take rest times into account]
-        # 
-
-        lastTime = self.__time_begin_day
+        #lastTime = self.__time_begin_day
 
         daysGen = self.__get_next_day()
         currDay = daysGen.__next__()
 
-        for event in self.__events:
-            if not event.is_specific():
+        for currDay in self.__get_next_day():
+            if currDay.num_specific_events() > 0:
+                for sp_event, is_last_event in lookahead(currDay.get_next_specific_event()):
+                    if is_last_event:
+                        self.__unplanned_events = self.__insert_after_events_to_day(
+                            self.__unplanned_events,
+                            currDay,
+                            sp_event
+                        )
+                    else:
+                        self.__unplanned_events = self.__insert_before_events_to_day(
+                            self.__unplanned_events,
+                            currDay,
+                            sp_event
+                        )
+            else:
+                # no specific events for current day
+                self.__unplanned_events = self.__insert_after_events_to_day(
+                    self.__unplanned_events,
+                    currDay,
+                    Event(
+                        "Home",
+                        Event.EventType.SPECIFIC,
+                        self.__time_begin_day-10,
+                        self.__time_begin_day,
+                        place = self.__home
+                    )
+                )
 
-                if lastTime+event.get_duration() >= self.__time_end_day:
-                    currDay = daysGen.__next__()
 
-                currDay.add_event(event, lastTime, lastTime+event.get_duration())
-                lastTime = lastTime + event.get_duration()
+    # trys to insert given events before given end_event
+    # exits after first collision in day or time_begin_day has been reached
+    # returns all events that could not be planned
+    # Note: Distance calculations will be done; max_events will be considered
+    def __insert_before_events_to_day(self, events, day, end_event):
+        dest_place = end_event.get_place()
+        last_event = end_event
+
+        while events:
+            if day.num_events() >= self.__max_events:
+                break
+
+            event_places = [e.get_place() for e in events]
+            results = QuerentParser(self.__querent.get_travel_details(
+                event_places,
+                dest_place,
+                arrival_time=dt.datetime(
+                    day.get_year(), day.get_month(), day.get_day(),
+                    to_hours(last_event.get_start())[0], to_hours(last_event.get_start())[1]
+                )
+            ))
+
+            closest_event = results.get_duations().index(min(results.get_duations()))
+            travel_time = results.get_duations()[closest_event]
+
+            end_time = last_event.get_start() - travel_time
+            start_time = end_time - events[closest_event].get_duration()
+
+            if start_time < self.__time_begin_day:
+                break
+
+            day.add_event(
+                events[closest_event],
+                start_time,
+                end_time
+            )
+
+            last_event = events[closest_event]
+            del events[closest_event]
+
+        return events
+
+
+    # trys to insert given events after given start_event
+    # exits after first collision in day or time_end_day has been reached
+    # returns all events that could not be planned
+    # Note: Distance calculations will be done; max_events will be considered
+    def __insert_after_events_to_day(self, events, day, start_event):
+        dest_place = start_event.get_place()
+        last_event = start_event
+
+        while events:
+            if day.num_events() >= self.__max_events:
+                break
+
+            event_places = [e.get_place() for e in events]
+            results = QuerentParser(self.__querent.get_travel_details(
+                event_places,
+                dest_place,
+                departure_time=dt.datetime(
+                    day.get_year(), day.get_month(), day.get_day(),
+                    to_hours(last_event.get_end())[0], to_hours(last_event.get_end())[1]
+                )
+            ))
+
+            closest_event = results.get_duations().index(min(results.get_duations()))
+            travel_time = results.get_duations()[closest_event]
+
+            start_time = last_event.get_end() + travel_time
+            end_time = start_time + events[closest_event].get_duration()
+
+            if end_time >= self.__time_end_day:
+                break
+
+            day.add_event(
+                events[closest_event],
+                start_time,
+                end_time
+            )
+
+            last_event = events[closest_event]
+            del events[closest_event]
+
+        return events
+
 
 
     def restore(self, path):
@@ -79,14 +180,6 @@ class Scheduler():
 
     def store(self, path):
         pass
-
-
-    def to_minutes(hours, minutes):
-        return hours*60 + minutes
-
-
-    def to_hours(minutes):
-        return [int(minutes/60), minutes%60]
 
 
     def __get_day(self, day, month, year):
@@ -101,6 +194,16 @@ class Scheduler():
             yield day
 
 
+    global to_minutes
+    def to_minutes(hours, minutes):
+        return hours*60 + minutes
+
+
+    global to_hours
+    def to_hours(minutes):
+        return [int(minutes/60), minutes%60]
+
+
     def __str__(self):
         retString = ""
 
@@ -113,3 +216,21 @@ class Scheduler():
             retString = retString + "\n"
 
         return retString
+
+
+    global lookahead
+    def lookahead(iterable):
+        """Pass through all values from the given iterable, augmented by the
+        information if there are more values to come after the current one
+        (False), or if it is the last value (True).
+        """
+        # Get an iterator and pull the first value.
+        it = iter(iterable)
+        last = next(it)
+        # Run the iterator to exhaustion (starting from the second value).
+        for val in it:
+            # Report the *previous* value (more to come).
+            yield last, False
+            last = val
+        # Report the last value.
+        yield last, True
