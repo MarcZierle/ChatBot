@@ -1,4 +1,5 @@
 import logging, datetime as dt
+import numpy as np
 
 from planner.event import Event
 from planner.day import Day
@@ -28,6 +29,10 @@ class Scheduler():
         self.__time_end_day = end_time
 
 
+    def set_max_events(self, max):
+        self.__max_events = max
+
+
     def add_day(self, day, month, year):
         day = Day(day, month, year)
         self.__days.append(day)
@@ -50,11 +55,13 @@ class Scheduler():
     #  PLANNING-ALGORITHM  #
     ########################
     def replan(self):
+        logging.debug("Replaning all events...")
         # remove all previously planned (unspecific) events
         [d.remove_unspecific() for d in self.__days]
 
         # mark all events as unplanned
         self.__unplanned_events = [e for e in self.__events if not e.is_specific()]
+        logging.debug("removed all previously planned events")
 
         #lastTime = self.__time_begin_day
 
@@ -62,15 +69,29 @@ class Scheduler():
         currDay = daysGen.__next__()
 
         for currDay in self.__get_next_day():
+            logging.debug("planning events on day " + str(currDay.get_day())+"/"+str(currDay.get_month())+"/"+str(currDay.get_year()))
+
             if currDay.num_specific_events() > 0:
-                for sp_event, is_last_event in lookahead(currDay.get_next_specific_event()):
+                logging.debug("day has at least on specific event")
+                first_it = True
+                for sp_event in currDay.get_next_specific_event():
+                    if first_it:
+                        first_it = False
+                        self.__unplanned_events = self.__insert_events_to_day(
+                            self.__unplanned_events,
+                            currDay,
+                            sp_event,
+                            True
+                        )
+
                     self.__unplanned_events = self.__insert_events_to_day(
                         self.__unplanned_events,
                         currDay,
                         sp_event,
-                        not is_last_event
+                        False
                     )
             else:
+                logging.debug("day has no specific events")
                 # no specific events for current day
                 self.__unplanned_events = self.__insert_events_to_day(
                     self.__unplanned_events,
@@ -85,6 +106,7 @@ class Scheduler():
                     insert_before=False
                 )
 
+        logging.debug("finished planning for all available days")
         unplanned_events_str = ["- " + e.get_name() for e in self.__unplanned_events]
         if not unplanned_events_str:
             print("All events could be planned!")
@@ -93,6 +115,7 @@ class Scheduler():
             for s in unplanned_events_str:
                 print("    " + s)
         print("\n")
+        logging.debug("Replaning Done!")
 
 
     # trys to insert given events after/before given first_event
@@ -102,14 +125,20 @@ class Scheduler():
     def __insert_events_to_day(self, events, day, first_event, insert_before=True):
         last_event = first_event
 
+        logging.debug("evolving from event " + first_event.get_name())
+        if insert_before:
+            logging.debug("inserting next events before")
+        else:
+            logging.debug("inserting next events after")
+
         while events:
             if day.num_events() >= self.__max_events:
                 break
 
             event_places = [e.get_place() for e in events]
-
             last_place = last_event.get_place()
 
+            logging.debug("starting api query...")
             if insert_before:
                 arr_time = last_event.get_start() - (last_event.get_start()%15)
                 results = QuerentParser(self.__querent.get_travel_details(
@@ -130,46 +159,74 @@ class Scheduler():
                         to_hours(dep_time)[0], to_hours(dep_time)[1]
                     )
                 ))
+            logging.debug("received api response!")
 
-            closest_event = results.get_durations().index(min(results.get_durations()))
-            travel_time = results.get_durations()[closest_event]
+            durations = results.get_durations()
 
-            if insert_before:
-                end_time = arr_time - travel_time
-                start_time = end_time - events[closest_event].get_duration()
-                travel_start = end_time
-                events[closest_event].set_place(results.get_origins()[closest_event])
-            else:
-                start_time = dep_time + travel_time
-                end_time = start_time + events[closest_event].get_duration()
-                travel_start = dep_time
-                events[closest_event].set_place(results.get_destinations()[closest_event])
+            for i in range(len(durations)):
+                logging.debug("durations: " + str(durations))
 
-            if (end_time >= self.__time_end_day
-            or start_time < self.__time_begin_day):
-                break
+                closest_event = durations.index(min(durations))
+                travel_time = results.get_durations()[closest_event]
 
-            if travel_time > 0:
-                day.add_event(
-                    Event(
-                        "[... travelling ("+ str(travel_time) +"min) ...]",
-                        Event.EventType.TRAVELLING,
-                        start=travel_start,
-                        end=travel_start + travel_time,
-                        place=""
-                    ),
-                    travel_start,
-                    travel_start + travel_time
-                )
+                if insert_before:
+                    end_time = arr_time - travel_time
+                    start_time = end_time - events[closest_event].get_duration()
+                    travel_start = end_time
+                    events[closest_event].set_place(results.get_origins()[closest_event])
+                else:
+                    start_time = dep_time + travel_time
+                    end_time = start_time + events[closest_event].get_duration()
+                    travel_start = dep_time
+                    events[closest_event].set_place(results.get_destinations()[closest_event])
 
-            day.add_event(
-                events[closest_event],
-                start_time,
-                end_time
-            )
+                if (end_time >= self.__time_end_day
+                or start_time < self.__time_begin_day):
+                    logging.debug("reached daily time limits!")
+                    durations[closest_event] = float("inf")
+                    if min(durations) == float("inf"):
+                        logging.debug("no event fits between other event and time limits!")
+                        return events
+                    continue
 
-            last_event = events[closest_event]
-            del events[closest_event]
+                try:
+                    logging.debug("trying to insert event " + events[closest_event].get_name())
+
+                    day.add_event(
+                        events[closest_event],
+                        start_time,
+                        end_time
+                    )
+
+                    logging.debug("inserted event!")
+
+                    if travel_time > 0:
+                        day.add_event(
+                            Event(
+                                "[... travelling ("+ str(travel_time) +"min) ...]",
+                                Event.EventType.TRAVELLING,
+                                start=travel_start,
+                                end=travel_start + travel_time,
+                                place=""
+                            ),
+                            travel_start,
+                            travel_start + travel_time
+                        )
+
+                    logging.debug("removing inserted event")
+                    last_event = events[closest_event]
+                    del events[closest_event]
+
+                    break
+
+                except:
+                    # collision exception while adding new event
+                    logging.debug("two events collided! trying to insert next best event")
+                    durations[closest_event] = float("inf")
+                    if min(durations) == float("inf"):
+                        logging.debug("no event fits between other events!")
+                        return events
+                    continue
 
         return events
 

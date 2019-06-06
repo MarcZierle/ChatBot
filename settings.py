@@ -11,7 +11,9 @@ def init():
     GOOGLE_DISTANCE_MATRIX_API_KEY  = os.getenv("GOOGLE_DISTANCE_MATRIX_API_KEY")
     TELEGRAM_API_KEY                = os.getenv("TELEGRAM_API_KEY")
 
-    logging.basicConfig(level=logging.DEBUG)
+    #logging.basicConfig(level=logging.DEBUG)
+    logging.getLogger('scheduler').setLevel(logging.INFO)
+
     atexit.register(exit_handler)
 
 def exit_handler():

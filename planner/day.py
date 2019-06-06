@@ -68,7 +68,9 @@ class Day():
                 continue
 
             if (( start >= other.get_start() and start < other.get_end() )
-            or ( end > other.get_start() and end <= other.get_end() )):
+            or ( end > other.get_start() and end <= other.get_end() )
+            or ( start >= other.get_start() and end <= other.get_end())
+            or ( start < other.get_start() and end > other.get_end()) ):
                 raise Exception(
                     "Events " + str(event) + " and " + str(other)
                     + " are overlapping! Cannot add new event on day " + str(self)

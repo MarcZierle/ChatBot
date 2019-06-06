@@ -20,15 +20,17 @@ p.set_planning_times(
     scheduler.to_minutes(8, 0),
     scheduler.to_minutes(20, 0)
 )
+p.set_max_events(4)
 
 p.add_day(7, 6, 2019)
 p.add_day(8, 6, 2019)
+p.add_day(9, 6, 2019)
 
 p.add_event(Event(
     "Kuchenbacken",
     Event.EventType.SPECIFIC,
-    start=scheduler.to_minutes(15,30),
-    end=scheduler.to_minutes(16,45),
+    start=scheduler.to_minutes(17,45),
+    end=scheduler.to_minutes(19,00),
     place="Str d Pariser Kommune 30"),
 [7,6,2019])
 
@@ -69,12 +71,21 @@ p.add_event(Event(
 )
 
 p.add_event(Event(
-    "Train Spotting",
+    "Train Spotting I",
     Event.EventType.UNSPECIFIC,
     duration=10,
+    place="Adlershof Berlin")
+)
+
+p.add_event(Event(
+    "Train Spotting II",
+    Event.EventType.UNSPECIFIC,
+    duration=60,
     place="Adlershof Berlin")
 )
 
 p.replan()
 
 print(p)
+
+print("Used GDM-API - Calls: " + str(gdm_querent.get_api_count()))

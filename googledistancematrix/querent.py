@@ -41,6 +41,11 @@ class Querent():
         """
         self.api_key = api_key
         self.travel_mode = Querent.TravelMode.WALKING
+        self.__api_count = 0
+
+
+    def get_api_count(self):
+        return self.__api_count
 
 
     def get_travel_details(self, origins, destinations, departure_time='', arrival_time=''):
@@ -93,14 +98,14 @@ class Querent():
         # escape any character that needs to be
         query_url = up.quote(query_url, safe='/:?&=.,+-_%|') # characters to be preserved when escaping the url
 
-        return Querent.__sendurlrequest(query_url)
+        return self.__sendurlrequest(query_url)
 
 
     def set_travel_mode(self, mode):
         self.travel_mode = mode.value
 
 
-    def __sendurlrequest(url_str):
+    def __sendurlrequest(self, url_str):
         """
         Sends a HTTP(S) request to the specified URL and returns a JSON object of the response.
 
@@ -115,6 +120,7 @@ class Querent():
                 A JSON-object / dictionary of the response.
         """
         response = ur.urlopen(url_str)
+        self.__api_count = self.__api_count + 1
         #print(url_str)
         return json.loads(response.read())
 
