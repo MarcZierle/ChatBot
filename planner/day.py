@@ -34,6 +34,21 @@ class Day():
             yield event
 
 
+    def get_next_specific_event(self):
+        sp_events = [e for e in self.__events if e.is_specific()]
+        for e in sp_events:
+            yield e
+
+
+    def num_specific_events(self):
+        return len([e for e in self.__events if e.is_specific()])
+
+
+    # checks whether time[2] = [start, end] and any planned event falls together
+    def does_collide(self, time):
+        pass
+
+
     def remove_unspecific(self):
         self.__events = [e for e in self.__events if e.is_specific()]
 
