@@ -134,38 +134,41 @@ simple_message_processing.destinations = {}
 tgm = TelegramManager( api_key=settings.TELEGRAM_API_KEY )
 
 
-##for x in range(0,2):
-##    logging.debug("Fetching new messages...")
-##    tgm.fetch_new_messages()
-##    logging.debug("Fetching done!")
-##
-##    logging.debug("Checking new messages...")
-##    for user in tgm.get_users() :
-##        logging.debug("Checking new messages for user " + str(user))
-##        msgs = tgm.get_new_messages(user)
-##
-##        if len(msgs) > 0:
-##            for msg in msgs:
-##                logging.debug("Processing message \"" + msg + "\"")
-##                response = "OK"
-##                #response = simple_message_processing(user, msg)
-##                tgm.send_message(user, response)
-##
-##        logging.debug("User messages done! [" + str(user) + "]")
-##
-##    logging.debug("Checking done!")
+for x in range(0,2):
+    logging.debug("Fetching new messages...")
+    tgm.fetch_new_messages()
+    logging.debug("Fetching done!")
+
+    logging.debug("Checking new messages...")
+    for user in tgm.get_users() :
+        logging.debug("Checking new messages for user " + str(user))
+        msgs = tgm.get_new_messages(user)
+
+        if len(msgs) > 0:
+            for msg in msgs:
+                logging.debug("Processing message \"" + msg + "\"")
+                response = "[Insert Answer Here]"
+                #response = simple_message_processing(user, msg)
+                tgm.send_message(user, response)
+
+        logging.debug("User messages done! [" + str(user) + "]")
+
+    logging.debug("Checking done!")
 
 # --- TESTING STUFF HERE ---    
 tgm.fetch_new_messages()
 #tgm.send_message(127069982,"test")
+#logging.debug("Alles OK.")
 #tgm.send_photo(379480639,"IMG_8843_Focus.JPG")
 #tgm.send_file(127069982,"test.txt")
 #tgm.send_photo(127069982,"testphoto2.jpg")
 #logging.debug("Photo sent.")
 print(tgm.get_chatlog())
 
-#path = os.getcwd()
+path = os.getcwd()
 #tlgr_storage_path = path + "/storage/telegram/"
+tlgr_chatlog_path = path + "/storage/Chatlog/"
+tgm.store_chatlog(tlgr_chatlog_path)
 #tgm.store(tlgr_storage_path)
 #tgm.restore(tlgr_storage_path)
 

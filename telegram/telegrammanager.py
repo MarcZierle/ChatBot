@@ -14,11 +14,10 @@ class TelegramManager():
         self.__timeout = 100
         self.__allowed_updates = "message"
 
-        self.__users = []
+        self.__users = {} #{userid:"Name"}
         self.__user_status = {}
         self.__user_messages = {}
         self.__chatlog = {}
-
 
     def restore(self, path):
         logging.debug(self.__user_messages)
@@ -93,15 +92,19 @@ class TelegramManager():
             if "text" in message["message"] :
                 uid = message["message"]["from"]["id"]
                 txt = message["message"]["text"]
-                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                chatlog_string = current_time + ": " + str(uid) + ": " + txt
+                time= message["message"]["date"]+7200
+                user_name = message["message"]["from"]["first_name"]
+                if "last_name" in message["message"]["from"] :
+                    user_name = user_name + " " + message["message"]["from"]["last_name"]
                 if uid in self.__user_messages :
                     self.__user_messages[uid].append(txt)
-                    self.__chatlog[uid].append(chatlog_string)
+                    self.__chatlog[uid].append(time)
+                    self.__chatlog[uid].append(u"\u03FF"+ txt)
                 else :
                     self.__user_messages[uid] = [txt]
-                    self.__chatlog[uid] = [chatlog_string]
-                    self.__users.append(uid)
+                    self.__chatlog[uid] = [time]
+                    self.__chatlog[uid].append(u"\u03FF"+ txt)
+                    self.__users[uid] = user_name        #save user name?
                 
                 
         if len(response["result"]) > 0 :
@@ -118,7 +121,12 @@ class TelegramManager():
 
     def send_message(self, userid, msg):
         url = self.__build_send_message_url(userid, msg)
-        requests.post(url)
+        response = requests.post(url)
+        if response.status_code == 200 :
+            current_time = int((datetime.now() - datetime(1970, 1, 1)).total_seconds())   #strftime('%Y-%m-%d %H:%M:%S')
+            self.__chatlog[userid].append(current_time)
+            self.__chatlog[userid].append(u"\u037D" + msg)
+            
 
     def send_file(self, userid, filepath) :
         url = self.__build_send_file_url(userid)
@@ -132,10 +140,30 @@ class TelegramManager():
         requests.post(url,files = files)
         
     def get_users(self) :
-        return self.__users
+        return list(self.__users.keys())
     
     def get_chatlog(self) :
         return self.__chatlog
+
+    def store_chatlog(self,path) :
+        if os.name == "nt" :
+            path = path.replace("/", "\\")
+            logging.debug(path)
+            logging.debug(os.name)
+        if not os.path.exists(path):
+            os.makedirs(path)
+        for userid in self.__chatlog :
+            f = open(path + str(userid) + ".txt","a+")
+            for time_or_message in self.__chatlog[userid] :
+                time_or_message = str(time_or_message)
+                if time_or_message[0] == u"\u03FF" :
+                    f.write(self.__users[userid] + ": " + time_or_message[1:] + "\n")
+                elif time_or_message[0] == u"\u037D" :
+                    f.write("Chatbot: \t\t\t" + time_or_message[1:] + "\n")
+                else :
+                    time_or_message = datetime.utcfromtimestamp(int(time_or_message)).strftime('%Y-%m-%d %H:%M:%S')
+                    f.write("[" + time_or_message + "] ")
+            f.close()
     
     def __get_user_status(self, userid):
         if userid in self.__user_status :
@@ -144,9 +172,9 @@ class TelegramManager():
     def __set_user_status(self, userid, status):
         self.__user_status = status
 
-    def __add_new_user(self, userid):
-        if userid not in self.__users :
-            self.__users.append(userid)
+##    def __add_new_user(self, userid):
+##        if userid not in self.__users :
+##            self.__users.append(userid)
 
     def __get_next_message(self, userid):
         if userid in self.__user_messages :
