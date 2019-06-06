@@ -96,7 +96,7 @@ class Querent():
         return Querent.__sendurlrequest(query_url)
 
 
-    def settravelmode(self, mode):
+    def set_travel_mode(self, mode):
         self.travel_mode = mode.value
 
 

@@ -11,9 +11,15 @@ import settings
 settings.init()
 
 gdm_querent = gdm.querent.Querent( api_key=settings.GOOGLE_DISTANCE_MATRIX_API_KEY )
-gdm_querent.settravelmode(Querent.TravelMode.TRANSIT)
+gdm_querent.set_travel_mode(Querent.TravelMode.TRANSIT)
 
 p = Scheduler(gdm_querent)
+
+p.set_home("Str d Pariser Kommune 30")
+p.set_planning_times(
+    scheduler.to_minutes(8, 0),
+    scheduler.to_minutes(20, 0)
+)
 
 p.add_day(7, 6, 2019)
 p.add_day(8, 6, 2019)
@@ -60,6 +66,13 @@ p.add_event(Event(
     Event.EventType.UNSPECIFIC,
     duration=4*60,
     place="Erwin Schrödinger Zentrum Berlin")
+)
+
+p.add_event(Event(
+    "Train Spotting",
+    Event.EventType.UNSPECIFIC,
+    duration=10,
+    place="Adlershof Berlin")
 )
 
 p.replan()

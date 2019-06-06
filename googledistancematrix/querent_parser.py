@@ -15,13 +15,21 @@ class QuerentParser():
 
 
     # in minutes
-    def get_duations(self):
+    def get_durations(self):
         return self.__durations
 
 
     # in meters
     def get_distances(self):
         return self.__distances
+
+
+    def get_destinations(self):
+        return self.__destinations
+
+
+    def get_origins(self):
+        return self.__origins
 
 
     def __str__(self):

@@ -6,6 +6,7 @@ class Event():
         # useing auto() where exact value is unimportant
         SPECIFIC = auto()
         UNSPECIFIC = auto()
+        TRAVELLING = auto()
 
 
     def __init__(self, name, type, start=0, end=0, duration=0, place="Berlin"):
@@ -25,7 +26,7 @@ class Event():
         if self.__start >= self.__end and self.__type == Event.EventType.SPECIFIC:
             raise Exception("End time must be after start time!")
 
-        if self.__duration == 0 and self.__type == Event.EventType.UNSPECIFIC:
+        if not self.__duration and self.__type == Event.EventType.UNSPECIFIC:
             raise Exception("Unspecific event must have a duration!")
 
         if self.__end == 0 and self.__type == Event.EventType.SPECIFIC:
@@ -54,8 +55,19 @@ class Event():
         return self.__place
 
 
+    def set_place(self, place):
+        self.__place = place
+
+
     def is_specific(self):
         if self.__type == Event.EventType.SPECIFIC:
+            return True
+        else:
+            return False
+
+
+    def is_travelling(self):
+        if self.__type == Event.EventType.TRAVELLING:
             return True
         else:
             return False
