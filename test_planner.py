@@ -22,10 +22,6 @@ p.set_planning_times(
 )
 p.set_max_events(4)
 
-p.add_day(7, 6, 2019)
-p.add_day(8, 6, 2019)
-p.add_day(9, 6, 2019)
-
 p.add_event(Event(
     "Kuchenbacken",
     Event.EventType.SPECIFIC,
@@ -41,6 +37,14 @@ p.add_event(Event(
     end=scheduler.to_minutes(14,00),
     place="Erwin Schrödinger Zentrum"),
 [7,6,2019])
+
+p.add_event(Event(
+    "Konzert",
+    Event.EventType.SPECIFIC,
+    start=scheduler.to_minutes(19,00),
+    end=scheduler.to_minutes(20,00),
+    place="Philharmonie Berlin"),
+[22,6,2019])
 
 p.add_event(Event(
     "Einkaufen",
