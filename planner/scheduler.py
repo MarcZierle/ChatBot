@@ -1,5 +1,6 @@
 import logging, datetime as dt
 import numpy as np
+import datetime as dt
 
 from planner.event import Event
 from planner.day import Day
@@ -36,6 +37,7 @@ class Scheduler():
     def add_day(self, day, month, year):
         day = Day(day, month, year)
         self.__days.append(day)
+        self.__days.sort(key=lambda d: ( d.get_day(), d.get_month(), d.get_year() ) )
         return day
 
 
@@ -45,8 +47,6 @@ class Scheduler():
                 raise Exception("Adding a specific event needs a day!")
 
             day = self.__get_day(date[0], date[1], date[2])[0]
-            if not day:
-                day = self.add_day(date[0], date[1], date[2])
             day.add_event(event)
 
         self.__events.append(event)
@@ -62,11 +62,6 @@ class Scheduler():
         # mark all events as unplanned
         self.__unplanned_events = [e for e in self.__events if not e.is_specific()]
         logging.debug("removed all previously planned events")
-
-        #lastTime = self.__time_begin_day
-
-        daysGen = self.__get_next_day()
-        currDay = daysGen.__next__()
 
         for currDay in self.__get_next_day():
             logging.debug("planning events on day " + str(currDay.get_day())+"/"+str(currDay.get_month())+"/"+str(currDay.get_year()))
@@ -106,15 +101,18 @@ class Scheduler():
                     insert_before=False
                 )
 
-        logging.debug("finished planning for all available days")
-        unplanned_events_str = ["- " + e.get_name() for e in self.__unplanned_events]
-        if not unplanned_events_str:
-            print("All events could be planned!")
-        else:
-            print("Still unplanned events:")
-            for s in unplanned_events_str:
-                print("    " + s)
-        print("\n")
+            if not self.__unplanned_events:
+                break
+
+        logging.debug("finished planning for all events")
+        #unplanned_events_str = ["- " + e.get_name() for e in self.__unplanned_events]
+        #if not unplanned_events_str:
+        #    print("All events could be planned!")
+        #else:
+        #    print("Still unplanned events:")
+        #    for s in unplanned_events_str:
+        #        print("    " + s)
+        #print("\n")
         logging.debug("Replaning Done!")
 
 
@@ -243,12 +241,14 @@ class Scheduler():
         for d in self.__days:
             if d.get_day() == day and d.get_month() == month and d.get_year() == year:
                 return [d]
-        return [None]
+        return [self.add_day(day, month, year)]
 
 
     def __get_next_day(self):
-        for day in self.__days:
-            yield day
+        currDay = dt.datetime.today()
+        while True:
+            yield self.__get_day(currDay.day, currDay.month, currDay.year)[0]
+            currDay += dt.timedelta(days=1)
 
 
     global to_minutes
@@ -273,21 +273,3 @@ class Scheduler():
             retString = retString + "\n"
 
         return retString
-
-
-    global lookahead
-    def lookahead(iterable):
-        """Pass through all values from the given iterable, augmented by the
-        information if there are more values to come after the current one
-        (False), or if it is the last value (True).
-        """
-        # Get an iterator and pull the first value.
-        it = iter(iterable)
-        last = next(it)
-        # Run the iterator to exhaustion (starting from the second value).
-        for val in it:
-            # Report the *previous* value (more to come).
-            yield last, False
-            last = val
-        # Report the last value.
-        yield last, True
