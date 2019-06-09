@@ -138,13 +138,17 @@ for x in range(0,2):
     logging.debug("Fetching new messages...")
     tgm.fetch_new_messages()
     logging.debug("Fetching done!")
-
+    
     logging.debug("Checking new messages...")
+    
+    path = os.getcwd()
+    tlgr_download_path= path + "/storage/Downloaded Files/"
+    
     for user in tgm.get_users() :
         logging.debug("Checking new messages for user " + str(user))
         msgs = tgm.get_new_messages(user)
-
-        if len(msgs) > 0:
+        files= tgm.get_new_files(user)
+        if msgs != None:
             for msg in msgs:
                 logging.debug("Processing message \"" + msg + "\"")
                 response = "[Insert Answer Here]"
@@ -153,6 +157,12 @@ for x in range(0,2):
 
         logging.debug("User messages done! [" + str(user) + "]")
 
+        if files != None :
+            for file in files :
+                logging.debug("Processing file \"" + file[1] + " with file_id " + file[0] + "\"")
+                tgm.get_file(file[0], tlgr_download_path, file[1])
+                response = "Okay, files was saved."
+                tgm.send_message(user, response)
     logging.debug("Checking done!")
 
 # --- TESTING STUFF HERE ---    
@@ -168,6 +178,8 @@ print(tgm.get_chatlog())
 path = os.getcwd()
 #tlgr_storage_path = path + "/storage/telegram/"
 tlgr_chatlog_path = path + "/storage/Chatlog/"
+tlgr_download_path= path + "/storage/Downloaded Files/"
+tgm.get_file("BQADAgADMwQAAumb4UuUXLmzBKhWuwI", tlgr_download_path, "test.txt")
 tgm.store_chatlog(tlgr_chatlog_path)
 #tgm.store(tlgr_storage_path)
 #tgm.restore(tlgr_storage_path)

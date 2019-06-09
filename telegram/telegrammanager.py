@@ -2,6 +2,7 @@ import pickle
 import os
 import logging
 import requests
+import json
 from datetime import datetime
 
 class TelegramManager():
@@ -14,10 +15,11 @@ class TelegramManager():
         self.__timeout = 100
         self.__allowed_updates = "message"
 
-        self.__users = {} #{userid:"Name"}
-        self.__user_status = {}
-        self.__user_messages = {}
-        self.__chatlog = {}
+        self.__users            = {}        #{userid:"Name"}
+        self.__user_status      = {}
+        self.__user_messages    = {}
+        self.__user_files       = {}
+        self.__chatlog          = {}
 
     def restore(self, path):
         logging.debug(self.__user_messages)
@@ -40,15 +42,7 @@ class TelegramManager():
         logging.debug(self.__user_messages)
 
     def store(self,path) :
-        if os.name == "nt" :
-            path = path.replace("/", "\\")
-            logging.debug(path)
-            logging.debug(os.name)
-            
-
-        if not os.path.exists(path):
-            os.makedirs(path)
-            
+        path = self.__fix_file_path(path)  
         pickle.dump(self.__offset, open(path + "offset.pkl", "wb"),protocol=pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.__timeout, open(path + "timeout.pkl", "wb"),protocol=pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.__allowed_updates, open(path + "allowed_updates.pkl", "wb"),protocol=pickle.HIGHEST_PROTOCOL)
@@ -85,9 +79,21 @@ class TelegramManager():
                  + "/sendPhoto"
                  + "?chat_id=" + str(userid))
 
+    def __build_get_file_url(self, fileid) :
+        return ("https://api.telegram.org/bot"
+                 + self.__api_key
+                 + "/getFile"
+                 + "?file_id=" + str(fileid))
+
+    def __build_download_file_url(self, filepath) :
+        return ("https://api.telegram.org/file/bot"
+                 + self.__api_key
+                 + "/"
+                 + filepath)
+    
     def fetch_new_messages(self):
         response = (requests.get(self.__build_get_updates_url())).json()
-        #print(json.dumps(response, sort_keys=True, indent=4))
+        print(json.dumps(response, sort_keys=True, indent=4))
         for message in response["result"] :
             if "text" in message["message"] :
                 uid = message["message"]["from"]["id"]
@@ -104,9 +110,26 @@ class TelegramManager():
                     self.__user_messages[uid] = [txt]
                     self.__chatlog[uid] = [time]
                     self.__chatlog[uid].append(u"\u03FF"+ txt)
-                    self.__users[uid] = user_name        #save user name?
-                
-                
+                    self.__users[uid] = user_name
+            elif "document" in message["message"] :
+                uid     = message["message"]["from"]["id"]
+                fileid  = message["message"]["document"]["file_id"]
+                filename= message["message"]["document"]["file_name"]
+                time= message["message"]["date"]+7200
+                user_name = message["message"]["from"]["first_name"]
+                if "last_name" in message["message"]["from"] :
+                    user_name = user_name + " " + message["message"]["from"]["last_name"]
+                if uid in self.__user_files :
+                    self.__user_files[uid].append((fileid, filename))
+                    self.__chatlog[uid].append(time)
+                    self.__chatlog[uid].append(u"\u03FF"+ "[File with name " + filename + " sent.]")
+                else :
+                    self.__user_files[uid] = [(fileid, filename)]
+                    self.__chatlog[uid] = [time]
+                    self.__chatlog[uid].append(u"\u03FF"+ "[File with name " + filename + " sent.]")
+                    self.__users[uid] = user_name
+            print(self.__user_files)
+                 
         if len(response["result"]) > 0 :
             self.__offset = response["result"][-1]["update_id"] + 1
             if len(response["result"]) >= 99 :
@@ -115,10 +138,17 @@ class TelegramManager():
     def get_new_messages(self, userid):
         if userid in self.__user_messages:
             msgs = self.__user_messages[userid]
-            self.__user_messages[userid] = []
+            self.__user_messages[userid] = {}
             return msgs
         return None
-
+    
+    def get_new_files(self, userid) :
+        if userid in self.__user_files :
+            files = self.__user_files[userid]
+            self.__user_files[userid] = {}
+            return files
+        return None
+    
     def send_message(self, userid, msg):
         url = self.__build_send_message_url(userid, msg)
         response = requests.post(url)
@@ -138,6 +168,18 @@ class TelegramManager():
         url = self.__build_send_photo_url(userid)
         files = {"photo":open(filepath,"rb")}
         requests.post(url,files = files)
+
+    def get_file(self, fileid, path, filename) :
+        url = self.__build_get_file_url(fileid)
+        response = requests.get(url).json()
+        telegram_file_path = response["result"]["file_path"]
+        print(url)
+        print(json.dumps(response, sort_keys=True, indent=4))
+        
+        url_download = self.__build_download_file_url(telegram_file_path)
+        response = requests.get(url_download)
+        filepath = self.__fix_file_path(path)                                                 
+        open(path + filename, "wb").write(response.content)
         
     def get_users(self) :
         return list(self.__users.keys())
@@ -146,12 +188,7 @@ class TelegramManager():
         return self.__chatlog
 
     def store_chatlog(self,path) :
-        if os.name == "nt" :
-            path = path.replace("/", "\\")
-            logging.debug(path)
-            logging.debug(os.name)
-        if not os.path.exists(path):
-            os.makedirs(path)
+        path = self.__fix_file_path(path)
         for userid in self.__chatlog :
             f = open(path + str(userid) + ".txt","a+")
             for time_or_message in self.__chatlog[userid] :
@@ -164,6 +201,7 @@ class TelegramManager():
                     time_or_message = datetime.utcfromtimestamp(int(time_or_message)).strftime('%Y-%m-%d %H:%M:%S')
                     f.write("[" + time_or_message + "] ")
             f.close()
+        self.__chatlog = {}
     
     def __get_user_status(self, userid):
         if userid in self.__user_status :
@@ -176,6 +214,15 @@ class TelegramManager():
 ##        if userid not in self.__users :
 ##            self.__users.append(userid)
 
+    def __fix_file_path(self, path) :
+        if os.name == "nt" :
+            path = path.replace("/", "\\")
+            logging.debug(path)
+            logging.debug(os.name)
+        if not os.path.exists(path):
+            os.makedirs(path)
+        return path
+                                                         
     def __get_next_message(self, userid):
         if userid in self.__user_messages :
             if len(self.__user_messages[userid]) > 0 :
