@@ -251,7 +251,10 @@ class Scheduler():
                     place=place
                 )
 
-                self.add_event(new_event, [start.day, start.month, start.year])
+                try:
+                    self.add_event(new_event, [start.day, start.month, start.year])
+                except:
+                    continue
 
         ics_file.close()
 
