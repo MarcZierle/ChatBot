@@ -20,7 +20,7 @@ p.set_planning_times(
     scheduler.to_minutes(8, 0),
     scheduler.to_minutes(20, 0)
 )
-p.set_max_events(4)
+p.set_max_events(8)
 
 p.add_event(Event(
     "Kuchenbacken",
@@ -28,7 +28,7 @@ p.add_event(Event(
     start=scheduler.to_minutes(17,45),
     end=scheduler.to_minutes(19,00),
     place="Str d Pariser Kommune 30"),
-[7,6,2019])
+[8,6,2019])
 
 p.add_event(Event(
     "Buch lesen",
@@ -36,7 +36,7 @@ p.add_event(Event(
     start=scheduler.to_minutes(13,20),
     end=scheduler.to_minutes(14,00),
     place="Erwin Schrödinger Zentrum"),
-[7,6,2019])
+[8,6,2019])
 
 p.add_event(Event(
     "Konzert",

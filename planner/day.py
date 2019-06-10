@@ -1,5 +1,7 @@
 from planner.event import Event
 
+from datetime import datetime
+
 class Day():
 
     def __init__(self, day, month, year):
@@ -51,6 +53,11 @@ class Day():
 
     def remove_unspecific(self):
         self.__events = [e for e in self.__events if e.is_specific()]
+
+
+    # returns the day of week (monday, tuesday, etc.)
+    def get_dow(self):
+        return datetime(self.__year, self.__month, self.__day).strftime("%A")
 
 
     def add_event(self, event, start=None, end=None):

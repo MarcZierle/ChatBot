@@ -1,6 +1,6 @@
 import logging, datetime as dt
 import numpy as np
-import datetime as dt
+import icalendar
 
 from planner.event import Event
 from planner.day import Day
@@ -229,6 +229,57 @@ class Scheduler():
         return events
 
 
+    def import_ics(self, path):
+        ics_file = open('marc_uni.ics','rb')
+        ical = icalendar.Calendar.from_ical(ics_file.read())
+
+        for ics_event in ical.walk():
+            if ics_event.name == "VEVENT":
+                title = ics_event.get('summary')
+                start = ics_event.decoded('dtstart')
+                end   = ics_event.decoded('dtend')
+                place = ics_event.get('location')
+
+                #print(ics_event.decoded('dtstamp'))
+                #print(ics_event.get('rrule')['UNTIL'][0])
+
+                new_event = Event(
+                    title,
+                    Event.EventType.SPECIFIC,
+                    start=to_minutes(start.hour, start.minute),
+                    end=to_minutes(end.hour, end.minute),
+                    place=place
+                )
+
+                self.add_event(new_event, [start.day, start.month, start.year])
+
+        ics_file.close()
+
+
+    def export_ics(self, path):
+        cal = icalendar.Calendar()
+
+        for d in self.__days:
+            for event in d.get_next_event():
+                cal_event = icalendar.Event()
+
+                cal_event.add('summary', event.get_name())
+                cal_event.add('dtstart', dt.datetime(
+                    d.get_year(), d.get_month(), d.get_day(),
+                    to_hours(event.get_start())[0], to_hours(event.get_start())[1]
+                ))
+                cal_event.add('dtend', dt.datetime(
+                    d.get_year(), d.get_month(), d.get_day(),
+                    to_hours(event.get_end())[0], to_hours(event.get_end())[1]
+                ))
+
+                cal.add_component(cal_event)
+
+        ics_file = open(path, 'wb')
+        ics_file.write(cal.to_ical())
+        ics_file.close()
+
+
     def restore(self, path):
         pass
 
@@ -265,7 +316,7 @@ class Scheduler():
         retString = ""
 
         for day in self.__days:
-            retString = retString + ">> " + str(day) + " ["+ str(day.num_events()) +" Events]:\n"
+            retString = retString + ">> " + str(day) + " | " + day.get_dow() + " ["+ str(day.num_events()) +" Events]:\n"
 
             for event in day.get_next_event():
                 retString = retString + str(event) + ".\n"
