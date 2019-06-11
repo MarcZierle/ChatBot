@@ -95,6 +95,7 @@ class TelegramManager():
         response = (requests.get(self.__build_get_updates_url())).json()
         print(json.dumps(response, sort_keys=True, indent=4))
         for message in response["result"] :
+            
             if "text" in message["message"] :
                 uid = message["message"]["from"]["id"]
                 txt = message["message"]["text"]
@@ -111,6 +112,7 @@ class TelegramManager():
                     self.__chatlog[uid] = [time]
                     self.__chatlog[uid].append(u"\u03FF"+ txt)
                     self.__users[uid] = user_name
+                    
             elif "document" in message["message"] :
                 uid     = message["message"]["from"]["id"]
                 fileid  = message["message"]["document"]["file_id"]
@@ -128,7 +130,6 @@ class TelegramManager():
                     self.__chatlog[uid] = [time]
                     self.__chatlog[uid].append(u"\u03FF"+ "[File with name " + filename + " sent.]")
                     self.__users[uid] = user_name
-            print(self.__user_files)
                  
         if len(response["result"]) > 0 :
             self.__offset = response["result"][-1]["update_id"] + 1
@@ -138,14 +139,14 @@ class TelegramManager():
     def get_new_messages(self, userid):
         if userid in self.__user_messages:
             msgs = self.__user_messages[userid]
-            self.__user_messages[userid] = {}
+            self.__user_messages[userid] = []
             return msgs
         return None
     
     def get_new_files(self, userid) :
         if userid in self.__user_files :
             files = self.__user_files[userid]
-            self.__user_files[userid] = {}
+            self.__user_files[userid] = []
             return files
         return None
     
@@ -184,6 +185,9 @@ class TelegramManager():
     def get_users(self) :
         return list(self.__users.keys())
     
+    def get_username(self, userid) :
+        return self.__users[userid]
+    
     def get_chatlog(self) :
         return self.__chatlog
 
@@ -201,7 +205,7 @@ class TelegramManager():
                     time_or_message = datetime.utcfromtimestamp(int(time_or_message)).strftime('%Y-%m-%d %H:%M:%S')
                     f.write("[" + time_or_message + "] ")
             f.close()
-        self.__chatlog = {}
+        self.__chatlog = self.__chatlog.fromkeys(self.__chatlog, [])
     
     def __get_user_status(self, userid):
         if userid in self.__user_status :

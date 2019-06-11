@@ -134,15 +134,18 @@ simple_message_processing.destinations = {}
 tgm = TelegramManager( api_key=settings.TELEGRAM_API_KEY )
 
 
-for x in range(0,2):
+#for x in range(0,2):
+i = 0
+path = os.getcwd()
+#tlgr_storage_path = path + "/storage/telegram/"
+tlgr_chatlog_path = path + "/storage/Chatlog/"
+tlgr_download_path= path + "/storage/Downloaded Files/"
+while(True) :
     logging.debug("Fetching new messages...")
     tgm.fetch_new_messages()
     logging.debug("Fetching done!")
     
     logging.debug("Checking new messages...")
-    
-    path = os.getcwd()
-    tlgr_download_path= path + "/storage/Downloaded Files/"
     
     for user in tgm.get_users() :
         logging.debug("Checking new messages for user " + str(user))
@@ -150,8 +153,11 @@ for x in range(0,2):
         files= tgm.get_new_files(user)
         if msgs != None:
             for msg in msgs:
-                logging.debug("Processing message \"" + msg + "\"")
-                response = "[Insert Answer Here]"
+                if len(msg) < 50 :
+                    logging.debug("Processing message \"" + msg + "\"")
+                else :
+                    logging.debug("Processing message \"" + msg[:50] + "\"")
+                response = "Hello " + tgm.get_username(user)
                 #response = simple_message_processing(user, msg)
                 tgm.send_message(user, response)
 
@@ -159,28 +165,32 @@ for x in range(0,2):
 
         if files != None :
             for file in files :
-                logging.debug("Processing file \"" + file[1] + " with file_id " + file[0] + "\"")
+                logging.debug("Processing file \"" + file[1] + "\" with file_id \"" + file[0] + "\"")
                 tgm.get_file(file[0], tlgr_download_path, file[1])
-                response = "Okay, files was saved."
+                response = "Okay, file was saved."
                 tgm.send_message(user, response)
-    logging.debug("Checking done!")
+    if i%10 == 0 :
+        tgm.store_chatlog(tlgr_chatlog_path)
+    ++i
+    #logging.debug("Checking done!")
+
 
 # --- TESTING STUFF HERE ---    
-tgm.fetch_new_messages()
+##tgm.fetch_new_messages()
 #tgm.send_message(127069982,"test")
 #logging.debug("Alles OK.")
 #tgm.send_photo(379480639,"IMG_8843_Focus.JPG")
 #tgm.send_file(127069982,"test.txt")
 #tgm.send_photo(127069982,"testphoto2.jpg")
 #logging.debug("Photo sent.")
-print(tgm.get_chatlog())
+#print(tgm.get_chatlog())
 
-path = os.getcwd()
+#path = os.getcwd()
 #tlgr_storage_path = path + "/storage/telegram/"
-tlgr_chatlog_path = path + "/storage/Chatlog/"
-tlgr_download_path= path + "/storage/Downloaded Files/"
-tgm.get_file("BQADAgADMwQAAumb4UuUXLmzBKhWuwI", tlgr_download_path, "test.txt")
-tgm.store_chatlog(tlgr_chatlog_path)
+#tlgr_chatlog_path = path + "/storage/Chatlog/"
+#tlgr_download_path= path + "/storage/Downloaded Files/"
+#tgm.get_file("AgADBAADubExG0OG4VM2eP1bPdqqs1XrHhsABIbWcNeoIGYY-cMGAAEC", tlgr_download_path, "joao2.jpg")
+#tgm.store_chatlog(tlgr_chatlog_path)
 #tgm.store(tlgr_storage_path)
 #tgm.restore(tlgr_storage_path)
 
