@@ -138,15 +138,16 @@ tgm = TelegramManager( api_key=settings.TELEGRAM_API_KEY )
 i = 0
 path = os.getcwd()
 #tlgr_storage_path = path + "/storage/telegram/"
-tlgr_chatlog_path = path + "/storage/Chatlog/"
-tlgr_download_path= path + "/storage/Downloaded Files/"
+tlgr_chatlog_path = path + "/storage/chatlog/"
+tlgr_download_path= path + "/storage/downloaded_files/"
 while(True) :
     logging.debug("Fetching new messages...")
-    tgm.fetch_new_messages()
+    if not tgm.fetch_new_messages() :
+        logging.debug("Fetching failed.")
+        continue
     logging.debug("Fetching done!")
     
     logging.debug("Checking new messages...")
-    
     for user in tgm.get_users() :
         logging.debug("Checking new messages for user " + str(user))
         msgs = tgm.get_new_messages(user)
@@ -165,9 +166,13 @@ while(True) :
 
         if files != None :
             for file in files :
+                response = "Downloading file..."
+                tgm.send_message(user, response)
                 logging.debug("Processing file \"" + file[1] + "\" with file_id \"" + file[0] + "\"")
-                tgm.get_file(file[0], tlgr_download_path, file[1])
-                response = "Okay, file was saved."
+                if tgm.get_file(file[0], tlgr_download_path + str(user) + "/", file[1]) :
+                    response = "Okay, file was saved."
+                else :
+                    response = "File couldn't be saved."
                 tgm.send_message(user, response)
     if i%10 == 0 :
         tgm.store_chatlog(tlgr_chatlog_path)
