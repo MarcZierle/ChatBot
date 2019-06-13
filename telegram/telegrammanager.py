@@ -34,6 +34,7 @@ class TelegramManager():
             self.__users = pickle.load(open(path + "users.pkl","rb"))
             self.__user_status = pickle.load(open(path + "user_status.pkl","rb"))
             self.__user_messages = pickle.load(open(path + "user_messages.pkl","rb"))
+            self.__user_files = pickle.load(open(path + "user_files.pkl","rb"))
         except FileNotFoundError :
             logging.error("Telegram Manager: Restore File or Folder not found. Your path: \n" + path) 
             exit()
@@ -49,6 +50,7 @@ class TelegramManager():
         pickle.dump(self.__users, open(path + "users.pkl", "wb"),protocol=pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.__user_status, open(path + "user_status.pkl", "wb"),protocol=pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.__user_messages, open(path + "user_messages.pkl", "wb"),protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.__user_files, open(path + "user_files.pkl", "wb"),protocol=pickle.HIGHEST_PROTOCOL)
         
     def __build_get_updates_url(self):
         return (
@@ -95,7 +97,9 @@ class TelegramManager():
         response = (requests.get(self.__build_get_updates_url())).json()
         print(json.dumps(response, sort_keys=True, indent=4))
         for message in response["result"] :
-            
+            if response["ok"] == False :
+                logging.debug(response["description"])
+                return False
             if "text" in message["message"] :
                 uid = message["message"]["from"]["id"]
                 txt = message["message"]["text"]
@@ -135,7 +139,8 @@ class TelegramManager():
             self.__offset = response["result"][-1]["update_id"] + 1
             if len(response["result"]) >= 99 :
                 self.fetch_new_messages()
-
+        return True
+    
     def get_new_messages(self, userid):
         if userid in self.__user_messages:
             msgs = self.__user_messages[userid]
@@ -168,19 +173,21 @@ class TelegramManager():
     def send_photo(self, userid, filepath) :
         url = self.__build_send_photo_url(userid)
         files = {"photo":open(filepath,"rb")}
-        requests.post(url,files = files)
+        requests.post(url,files = files).json
 
     def get_file(self, fileid, path, filename) :
         url = self.__build_get_file_url(fileid)
         response = requests.get(url).json()
-        telegram_file_path = response["result"]["file_path"]
-        print(url)
         print(json.dumps(response, sort_keys=True, indent=4))
-        
+        if response["ok"] == False :
+            logging.debug(response["description"])
+            return False
+        telegram_file_path = response["result"]["file_path"]
         url_download = self.__build_download_file_url(telegram_file_path)
         response = requests.get(url_download)
         filepath = self.__fix_file_path(path)                                                 
         open(path + filename, "wb").write(response.content)
+        return True
         
     def get_users(self) :
         return list(self.__users.keys())
@@ -221,10 +228,12 @@ class TelegramManager():
     def __fix_file_path(self, path) :
         if os.name == "nt" :
             path = path.replace("/", "\\")
-            logging.debug(path)
-            logging.debug(os.name)
+            #logging.debug(path)
+            #logging.debug(os.name)
+            logging.debug("Fixed file path: " + path)
         if not os.path.exists(path):
             os.makedirs(path)
+            logging.debug("Created directory with path: " + path)
         return path
                                                          
     def __get_next_message(self, userid):
