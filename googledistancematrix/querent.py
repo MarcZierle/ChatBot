@@ -30,6 +30,9 @@ class Querent():
         BICYCLING = "bicycling"
 
 
+    __api_count = 0
+
+
     def __init__(self, api_key):
         """
         Initilize the Querent and provide the API key for later usageself.
@@ -41,11 +44,10 @@ class Querent():
         """
         self.api_key = api_key
         self.travel_mode = Querent.TravelMode.WALKING
-        self.__api_count = 0
 
 
     def get_api_count(self):
-        return self.__api_count
+        return Querent.__api_count
 
 
     def get_travel_details(self, origins, destinations, departure_time='', arrival_time=''):
@@ -120,7 +122,7 @@ class Querent():
                 A JSON-object / dictionary of the response.
         """
         response = ur.urlopen(url_str)
-        self.__api_count = self.__api_count + 1
+        Querent.__api_count = Querent.__api_count + 1
         #print(url_str)
         return json.loads(response.read())
 
