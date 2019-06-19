@@ -230,6 +230,7 @@ class Scheduler():
 
 
     def import_ics(self, path):
+        logging.debug("importing ics file from " + path + " ...")
         ics_file = open('marc_uni.ics','rb')
         ical = icalendar.Calendar.from_ical(ics_file.read())
 
@@ -257,9 +258,11 @@ class Scheduler():
                     continue
 
         ics_file.close()
+        logging.debug("finished import!")
 
 
     def export_ics(self, path):
+        logging.debug("exporting ics file to " + path + " ...")
         cal = icalendar.Calendar()
 
         for d in self.__days:
@@ -281,6 +284,7 @@ class Scheduler():
         ics_file = open(path, 'wb')
         ics_file.write(cal.to_ical())
         ics_file.close()
+        logging.debug("finished export!")
 
 
     def restore(self, path):

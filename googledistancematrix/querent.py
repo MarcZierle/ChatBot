@@ -42,8 +42,8 @@ class Querent():
         api_key : string
             The API key used for querying the Google Distance Matrix API service.
         """
-        self.api_key = api_key
-        self.travel_mode = Querent.TravelMode.WALKING
+        self.__api_key = api_key
+        self.__travel_mode = Querent.TravelMode.WALKING
 
 
     def get_api_count(self):
@@ -80,34 +80,34 @@ class Querent():
         if not departure_time and not arrival_time:
             time = "&departure_time=now"
         elif not departure_time and arrival_time:
-            time = "&arrival_time=" + str(Querent.__datetimetoseconds(arrival_time));
+            time = "&arrival_time=" + str(Querent.__datetime_to_seconds(arrival_time));
         elif departure_time and not arrival_time:
-            time = "&departure_time=" + str(Querent.__datetimetoseconds(departure_time));
+            time = "&departure_time=" + str(Querent.__datetime_to_seconds(departure_time));
         else:
             raise Exception ("departure_time and arrival_time may only be used mutually exclusive or omitted at all.")
 
         # build the query url
         query_url = (Querent.base_url +
             "&key=" +
-                self.api_key +
+                self.__api_key +
             "&origins=" +
-                Querent.__listtostring(origins) +
+                Querent.__list_to_string(origins) +
             "&destinations=" +
-                Querent.__listtostring(destinations) +
+                Querent.__list_to_string(destinations) +
             "&mode=" +
-                self.travel_mode +
+                self.__travel_mode +
             time)
         # escape any character that needs to be
         query_url = up.quote(query_url, safe='/:?&=.,+-_%|') # characters to be preserved when escaping the url
 
-        return self.__sendurlrequest(query_url)
+        return self.__send_url_request(query_url)
 
 
     def set_travel_mode(self, mode):
-        self.travel_mode = mode.value
+        self.__travel_mode = mode.value
 
 
-    def __sendurlrequest(self, url_str):
+    def __send_url_request(self, url_str):
         """
         Sends a HTTP(S) request to the specified URL and returns a JSON object of the response.
 
@@ -127,7 +127,7 @@ class Querent():
         return json.loads(response.read())
 
 
-    def __listtostring(lst):
+    def __list_to_string(lst):
         """
         Converts a list of strings to a single string divided by the pipe operator ('|').
 
@@ -149,7 +149,7 @@ class Querent():
             raise Exception ("Type may be list or string only.")
 
 
-    def __datetimetoseconds(date):
+    def __datetime_to_seconds(date):
         """
         Returns the time difference in seconds between date and midnight, January 1, 1970 UTC.
 
