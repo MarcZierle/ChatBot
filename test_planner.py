@@ -13,7 +13,7 @@ settings.init()
 gdm_querent = gdm.querent.Querent( api_key=settings.GOOGLE_DISTANCE_MATRIX_API_KEY )
 gdm_querent.set_travel_mode(Querent.TravelMode.TRANSIT)
 
-p = Scheduler(gdm_querent)
+p = Scheduler()
 
 p.set_home("Str d Pariser Kommune 30")
 p.set_planning_times(
@@ -88,7 +88,7 @@ p.add_event(Event(
     place="Adlershof Berlin")
 )
 
-p.replan()
+p.replan(gdm_querent)
 
 print(p)
 
