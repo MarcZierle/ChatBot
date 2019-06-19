@@ -20,6 +20,7 @@ class TelegramManager():
         self.__user_messages    = {}
         self.__user_files       = {}
         self.__chatlog          = {}
+        self.__anonymous  = False
 
     def restore(self, path):
         logging.debug(self.__user_messages)
@@ -28,13 +29,16 @@ class TelegramManager():
             path = path.replace("/", "\\")
             
         try :
-            self.__offset = pickle.load(open(path + "offset.pkl","rb"))
-            self.__timeout = pickle.load(open(path + "timeout.pkl","rb"))
-            self.__allowed_updates = pickle.load(open(path + "allowed_updates.pkl","rb"))
-            self.__users = pickle.load(open(path + "users.pkl","rb"))
-            self.__user_status = pickle.load(open(path + "user_status.pkl","rb"))
-            self.__user_messages = pickle.load(open(path + "user_messages.pkl","rb"))
-            self.__user_files = pickle.load(open(path + "user_files.pkl","rb"))
+            self.__offset           = pickle.load(open(path + "offset.pkl","rb"))
+            self.__timeout          = pickle.load(open(path + "timeout.pkl","rb"))
+            self.__allowed_updates  = pickle.load(open(path + "allowed_updates.pkl","rb"))
+            self.__users            = pickle.load(open(path + "users.pkl","rb"))
+            self.__user_status      = pickle.load(open(path + "user_status.pkl","rb"))
+            self.__user_messages    = pickle.load(open(path + "user_messages.pkl","rb"))
+            self.__user_files       = pickle.load(open(path + "user_files.pkl","rb"))
+            self.__chatlog          = pickle.load(open(path + "chatlog.pkl","rb"))
+            self.__anonymous        = pickle.load(open(path + "anonymous.pkl","rb"))
+            
         except FileNotFoundError :
             logging.error("Telegram Manager: Restore File or Folder not found. Your path: \n" + path) 
             exit()
@@ -44,13 +48,15 @@ class TelegramManager():
 
     def store(self,path) :
         path = self.__fix_file_path(path)  
-        pickle.dump(self.__offset, open(path + "offset.pkl", "wb"),protocol=pickle.HIGHEST_PROTOCOL)
-        pickle.dump(self.__timeout, open(path + "timeout.pkl", "wb"),protocol=pickle.HIGHEST_PROTOCOL)
-        pickle.dump(self.__allowed_updates, open(path + "allowed_updates.pkl", "wb"),protocol=pickle.HIGHEST_PROTOCOL)
-        pickle.dump(self.__users, open(path + "users.pkl", "wb"),protocol=pickle.HIGHEST_PROTOCOL)
-        pickle.dump(self.__user_status, open(path + "user_status.pkl", "wb"),protocol=pickle.HIGHEST_PROTOCOL)
-        pickle.dump(self.__user_messages, open(path + "user_messages.pkl", "wb"),protocol=pickle.HIGHEST_PROTOCOL)
-        pickle.dump(self.__user_files, open(path + "user_files.pkl", "wb"),protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.__offset,          open(path + "offset.pkl", "wb"),            protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.__timeout,         open(path + "timeout.pkl", "wb"),           protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.__allowed_updates, open(path + "allowed_updates.pkl", "wb"),   protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.__users,           open(path + "users.pkl", "wb"),             protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.__user_status,     open(path + "user_status.pkl", "wb"),       protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.__user_messages,   open(path + "user_messages.pkl", "wb"),     protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.__user_files,      open(path + "user_files.pkl", "wb"),        protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.__chatlog,         open(path + "chatlog.pkl", "wb"),           protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.__anonymous,       open(path + "anonymous.pkl", "wb"),         protocol=pickle.HIGHEST_PROTOCOL)
         
     def __build_get_updates_url(self):
         return (
@@ -201,11 +207,17 @@ class TelegramManager():
     def store_chatlog(self,path) :
         path = self.__fix_file_path(path)
         for userid in self.__chatlog :
-            f = open(path + str(userid) + ".txt","a+")
+            if self.__anonymous == False :
+                f = open(path + str(userid) + ".txt","a+")
+            else :
+                f = open(path + str(hash(str(userid))) + ".txt","a+")
             for time_or_message in self.__chatlog[userid] :
                 time_or_message = str(time_or_message)
                 if time_or_message[0] == u"\u03FF" :
-                    f.write(self.__users[userid] + ": " + time_or_message[1:] + "\n")
+                    if self.__anonymous == False :
+                        f.write(self.__users[userid] + ": " + time_or_message[1:] + "\n")
+                    else :
+                        f.write("User: " + time_or_message[1:] + "\n")
                 elif time_or_message[0] == u"\u037D" :
                     f.write("Chatbot: \t\t\t" + time_or_message[1:] + "\n")
                 else :
@@ -240,3 +252,7 @@ class TelegramManager():
         if userid in self.__user_messages :
             if len(self.__user_messages[userid]) > 0 :
                 return self.__user_messages[userid].pop(0)
+
+    def set_anonymous_state(self, state) :
+        self.__anonymous = state
+        
