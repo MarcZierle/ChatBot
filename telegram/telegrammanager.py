@@ -3,6 +3,7 @@ import os
 import logging
 import requests
 import json
+import hashlib
 from datetime import datetime
 
 class TelegramManager():
@@ -15,12 +16,11 @@ class TelegramManager():
         self.__timeout = 100
         self.__allowed_updates = "message"
 
-        self.__users            = {}        #{userid:"Name"}
+        self.__users            = {}        #{userid:("Name",Anonymous = False)}
         self.__user_status      = {}
         self.__user_messages    = {}
         self.__user_files       = {}
         self.__chatlog          = {}
-        self.__anonymous  = False
 
     def restore(self, path):
         logging.debug(self.__user_messages)
@@ -37,7 +37,6 @@ class TelegramManager():
             self.__user_messages    = pickle.load(open(path + "user_messages.pkl","rb"))
             self.__user_files       = pickle.load(open(path + "user_files.pkl","rb"))
             self.__chatlog          = pickle.load(open(path + "chatlog.pkl","rb"))
-            self.__anonymous        = pickle.load(open(path + "anonymous.pkl","rb"))
             
         except FileNotFoundError :
             logging.error("Telegram Manager: Restore File or Folder not found. Your path: \n" + path) 
@@ -55,8 +54,7 @@ class TelegramManager():
         pickle.dump(self.__user_status,     open(path + "user_status.pkl", "wb"),       protocol=pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.__user_messages,   open(path + "user_messages.pkl", "wb"),     protocol=pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.__user_files,      open(path + "user_files.pkl", "wb"),        protocol=pickle.HIGHEST_PROTOCOL)
-        pickle.dump(self.__chatlog,         open(path + "chatlog.pkl", "wb"),           protocol=pickle.HIGHEST_PROTOCOL)
-        pickle.dump(self.__anonymous,       open(path + "anonymous.pkl", "wb"),         protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.__chatlog,         open(path + "chatlog.pkl", "wb"),           protocol=pickle.HIGHEST_PROTOCOL) 
         
     def __build_get_updates_url(self):
         return (
@@ -121,7 +119,7 @@ class TelegramManager():
                     self.__user_messages[uid] = [txt]
                     self.__chatlog[uid] = [time]
                     self.__chatlog[uid].append(u"\u03FF"+ txt)
-                    self.__users[uid] = user_name
+                    self.__users[uid] = (user_name, False)
                     
             elif "document" in message["message"] :
                 uid     = message["message"]["from"]["id"]
@@ -139,7 +137,7 @@ class TelegramManager():
                     self.__user_files[uid] = [(fileid, filename)]
                     self.__chatlog[uid] = [time]
                     self.__chatlog[uid].append(u"\u03FF"+ "[File with name " + filename + " sent.]")
-                    self.__users[uid] = user_name
+                    self.__users[uid] = (user_name, False)
                  
         if len(response["result"]) > 0 :
             self.__offset = response["result"][-1]["update_id"] + 1
@@ -199,7 +197,7 @@ class TelegramManager():
         return list(self.__users.keys())
     
     def get_username(self, userid) :
-        return self.__users[userid]
+        return self.__users[userid][0]
     
     def get_chatlog(self) :
         return self.__chatlog
@@ -207,14 +205,14 @@ class TelegramManager():
     def store_chatlog(self,path) :
         path = self.__fix_file_path(path)
         for userid in self.__chatlog :
-            if self.__anonymous == False :
+            if self.__users[userid][1] == False :
                 f = open(path + str(userid) + ".txt","a+")
             else :
-                f = open(path + str(hash(str(userid))) + ".txt","a+")
+                f = open(path + self.__hash_user(userid) + ".txt","a+")
             for time_or_message in self.__chatlog[userid] :
                 time_or_message = str(time_or_message)
                 if time_or_message[0] == u"\u03FF" :
-                    if self.__anonymous == False :
+                    if self.__users[userid][1] == False :
                         f.write(self.__users[userid] + ": " + time_or_message[1:] + "\n")
                     else :
                         f.write("User: " + time_or_message[1:] + "\n")
@@ -253,6 +251,18 @@ class TelegramManager():
             if len(self.__user_messages[userid]) > 0 :
                 return self.__user_messages[userid].pop(0)
 
-    def set_anonymous_state(self, state) :
-        self.__anonymous = state
-        
+    def set_anonymous_state(self, userid, state) :
+        self.__users[userid] = (self.get_username(userid),state)
+
+    def __hash_user(self, userid) :
+        s = (str(userid)+self.get_username(userid)).encode()
+        return hashlib.md5(s).hexdigest()
+    
+    def __has_duplicate_hash(self) :
+        seen = set()
+        for userid in self.__users :
+            h = self.__hash_user(userid)
+            if h in seen :
+                return True
+            seen.add(h)
+        return False

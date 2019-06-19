@@ -181,14 +181,16 @@ logging.debug("TelegramMananger created.")
 
 
 # --- TESTING STUFF HERE ---
-tgm.set_anonymous_state(True)
+
 tgm.fetch_new_messages()
+#tgm.set_anonymous_state(, True)        #can only change state if user already exists
 logging.debug("Fetching done!")
-tgm.send_message(127069982,"test")
+#tgm.send_message(,"test")
+#print(tgm.has_duplicate_hash())
 #logging.debug("Alles OK.")
-#tgm.send_photo(379480639,"IMG_8843_Focus.JPG")
-#tgm.send_file(127069982,"test.txt")
-#tgm.send_photo(127069982,"testphoto2.jpg")
+#tgm.send_photo(,"IMG_8843_Focus.JPG")
+#tgm.send_file(,"test.txt")
+#tgm.send_photo(,"testphoto2.jpg")
 #logging.debug("Photo sent.")
 #print(tgm.get_chatlog())
 
