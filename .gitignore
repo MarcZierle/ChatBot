@@ -9,6 +9,8 @@ env
 
 *.pkl
 
+*.tar.gz
+
 # see https://github.com/martinohanlon/flightlight/issues/1
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -67,4 +69,3 @@ docs/_build/
 
 # PyBuilder
 target/
-

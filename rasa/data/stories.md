@@ -1,27 +1,24 @@
-## happy path
+## beginning
 * greet
-  - utter_greet
-* mood_great
-  - utter_happy
+    - utter_greet
+    - utter_ask
+> check_ask
 
-## sad path 1
-* greet
-  - utter_greet
-* mood_unhappy
-  - utter_cheer_up
-  - utter_did_that_help
+## action ok
+> check_ask
 * affirm
-  - utter_happy
+    - action_python_test
+    - utter_end
+> check_end
 
-## sad path 2
-* greet
-  - utter_greet
-* mood_unhappy
-  - utter_cheer_up
-  - utter_did_that_help
+## action nope
+> check_ask
 * deny
-  - utter_goodbye
+    - utter_end
+> check_end
 
-## say goodbye
+## end conversation
+> check_end
 * goodbye
-  - utter_goodbye
+    - utter_goodbye
+    - action_restart
