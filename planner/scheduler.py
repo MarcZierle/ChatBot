@@ -9,8 +9,7 @@ from googledistancematrix.querent_parser import QuerentParser
 
 class Scheduler():
 
-    def __init__(self, querent):
-        self.__querent = querent
+    def __init__(self):
         self.__time_begin_day = to_minutes(8, 0)    # 8 A.M.
         self.__time_end_day   = to_minutes(20, 0)   # 8 P.M.
         self.__days = []
@@ -54,7 +53,7 @@ class Scheduler():
     ########################
     #  PLANNING-ALGORITHM  #
     ########################
-    def replan(self):
+    def replan(self, querent):
         logging.debug("Replaning all events...")
         # remove all previously planned (unspecific) events
         [d.remove_unspecific() for d in self.__days]
@@ -73,6 +72,7 @@ class Scheduler():
                     if first_it:
                         first_it = False
                         self.__unplanned_events = self.__insert_events_to_day(
+                            querent,
                             self.__unplanned_events,
                             currDay,
                             sp_event,
@@ -80,6 +80,7 @@ class Scheduler():
                         )
 
                     self.__unplanned_events = self.__insert_events_to_day(
+                        querent,
                         self.__unplanned_events,
                         currDay,
                         sp_event,
@@ -89,6 +90,7 @@ class Scheduler():
                 logging.debug("day has no specific events")
                 # no specific events for current day
                 self.__unplanned_events = self.__insert_events_to_day(
+                    querent,
                     self.__unplanned_events,
                     currDay,
                     Event(
@@ -120,7 +122,7 @@ class Scheduler():
     # exits after first collision in day or time_end_day/time_start_day has been reached
     # returns all events that could not be planned
     # Note: Distance calculations will be done; max_events will be considered
-    def __insert_events_to_day(self, events, day, first_event, insert_before=True):
+    def __insert_events_to_day(self, querent, events, day, first_event, insert_before=True):
         last_event = first_event
 
         logging.debug("evolving from event " + first_event.get_name())
@@ -139,7 +141,7 @@ class Scheduler():
             logging.debug("starting api query...")
             if insert_before:
                 arr_time = last_event.get_start() - (last_event.get_start()%15)
-                results = QuerentParser(self.__querent.get_travel_details(
+                results = QuerentParser(querent.get_travel_details(
                     origins=event_places,
                     destinations=last_place,
                     arrival_time=dt.datetime(
@@ -149,7 +151,7 @@ class Scheduler():
                 ))
             else:
                 dep_time = last_event.get_end() + (15-(last_event.get_start()%15))
-                results = QuerentParser(self.__querent.get_travel_details(
+                results = QuerentParser(querent.get_travel_details(
                     origins=last_place,
                     destinations=event_places,
                     departure_time=dt.datetime(
