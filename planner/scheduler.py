@@ -15,9 +15,9 @@ class Scheduler():
         self.__days = []
         self.__events = []
         self.__unplanned_events = []    # list of events that need to be planned
-        self.__home = "Berlin"      # start everday at this location
-        self.__max_events = 99       # maximum number of events per day
-        self.__round_travel_time = 15 # arrival and departure times will be rounded to the next quarter hours
+        self.__home = "Berlin"          # start everday at this location
+        self.__max_events = 99          # maximum number of events per day
+        self.__round_travel_time = 15   # arrival and departure times will be rounded to the next quarter hours
 
 
     def set_home(self, home):
@@ -50,9 +50,9 @@ class Scheduler():
 
         self.__events.append(event)
 
-    ########################
-    #  PLANNING-ALGORITHM  #
-    ########################
+    ########################################################################
+    #  PLANNING-ALGORITHM -- START                                         #
+    ########################################################################
     def replan(self, querent):
         logging.debug("Replaning all events...")
         # remove all previously planned (unspecific) events
@@ -67,25 +67,19 @@ class Scheduler():
 
             if currDay.num_specific_events() > 0:
                 logging.debug("day has at least on specific event")
+
                 first_it = True
                 for sp_event in currDay.get_next_specific_event():
-                    if first_it:
-                        first_it = False
-                        self.__unplanned_events = self.__insert_events_to_day(
-                            querent,
-                            self.__unplanned_events,
-                            currDay,
-                            sp_event,
-                            True
-                        )
-
                     self.__unplanned_events = self.__insert_events_to_day(
                         querent,
                         self.__unplanned_events,
                         currDay,
                         sp_event,
-                        False
+                        first_it
                     )
+
+                    if first_it:
+                        first_it = False
             else:
                 logging.debug("day has no specific events")
                 # no specific events for current day
@@ -229,6 +223,9 @@ class Scheduler():
                     continue
 
         return events
+    ########################################################################
+    #  PLANNING-ALGORITHM -- END                                           #
+    ########################################################################
 
 
     def import_ics(self, path):
@@ -254,6 +251,7 @@ class Scheduler():
                     place=place
                 )
 
+                # try/except bc of colliding events -> should at least raise an error msg or sth.
                 try:
                     self.add_event(new_event, [start.day, start.month, start.year])
                 except:
@@ -289,14 +287,6 @@ class Scheduler():
         logging.debug("finished export!")
 
 
-    def restore(self, path):
-        pass
-
-
-    def store(self, path):
-        pass
-
-
     def __get_day(self, day, month, year):
         for d in self.__days:
             if d.get_day() == day and d.get_month() == month and d.get_year() == year:
@@ -305,7 +295,7 @@ class Scheduler():
 
 
     def __get_next_day(self):
-        currDay = dt.datetime.today()
+        currDay = dt.datetime.today() + dt.timedelta(days=1) #tomorrow
         while True:
             yield self.__get_day(currDay.day, currDay.month, currDay.year)[0]
             currDay += dt.timedelta(days=1)
