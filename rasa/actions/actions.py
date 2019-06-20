@@ -58,6 +58,7 @@ class ActionHelloWorld(Action):
         # dispatcher.utter_message("storing copy...")
         # globals.store_object(tracker_copy, "models/stored_models/", "marc_tracker")
         #
-        # dispatcher.utter_message("finished storing!")
+        dispatcher.utter_message("executed custom action")
+        dispatcher.utter_message("UserID: " + str(tracker.current_state()["sender_id"]))
 
         return []
