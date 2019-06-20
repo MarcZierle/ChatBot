@@ -1,0 +1,25 @@
+intents:
+    - greet
+    - goodbye
+    - affirm
+    - deny
+
+actions:
+    - utter_greet
+    - utter_goodbye
+    - utter_ask
+    - utter_end
+    - action_python_test
+
+templates:
+    utter_greet:
+        - text: "Hey there!"
+
+    utter_ask:
+        - text: "Do you mind testing an action?"
+
+    utter_end:
+        - text: "Alright, that's it then."
+
+    utter_goodbye:
+        - text: "Have a nice day."
