@@ -22,6 +22,7 @@
 ## intent:deny
 - no
 - never
+- nope
 - I don't think so
 - don't like that
 - no way
