@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from pathlib import Path
 import os, logging, atexit
+import tensorflow as tf
 
 def init():
     env_path = Path('/home/marc/University/Chatbot') / '.env'
@@ -10,6 +11,10 @@ def init():
     global GOOGLE_DISTANCE_MATRIX_API_KEY, TELEGRAM_API_KEY
     GOOGLE_DISTANCE_MATRIX_API_KEY  = os.getenv("GOOGLE_DISTANCE_MATRIX_API_KEY")
     TELEGRAM_API_KEY                = os.getenv("TELEGRAM_API_KEY")
+
+    # surpress TensorFlow Warnings
+    tf.logging.set_verbosity(tf.logging.FATAL)
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
     #logging.basicConfig(level=logging.DEBUG)
     logging.getLogger('scheduler').setLevel(logging.INFO)
