@@ -22,3 +22,7 @@
 * goodbye
     - utter_goodbye
     - action_restart
+
+## fallback story
+* out_of_scope
+    - action_default_fallback

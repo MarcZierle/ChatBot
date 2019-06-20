@@ -78,10 +78,12 @@ if __name__ == "__main__":
     userid_2 = 9876
 
     print("Bot is ready!")
-    # while True:
-    #     msg = input()
-    #     print("User: \t" + msg)
-    #     print("Bot: \t" + str(model.parse(msg)))
+    while True:
+        msg = input()
+        print("User: \t" + msg)
+        print("Bot: \t" + str(model.parse(msg, 1)))
+
+    exit()
 
     print("U1: hi")
     print("B : " + str(model.parse("hi", userid_1)))

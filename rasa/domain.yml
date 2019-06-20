@@ -10,8 +10,12 @@ actions:
     - utter_ask
     - utter_end
     - action_python_test
+    - utter_default
 
 templates:
+    utter_default:
+        - text: "Sorry, I couldn't understand that."
+
     utter_greet:
         - text: "Hey there!"
 
