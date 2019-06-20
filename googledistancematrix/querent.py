@@ -23,6 +23,7 @@ class Querent():
                 "&region=de")
 
 
+    global TravelMode
     class TravelMode(Enum):
         TRANSIT = "transit"
         WALKING = "walking"
@@ -43,7 +44,7 @@ class Querent():
             The API key used for querying the Google Distance Matrix API service.
         """
         self.__api_key = api_key
-        self.__travel_mode = Querent.TravelMode.WALKING
+        self.__travel_mode = TravelMode.WALKING
 
 
     def get_api_count(self):

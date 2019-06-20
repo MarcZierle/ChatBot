@@ -9,13 +9,13 @@ from googledistancematrix.querent import Querent
 
 import pickle
 
-import settings
+import settings, globals, logging
 settings.init()
 
 unpickle = True
 
 gdm_querent = gdm.querent.Querent( api_key=settings.GOOGLE_DISTANCE_MATRIX_API_KEY )
-gdm_querent.set_travel_mode(Querent.TravelMode.TRANSIT)
+gdm_querent.set_travel_mode(querent.TravelMode.TRANSIT)
 
 if not unpickle:
     # create new planner object and pickle it
@@ -23,8 +23,8 @@ if not unpickle:
 
     p.set_home("Str d Pariser Kommune 30")
     p.set_planning_times(
-        scheduler.to_minutes(8, 0),
-        scheduler.to_minutes(20, 0)
+        globals.to_minutes(8, 0),
+        globals.to_minutes(20, 0)
     )
     p.set_max_events(8)
 
