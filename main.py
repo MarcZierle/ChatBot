@@ -183,7 +183,7 @@ logging.debug("TelegramMananger created.")
 # --- TESTING STUFF HERE ---
 
 tgm.fetch_new_messages()
-#tgm.set_anonymous_state(, True)        #can only change state if user already exists
+tgm.set_anonymous_state(127069982, True)        #can only change state if user already exists
 logging.debug("Fetching done!")
 #tgm.send_message(,"test")
 #print(tgm.has_duplicate_hash())

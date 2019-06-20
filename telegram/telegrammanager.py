@@ -213,7 +213,7 @@ class TelegramManager():
                 time_or_message = str(time_or_message)
                 if time_or_message[0] == u"\u03FF" :
                     if self.__users[userid][1] == False :
-                        f.write(self.__users[userid] + ": " + time_or_message[1:] + "\n")
+                        f.write(self.__users[userid][0] + ": " + time_or_message[1:] + "\n")
                     else :
                         f.write("User: " + time_or_message[1:] + "\n")
                 elif time_or_message[0] == u"\u037D" :
