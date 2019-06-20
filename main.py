@@ -1,5 +1,7 @@
 import datetime as dt, logging, time
 
+import os
+
 import googledistancematrix as gdm
 from googledistancematrix import querent
 from googledistancematrix.querent import Querent
@@ -16,58 +18,55 @@ import settings
 settings.init()
 
 
-gdm_querent = gdm.querent.Querent( api_key=settings.GOOGLE_DISTANCE_MATRIX_API_KEY )
-gdm_querent.settravelmode(Querent.TravelMode.TRANSIT)
+##gdm_querent = gdm.querent.Querent( api_key=settings.GOOGLE_DISTANCE_MATRIX_API_KEY )
+##gdm_querent.settravelmode(Querent.TravelMode.TRANSIT)
 
-planner = Scheduler(gdm_querent)
+##planner = Scheduler(gdm_querent)
+##
+##planner.add_day(25, 5, 2019)
+##planner.add_day(26, 5, 2019)
+##planner.add_day(27, 5, 2019)
+##planner.add_day(28, 5, 2019)
+##
+##planner.add_event(Event(
+##    "Datenbanken Vorlesung",
+##    Event.EventType.SPECIFIC,
+##    Scheduler.to_minutes(11, 0),
+##    Scheduler.to_minutes(13, 0),
+##    place="Rudower Chaussee 25 Berlin"
+##), [27, 5, 2019])
+##
+##planner.add_event(Event(
+##    "Datenbanken Übung",
+##    Event.EventType.SPECIFIC,
+##    Scheduler.to_minutes(11, 0),
+##    Scheduler.to_minutes(13, 0),
+##    place="Rudower Chaussee 25 Berlin"
+##), [28, 5, 2019])
+##
+##planner.add_event(Event(
+##    "C++ Vorlesung",
+##    Event.EventType.SPECIFIC,
+##    Scheduler.to_minutes(13, 0),
+##    Scheduler.to_minutes(15, 0),
+##    place="Rudower Chaussee 26 Berlin"
+##), [28, 5, 2019])
+##
+##planner.add_event(Event(
+##    "Datenbanken Vorlesung",
+##    Event.EventType.SPECIFIC,
+##    Scheduler.to_minutes(15, 0),
+##    Scheduler.to_minutes(17, 0),
+##    place="Rudower Chaussee 25 Berlin"
+##), [28, 5, 2019])
+##
+##planner.add_event(Event(
+##    "Kuchenbacken",
+##    Event.EventType.UNSPECIFIC,
+##    duration = Scheduler.to_minutes(2, 30),
+##    place = "Str. d. Pariser Kommune 30"
+##))
 
-planner.add_day(25, 5, 2019)
-planner.add_day(26, 5, 2019)
-planner.add_day(27, 5, 2019)
-planner.add_day(28, 5, 2019)
-
-planner.add_event(Event(
-    "Datenbanken Vorlesung",
-    Event.EventType.SPECIFIC,
-    Scheduler.to_minutes(11, 0),
-    Scheduler.to_minutes(13, 0),
-    place="Rudower Chaussee 25 Berlin"
-), [27, 5, 2019])
-
-planner.add_event(Event(
-    "Datenbanken Übung",
-    Event.EventType.SPECIFIC,
-    Scheduler.to_minutes(11, 0),
-    Scheduler.to_minutes(13, 0),
-    place="Rudower Chaussee 25 Berlin"
-), [28, 5, 2019])
-
-planner.add_event(Event(
-    "C++ Vorlesung",
-    Event.EventType.SPECIFIC,
-    Scheduler.to_minutes(13, 0),
-    Scheduler.to_minutes(15, 0),
-    place="Rudower Chaussee 26 Berlin"
-), [28, 5, 2019])
-
-planner.add_event(Event(
-    "Datenbanken Vorlesung",
-    Event.EventType.SPECIFIC,
-    Scheduler.to_minutes(15, 0),
-    Scheduler.to_minutes(17, 0),
-    place="Rudower Chaussee 25 Berlin"
-), [28, 5, 2019])
-
-planner.add_event(Event(
-    "Kuchenbacken",
-    Event.EventType.UNSPECIFIC,
-    duration = Scheduler.to_minutes(2, 30),
-    place = "Str. d. Pariser Kommune 30"
-))
-
-print(planner)
-
-exit()
 
 #details = gdm_querent.gettraveldetails(
 #    origins = ["Rudower Chaussee 25"],
@@ -133,24 +132,75 @@ simple_message_processing.destinations = {}
 
 
 tgm = TelegramManager( api_key=settings.TELEGRAM_API_KEY )
+logging.debug("TelegramMananger created.")
 
-while True:
-    logging.debug("Fetching new messages...")
-    tgm.fetchnewmessages()
-    logging.debug("Fetching done!")
+#for x in range(0,2):
+#i = 0
+#path = os.getcwd()
+#tlgr_storage_path = path + "/storage/telegram/"
+#tlgr_chatlog_path = path + "/storage/chatlog/"
+#tlgr_download_path= path + "/storage/downloaded_files/"
+##while(True) :
+##    logging.debug("Fetching new messages...")
+##    if not tgm.fetch_new_messages() :
+##        logging.debug("Fetching failed.")
+##        continue
+##    logging.debug("Fetching done!")
+##    
+##    logging.debug("Checking new messages...")
+##    for user in tgm.get_users() :
+##        logging.debug("Checking new messages for user " + str(user))
+##        msgs = tgm.get_new_messages(user)
+##        files= tgm.get_new_files(user)
+##        if msgs != None:
+##            for msg in msgs:
+##                if len(msg) < 50 :
+##                    logging.debug("Processing message \"" + msg + "\"")
+##                else :
+##                    logging.debug("Processing message \"" + msg[:50] + "\"")
+##                response = "Hello " + tgm.get_username(user)
+##                #response = simple_message_processing(user, msg)
+##                tgm.send_message(user, response)
+##
+##        logging.debug("User messages done! [" + str(user) + "]")
+##
+##        if files != None :
+##            for file in files :
+##                response = "Downloading file..."
+##                tgm.send_message(user, response)
+##                logging.debug("Processing file \"" + file[1] + "\" with file_id \"" + file[0] + "\"")
+##                if tgm.get_file(file[0], tlgr_download_path + str(user) + "/", file[1]) :
+##                    response = "Okay, file was saved."
+##                else :
+##                    response = "File couldn't be saved."
+##                tgm.send_message(user, response)
+##    if i%10 == 0 :
+##        tgm.store_chatlog(tlgr_chatlog_path)
+##    ++i
+##    #logging.debug("Checking done!")
 
-    logging.debug("Checking new messages...")
-    for user in tgm.users:
-        logging.debug("Checking new messages for user " + str(user))
-        msgs = tgm.getnewmessages(user)
 
-        if len(msgs) > 0:
-            for msg in msgs:
-                logging.debug("Processing message \"" + msg + "\"")
+# --- TESTING STUFF HERE ---
 
-                response = simple_message_processing(user, msg)
-                tgm.sendmessage(user, response)
+tgm.fetch_new_messages()
+tgm.set_anonymous_state(127069982, True)        #can only change state if user already exists
+logging.debug("Fetching done!")
+#tgm.send_message(,"test")
+#print(tgm.has_duplicate_hash())
+#logging.debug("Alles OK.")
+#tgm.send_photo(,"IMG_8843_Focus.JPG")
+#tgm.send_file(,"test.txt")
+#tgm.send_photo(,"testphoto2.jpg")
+#logging.debug("Photo sent.")
+#print(tgm.get_chatlog())
 
-        logging.debug("User messages done! [" + str(user) + "]")
+path = os.getcwd()
+tlgr_storage_path = path + "/storage/telegram/"
+tlgr_chatlog_path = path + "/storage/chatlog/"
+tlgr_download_path= path + "/storage/downloaded_files/"
+#tgm.get_file("AgADBAADubExG0OG4VM2eP1bPdqqs1XrHhsABIbWcNeoIGYY-cMGAAEC", tlgr_download_path, "joao2.jpg")
+tgm.store_chatlog(tlgr_chatlog_path)
+tgm.store(tlgr_storage_path)
+tgm.restore(tlgr_storage_path)
 
-    logging.debug("Checking done!")
+

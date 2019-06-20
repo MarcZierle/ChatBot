@@ -13,7 +13,8 @@ def init():
 
     #logging.basicConfig(level=logging.DEBUG)
     logging.getLogger('scheduler').setLevel(logging.INFO)
-
+    logging.getLogger("requests").setLevel(logging.WARNING)
+    logging.getLogger("urllib3").setLevel(logging.WARNING)
     atexit.register(exit_handler)
 
 def exit_handler():
