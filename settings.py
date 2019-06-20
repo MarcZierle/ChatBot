@@ -3,7 +3,7 @@ from pathlib import Path
 import os, logging, atexit
 
 def init():
-    env_path = Path('.') / '.env'
+    env_path = Path('/home/marc/University/Chatbot') / '.env'
     load_dotenv(dotenv_path=env_path, verbose=True)
     #load_dotenv(".env", verbose=True)
 

@@ -7,42 +7,42 @@ import googledistancematrix as gdm
 from googledistancematrix import querent
 from googledistancematrix.querent import Querent
 
-import settings
+import settings, globals
 settings.init()
 
 gdm_querent = gdm.querent.Querent( api_key=settings.GOOGLE_DISTANCE_MATRIX_API_KEY )
-gdm_querent.set_travel_mode(Querent.TravelMode.TRANSIT)
+gdm_querent.set_travel_mode(querent.TravelMode.TRANSIT)
 
 p = Scheduler()
 
 p.set_home("Str d Pariser Kommune 30")
 p.set_planning_times(
-    scheduler.to_minutes(8, 0),
-    scheduler.to_minutes(20, 0)
+    globals.to_minutes(8, 0),
+    globals.to_minutes(20, 0)
 )
 p.set_max_events(8)
 
 p.add_event(Event(
     "Kuchenbacken",
     Event.EventType.SPECIFIC,
-    start=scheduler.to_minutes(17,45),
-    end=scheduler.to_minutes(19,00),
+    start=globals.to_minutes(17,45),
+    end=globals.to_minutes(19,00),
     place="Str d Pariser Kommune 30"),
 [8,6,2019])
 
 p.add_event(Event(
     "Buch lesen",
     Event.EventType.SPECIFIC,
-    start=scheduler.to_minutes(13,20),
-    end=scheduler.to_minutes(14,00),
+    start=globals.to_minutes(13,20),
+    end=globals.to_minutes(14,00),
     place="Erwin Schrödinger Zentrum"),
 [8,6,2019])
 
 p.add_event(Event(
     "Konzert",
     Event.EventType.SPECIFIC,
-    start=scheduler.to_minutes(19,00),
-    end=scheduler.to_minutes(20,00),
+    start=globals.to_minutes(19,00),
+    end=globals.to_minutes(20,00),
     place="Philharmonie Berlin"),
 [22,6,2019])
 

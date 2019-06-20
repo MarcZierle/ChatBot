@@ -7,11 +7,13 @@ from planner.day import Day
 
 from googledistancematrix.querent_parser import QuerentParser
 
+import globals
+
 class Scheduler():
 
     def __init__(self):
-        self.__time_begin_day = to_minutes(8, 0)    # 8 A.M.
-        self.__time_end_day   = to_minutes(20, 0)   # 8 P.M.
+        self.__time_begin_day = globals.to_minutes(8, 0)    # 8 A.M.
+        self.__time_end_day   = globals.to_minutes(20, 0)   # 8 P.M.
         self.__days = []
         self.__events = []
         self.__unplanned_events = []    # list of events that need to be planned
@@ -140,7 +142,7 @@ class Scheduler():
                     destinations=last_place,
                     arrival_time=dt.datetime(
                         day.get_year(), day.get_month(), day.get_day(),
-                        to_hours(arr_time)[0], to_hours(arr_time)[1]
+                        globals.to_hours(arr_time)[0], globals.to_hours(arr_time)[1]
                     )
                 ))
             else:
@@ -150,7 +152,7 @@ class Scheduler():
                     destinations=event_places,
                     departure_time=dt.datetime(
                         day.get_year(), day.get_month(), day.get_day(),
-                        to_hours(dep_time)[0], to_hours(dep_time)[1]
+                        globals.to_hours(dep_time)[0], globals.to_hours(dep_time)[1]
                     )
                 ))
             logging.debug("received api response!")
@@ -246,8 +248,8 @@ class Scheduler():
                 new_event = Event(
                     title,
                     Event.EventType.SPECIFIC,
-                    start=to_minutes(start.hour, start.minute),
-                    end=to_minutes(end.hour, end.minute),
+                    start=globals.to_minutes(start.hour, start.minute),
+                    end=globals.to_minutes(end.hour, end.minute),
                     place=place
                 )
 
@@ -272,11 +274,11 @@ class Scheduler():
                 cal_event.add('summary', event.get_name())
                 cal_event.add('dtstart', dt.datetime(
                     d.get_year(), d.get_month(), d.get_day(),
-                    to_hours(event.get_start())[0], to_hours(event.get_start())[1]
+                    globals.to_hours(event.get_start())[0], globals.to_hours(event.get_start())[1]
                 ))
                 cal_event.add('dtend', dt.datetime(
                     d.get_year(), d.get_month(), d.get_day(),
-                    to_hours(event.get_end())[0], to_hours(event.get_end())[1]
+                    globals.to_hours(event.get_end())[0], globals.to_hours(event.get_end())[1]
                 ))
 
                 cal.add_component(cal_event)
@@ -299,16 +301,6 @@ class Scheduler():
         while True:
             yield self.__get_day(currDay.day, currDay.month, currDay.year)[0]
             currDay += dt.timedelta(days=1)
-
-
-    global to_minutes
-    def to_minutes(hours, minutes):
-        return hours*60 + minutes
-
-
-    global to_hours
-    def to_hours(minutes):
-        return [int(minutes/60), minutes%60]
 
 
     def __str__(self):
