@@ -1,26 +1,20 @@
 ## beginning
 * greet
     - utter_greet
-    - utter_ask
-> check_ask
 
-## action ok
-> check_ask
-* affirm
-    - action_python_test
-    - utter_end
-> check_end
+## simple request for showing the generated plan
+* show_plan
+    - utter_show_plan
+    - action_restart
 
-## action nope
-> check_ask
-* deny
-    - utter_end
-> check_end
+## TEST: slot filling locations (location recognized)
+* save_event{"location": "loc"}
+    - action_utter_confirm
+    - action_restart
 
-## end conversation
-> check_end
-* goodbye
-    - utter_goodbye
+## slot filling no recognized
+* save_event
+    - utter_location_not_found
     - action_restart
 
 ## fallback story

@@ -232,7 +232,7 @@ class Scheduler():
 
     def import_ics(self, path):
         logging.debug("importing ics file from " + path + " ...")
-        ics_file = open('marc_uni.ics','rb')
+        ics_file = open(path,'rb')
         ical = icalendar.Calendar.from_ical(ics_file.read())
 
         for ics_event in ical.walk():

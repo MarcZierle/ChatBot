@@ -1,29 +1,39 @@
+slots:
+    location:
+        type: text
+
 intents:
+    - out_of_scope
     - greet
-    - goodbye
     - affirm
     - deny
+    - show_plan
+    - save_event
 
 actions:
-    - utter_greet
-    - utter_goodbye
-    - utter_ask
-    - utter_end
-    - action_python_test
     - utter_default
+    - utter_greet
+    - utter_show_plan
+    - utter_location_not_found
+    - action_utter_confirm
 
 templates:
     utter_default:
         - text: "Sorry, I couldn't understand that."
+        - text: "Sorry, I didn't quite catch that."
 
     utter_greet:
         - text: "Hey there!"
+        - text: "What's up?"
+        - text: "All good?"
 
-    utter_ask:
-        - text: "Do you mind testing an action?"
+    utter_show_plan:
+        - text: "Here is your plan."
+        - text: "Here your are."
+        - text: "There you go."
+        - text: "That's what has been scheduled."
 
-    utter_end:
-        - text: "Alright, that's it then."
-
-    utter_goodbye:
-        - text: "Have a nice day."
+    utter_location_not_found:
+        - text: "Sorry. Have you given a location?"
+        - text: "I need a location for that."
+        - text: "Please give me a location."

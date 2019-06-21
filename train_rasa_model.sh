@@ -2,7 +2,7 @@
 cd rasa
 
 echo "Generating new RASA model..."
-rasa train --fixed-model-name current_model
+rasa train --fixed-model-name current_model --data data/ chatito/train/
 echo "Done!"
 echo ""
 
