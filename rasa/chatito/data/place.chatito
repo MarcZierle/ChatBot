@@ -1,0 +1,11 @@
+import ./cities.chatito
+import ./numbers.chatito
+import ./streets.chatito
+import ./zip_codes.chatito
+
+@[place]
+    *[55] ~[street] ~[number?]
+    *[15] ~[street] ~[number] ~[city]
+    *[15] ~[street] ~[number?] ~[zip_code] ~[city]
+    *[5] ~[zip_code] ~[city]
+    *[10] ~[city]

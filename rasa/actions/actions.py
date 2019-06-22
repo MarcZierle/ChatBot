@@ -12,11 +12,27 @@ from typing import Any, Text, Dict, List
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 
+from rasa.core.trackers import DialogueStateTracker
+
 #from .. import test
 from planner.day import Day
 from planner.event import Event
-import planner.scheduler as scheduler
-from planner.scheduler import Scheduler
+import planner.planner as planner
+from planner.planner import Planner
+
+import globals
+
+class ActionUtterConfirm(Action):
+    def name(self) -> Text:
+        return "action_utter_confirm"
+
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        place = tracker.get_slot('place')
+        dispatcher.utter_message("Scheduled event at " + place)
 
 
 class ActionHelloWorld(Action):
@@ -28,25 +44,32 @@ class ActionHelloWorld(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        p = Scheduler(None)
+        # p = Scheduler()
+        #
+        # p.set_home("Str d Pariser Kommune 30")
+        # p.set_planning_times(
+        #     globals.to_minutes(8, 0),
+        #     globals.to_minutes(20, 0)
+        # )
+        # p.set_max_events(8)
+        #
+        # p.add_event(Event(
+        #     "Kuchenbacken",
+        #     Event.EventType.SPECIFIC,
+        #     start=globals.to_minutes(17,45),
+        #     end=globals.to_minutes(19,00),
+        #     place="Str d Pariser Kommune 30"),
+        # [8,6,2019])
+        #
+        # print(p)
 
-        p.set_home("Str d Pariser Kommune 30")
-        p.set_planning_times(
-            scheduler.to_minutes(8, 0),
-            scheduler.to_minutes(20, 0)
-        )
-        p.set_max_events(8)
-
-        p.add_event(Event(
-            "Kuchenbacken",
-            Event.EventType.SPECIFIC,
-            start=scheduler.to_minutes(17,45),
-            end=scheduler.to_minutes(19,00),
-            place="Str d Pariser Kommune 30"),
-        [8,6,2019])
-
-        print(p)
-
-        dispatcher.utter_message("Hello Planner!")
+        # dispatcher.utter_message("copying tracker...")
+        # tracker_copy = tracker.copy()
+        #
+        # dispatcher.utter_message("storing copy...")
+        # globals.store_object(tracker_copy, "models/stored_models/", "marc_tracker")
+        #
+        dispatcher.utter_message("executed custom action")
+        dispatcher.utter_message("UserID: " + str(tracker.current_state()["sender_id"]))
 
         return []

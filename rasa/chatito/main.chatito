@@ -1,0 +1,42 @@
+import ./data/place.chatito
+
+%[save_event]('training': '1000', 'testing': '100')
+    *[60] ~[hi?] ~[please?] ~[save?] ~[an event?] ~[at] @[place] ~[thanks?]
+    *[20] ~[at] @[place]
+    *[10] ~[save] ~[at] @[place]
+    *[10] @[place]
+
+
+~[thanks]
+    thank you
+    thx
+
+~[at]
+    in
+    by
+    near
+    in the area of
+
+~[an event]
+    a location
+    a happening
+    a place
+
+~[save]
+    show me
+    schedule
+    plan
+    register
+    take into account
+
+~[hi]
+    hi
+    hey
+    hello
+    how are you
+
+~[please]
+    would you kindly
+    could you please
+    could you
+    is it possible that you

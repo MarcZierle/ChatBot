@@ -1,24 +1,32 @@
 ## beginning
 * greet
     - utter_greet
-    - utter_ask
-> check_ask
 
-## action ok
-> check_ask
-* affirm
-    - action_python_test
-    - utter_end
-> check_end
-
-## action nope
-> check_ask
-* deny
-    - utter_end
-> check_end
-
-## end conversation
-> check_end
-* goodbye
-    - utter_goodbye
+## simple request for showing the generated plan
+* show_plan
+    - utter_show_plan
     - action_restart
+
+## TEST: slot filling locations (location recognized)
+* save_event{"place": "plc"}
+    - action_utter_confirm
+    - action_restart
+
+## TEST: slot filling no recognized
+* save_event
+    - utter_place_not_found
+    - action_restart
+
+## TEST: time entity
+* get_time{"time": "set"}
+    - action_utter_time
+    - action_restart
+
+## TEST: duration entity
+* get_duration{"duration": "set"}
+    - action_utter_duration
+    - action_restart
+
+## fallback story
+* out_of_scope
+    - action_default_fallback
