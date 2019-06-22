@@ -31,8 +31,8 @@ class ActionUtterConfirm(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        location = tracker.get_slot('location')
-        dispatcher.utter_message("Scheduled event at " + location)
+        place = tracker.get_slot('place')
+        dispatcher.utter_message("Scheduled event at " + place)
 
 
 class ActionHelloWorld(Action):

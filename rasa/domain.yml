@@ -1,5 +1,5 @@
 slots:
-    location:
+    place:
         type: text
     time:
         type: text
@@ -20,7 +20,7 @@ actions:
     - utter_default
     - utter_greet
     - utter_show_plan
-    - utter_location_not_found
+    - utter_place_not_found
     - action_utter_confirm
     - action_utter_time
     - action_utter_duration
@@ -41,7 +41,7 @@ templates:
         - text: "There you go."
         - text: "That's what has been scheduled."
 
-    utter_location_not_found:
+    utter_place_not_found:
         - text: "Sorry. Have you given a location?"
         - text: "I need a location for that."
         - text: "Please give me a location."

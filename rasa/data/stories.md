@@ -8,13 +8,13 @@
     - action_restart
 
 ## TEST: slot filling locations (location recognized)
-* save_event{"location": "loc"}
+* save_event{"place": "plc"}
     - action_utter_confirm
     - action_restart
 
 ## TEST: slot filling no recognized
 * save_event
-    - utter_location_not_found
+    - utter_place_not_found
     - action_restart
 
 ## TEST: time entity

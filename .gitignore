@@ -10,6 +10,7 @@ env
 !rasa/chatito/generate_samples.sh
 *.png
 *.html
+duckling/
 
 rasa/models/basic_model/*
 storage/*

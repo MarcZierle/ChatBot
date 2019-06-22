@@ -1,8 +1,10 @@
-%[save_event]('training': '100', 'testing': '100')
-    *[60] ~[hi?] ~[please?] ~[save?] ~[an event?] ~[at] @[location] ~[thanks?]
-    *[20] ~[at] @[location]
-    *[10] ~[save] ~[at] @[location]
-    *[10] @[location]
+import ./data/place.chatito
+
+%[save_event]('training': '1000', 'testing': '100')
+    *[60] ~[hi?] ~[please?] ~[save?] ~[an event?] ~[at] @[place] ~[thanks?]
+    *[20] ~[at] @[place]
+    *[10] ~[save] ~[at] @[place]
+    *[10] @[place]
 
 
 ~[thanks]
@@ -38,68 +40,3 @@
     could you please
     could you
     is it possible that you
-
-@[location]
-    ~[stadt] ~[land?]
-    ~[straße] ~[haus_nr?] ~[plz?] ~[stadt?] ~[land?]
-    ~[eigenname] ~[haus_nr?] ~[plz?] ~[stadt?] ~[land?]
-
-~[stadt]
-    Berlin
-    Hamburg
-    Köln
-    Braunschweig
-    München
-    London
-    New York
-    Sydney
-
-~[haus_nr]
-    1
-    4
-    348
-    2a
-    56b
-    38e
-    30
-    10 - 15
-    35a - 35b
-    7c - 8a
-
-~[straße]
-    Schnelle Straße
-    Frankfurter Allee
-    breite Straße
-    Str. d. Pariser Kommune
-    Winkelgasse
-    Hauptstraße
-    kleiner Weg
-
-~[plz]
-    10243
-    93482
-    26842
-    10059
-    58311
-    56611
-
-~[land]
-    Germany
-    Deutschland
-    England
-    UK
-    GER
-    Frankreich
-    France
-    Spain
-    Spanien
-
-~[eigenname]
-    Computerstore
-    Kaufland
-    Ostbahnhof
-    HU
-    Humboldt-Universität
-    Charité
-    Haema
-    Techniker Krankenkasse

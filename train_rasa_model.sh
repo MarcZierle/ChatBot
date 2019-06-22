@@ -1,8 +1,9 @@
 #!/bin/bash
 cd rasa
+rm models/*.tar.gz
 
 echo "Generating new RASA model..."
-rasa train --fixed-model-name current_model --data data/ chatito/train/
+rasa train --data data/ chatito/train/
 echo "Done!"
 echo ""
 
@@ -10,7 +11,7 @@ cd models
 
 echo "Removing old model and moving the new one into place..."
 rm -rf basic_model/*
-mv current_model.tar.gz basic_model/
+cp *.tar.gz basic_model/current_model.tar.gz
 echo "Done!"
 echo ""
 

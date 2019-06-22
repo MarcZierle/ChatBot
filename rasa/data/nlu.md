@@ -1,5 +1,7 @@
-## lookup:location
+<!--
+## lookup:place
     data/locations_data/locations.txt
+-->
 
 ## intent:greet
 - hey
@@ -48,13 +50,13 @@
 - 30mins
 
 ## intent:save_event
-- Plan in [Berlin](location)
-- Save it to [Rudower Chaussee 25](location)
-- It takes place at [Ostbahnhof](location)
-- [Tamara-Danz Straße 11, 10243 Berlin](location), that's were it is
-- I want it to be at [Fleischerei Huber](location)
-- Schedule it in [Kaufland Storkower](location), would you
-- [Ziegelstraße 45a](location)
-- the event takes place at [Mäusegasse 33, 46393 Braunschweig](location)
-- [Super Computerstore](location) is the chosen location
-- location is headed at [Winterfell-Allee 194 - 200 Köln](location)
+- Plan in [Berlin](place)
+- Save it to [Rudower Chaussee 25](place)
+- It takes place at [Ostbahnhof](place)
+- [Tamara-Danz Straße 11, 10243 Berlin](place), that's were it is
+- I want it to be at [Fleischerei Huber](place)
+- Schedule it in [Kaufland Storkower](place), would you
+- [Ziegelstraße 45a](place)
+- the event takes place at [Mäusegasse 33, 46393 Braunschweig](place)
+- [Super Computerstore](place) is the chosen location
+- location is headed at [Winterfell-Allee 194 - 200 Köln](place)
