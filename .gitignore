@@ -7,6 +7,7 @@ env
 *.pass
 *.sh
 !train_rasa_model.sh
+!run_help_servers.sh
 !rasa/chatito/generate_samples.sh
 *.png
 *.html
