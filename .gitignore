@@ -13,9 +13,8 @@ env
 *.html
 duckling/
 
-rasa/models/basic_model/*
+#rasa/models/basic_model/*
 storage/*
->>>>>>> lego
 
 *.pkl
 
