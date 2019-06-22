@@ -17,7 +17,7 @@ def fix_file_path(path, mkdir=False) :
             logging.debug("Fixed file path: " + path)
         if not os.path.exists(path) and mkdir:
             os.makedirs(path)
-            logging.debug("Created directory with path: " + path)
+            logging.debug("created new directory with path: " + path)
         return path
 
 def store_object(obj, path, name):
@@ -30,5 +30,5 @@ def restore_object(path, name):
     try:
         return pickle.load( open(path + name + ".pkl","rb") )
     except FileNotFoundError :
-        logging.error("Globals: restore_object: Restore File or Folder not found. Your path: \n" + path)
+        #logging.error("Globals: restore_object: Restore File or Folder not found. Your path: \n" + path)
         raise Exception()

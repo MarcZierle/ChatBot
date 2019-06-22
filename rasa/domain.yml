@@ -1,6 +1,10 @@
 slots:
     location:
         type: text
+    time:
+        type: text
+    duration:
+        type: text
 
 intents:
     - out_of_scope
@@ -9,6 +13,8 @@ intents:
     - deny
     - show_plan
     - save_event
+    - get_time
+    - get_duration
 
 actions:
     - utter_default
@@ -16,6 +22,8 @@ actions:
     - utter_show_plan
     - utter_location_not_found
     - action_utter_confirm
+    - action_utter_time
+    - action_utter_duration
 
 templates:
     utter_default:

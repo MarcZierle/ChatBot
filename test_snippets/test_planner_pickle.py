@@ -1,7 +1,7 @@
 from planner.day import Day
 from planner.event import Event
-import planner.scheduler as scheduler
-from planner.scheduler import Scheduler
+import planner.planner as planner
+from planner.planner import Planner
 
 import googledistancematrix as gdm
 from googledistancematrix import querent
@@ -19,7 +19,7 @@ gdm_querent.set_travel_mode(querent.TravelMode.TRANSIT)
 
 if not unpickle:
     # create new planner object and pickle it
-    p = Scheduler()
+    p = Planner()
 
     p.set_home("Str d Pariser Kommune 30")
     p.set_planning_times(

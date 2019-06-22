@@ -1,4 +1,4 @@
-%[save_event]('training': '500', 'testing': '500')
+%[save_event]('training': '100', 'testing': '100')
     *[60] ~[hi?] ~[please?] ~[save?] ~[an event?] ~[at] @[location] ~[thanks?]
     *[20] ~[at] @[location]
     *[10] ~[save] ~[at] @[location]

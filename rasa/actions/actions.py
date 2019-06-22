@@ -17,8 +17,8 @@ from rasa.core.trackers import DialogueStateTracker
 #from .. import test
 from planner.day import Day
 from planner.event import Event
-import planner.scheduler as scheduler
-from planner.scheduler import Scheduler
+import planner.planner as planner
+from planner.planner import Planner
 
 import globals
 

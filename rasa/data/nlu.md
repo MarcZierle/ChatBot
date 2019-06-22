@@ -1,3 +1,6 @@
+## lookup:location
+    data/locations_data/locations.txt
+
 ## intent:greet
 - hey
 - hello
@@ -32,6 +35,17 @@
 - send me an ical file
 - save the plan as ics
 - print my plan
+
+## intent:get_time
+- time is 7am
+- set time to 8am to 9am
+- get time for tomorrow 5pm
+
+## intent:get_duration
+- it takes 15mins
+- probably 6hours only
+- let's say half an hour
+- 30mins
 
 ## intent:save_event
 - Plan in [Berlin](location)

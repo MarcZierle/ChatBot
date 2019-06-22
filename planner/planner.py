@@ -9,7 +9,7 @@ from googledistancematrix.querent_parser import QuerentParser
 
 import globals
 
-class Scheduler():
+class Planner():
 
     def __init__(self):
         self.__time_begin_day = globals.to_minutes(8, 0)    # 8 A.M.
@@ -280,6 +280,7 @@ class Scheduler():
                     d.get_year(), d.get_month(), d.get_day(),
                     globals.to_hours(event.get_end())[0], globals.to_hours(event.get_end())[1]
                 ))
+                cal_event.add('location', event.get_place())
 
                 cal.add_component(cal_event)
 

@@ -10,20 +10,17 @@ class RasaModelHandler():
 
     loop = None
 
-    def __init__(self, userid, model_path="./models"):
-        self.__userid       = str(userid)
+    def __init__(self, model_path="./rasa/models/basic_model"):
         self.__model_path   = model_path
 
         if not RasaModelHandler.loop:
             RasaModelHandler.loop = asyncio.get_event_loop()
 
-        try:
-            self.__agent = self.__restore_model()
-        except Exception:
-            self.__agent = self.__load_new_model()
+        self.__agent = self.__load_model()
 
 
-    def __load_new_model(self):
+    def __load_model(self):
+        # TODO: connect to DB using TrackerStore (and SQL?)
         # _tracker_store = RedisTrackerStore(domain, host=os.environ["REDIS_HOST"])
         #
         # _agent = load_agent(cmdline_args.core,
@@ -31,41 +28,17 @@ class RasaModelHandler():
         #              tracker_store=_tracker_store,
         #              endpoints=_endpoints)
         return Agent.load(
-            self.__model_path + "/basic_model",
+            self.__model_path,
             action_endpoint = EndpointConfig( url="http://localhost:5055/webhook" )
         )
 
 
-    def __restore_model(self):
-        return globals.restore_object(
-            self.__model_path + "/stored_models/",
-            self.__userid
-        )
+    async def __parse_agent(self, sender_id, msg):
+        return await self.__agent.handle_text(msg, sender_id=sender_id)
 
 
-    @classmethod
-    def remove_all_stored_models():
-        pass
-
-
-    def __store(self):
-        # globals.store_object(
-        #     self.__agent,
-        #     self.__model_path + "/stored_models/",
-        #     self.__userid
-        # )
-        #self.__agent.persist(self.__model_path + "/stored_models")
-        pass
-
-
-    async def __parse_agent(self, msg, userid):
-        return await self.__agent.handle_text(msg, sender_id=userid)
-
-
-    def parse(self, msg, userid):
-        response = RasaModelHandler.loop.run_until_complete(self.__parse_agent(msg, userid))
-        self.__store()
-        return response
+    def parse(self, sender_id, msg):
+        return RasaModelHandler.loop.run_until_complete(self.__parse_agent(sender_id, msg))
 
 
 
@@ -86,44 +59,44 @@ if __name__ == "__main__":
     exit()
 
     print("U1: hi")
-    print("B : " + str(model.parse("hi", userid_1)))
+    print("B : " + str(model.parse(userid_1, "hi")))
 
     print("U1: yes")
-    print("B : " + str(model.parse("yes", userid_1)))
+    print("B : " + str(model.parse(userid_1, "yes")))
 
     print("U1: bye")
-    print("B : " + str(model.parse("bye", userid_1)))
+    print("B : " + str(model.parse(userid_1, "bye")))
 
     print("U1: hi")
-    print("B : " + str(model.parse("hi", userid_1)))
+    print("B : " + str(model.parse(userid_1, "hi")))
 
     print("********** USER SWITCH **********")
 
     print("U2: hi")
-    print("B : " + str(model.parse("hi", userid_2)))
+    print("B : " + str(model.parse(userid_2, "hi")))
 
     print("U2: yes")
-    print("B : " + str(model.parse("yes", userid_2)))
+    print("B : " + str(model.parse(userid_2, "yes")))
 
     print("U2: hi")
-    print("B : " + str(model.parse("hi", userid_2)))
+    print("B : " + str(model.parse(userid_2, "hi")))
 
     print("U2: hi")
-    print("B : " + str(model.parse("hi", userid_2)))
+    print("B : " + str(model.parse(userid_2, "hi")))
 
     print("U2: hi")
-    print("B : " + str(model.parse("hi", userid_2)))
+    print("B : " + str(model.parse(userid_2, "hi")))
 
     print("U2: hi")
-    print("B : " + str(model.parse("hi", userid_2)))
+    print("B : " + str(model.parse(userid_2, "hi")))
 
     print("U2: bye")
-    print("B : " + str(model.parse("bye", userid_2)))
+    print("B : " + str(model.parse(userid_2, "bye")))
 
     print("********** USER SWITCH **********")
 
     print("U1: yes")
-    print("B : " + str(model.parse("yes", userid_1)))
+    print("B : " + str(model.parse(userid_1, "yes")))
 
     print("U1: bye")
-    print("B : " + str(model.parse("bye", userid_1)))
+    print("B : " + str(model.parse(userid_1, "bye")))

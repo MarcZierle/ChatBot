@@ -27,13 +27,13 @@ class TelegramManager():
     def restore(self, path):
         try :
             self.__offset           = globals.restore_object(path, "offset")
-            self.__timeout          = pickle.load(open(path + "timeout.pkl","rb"))
-            self.__allowed_updates  = pickle.load(open(path + "allowed_updates.pkl","rb"))
-            self.__users            = pickle.load(open(path + "users.pkl","rb"))
-            self.__user_status      = pickle.load(open(path + "user_status.pkl","rb"))
-            self.__user_messages    = pickle.load(open(path + "user_messages.pkl","rb"))
-            self.__user_files       = pickle.load(open(path + "user_files.pkl","rb"))
-            self.__chatlog          = pickle.load(open(path + "chatlog.pkl","rb"))
+            self.__timeout          = globals.restore_object(path, "timeout")
+            self.__allowed_updates  = globals.restore_object(path, "allowed_updates")
+            self.__users            = globals.restore_object(path, "users")
+            self.__user_status      = globals.restore_object(path, "user_status")
+            self.__user_messages    = globals.restore_object(path, "user_messages")
+            self.__user_files       = globals.restore_object(path, "user_files")
+            self.__chatlog          = globals.restore_object(path, "chatlog")
         except Exception :
             logging.error("")
 
@@ -92,45 +92,46 @@ class TelegramManager():
 
     def fetch_new_messages(self):
         response = (requests.get(self.__build_get_updates_url())).json()
-        print(json.dumps(response, sort_keys=True, indent=4))
+        #print(json.dumps(response, sort_keys=True, indent=4))
         for message in response["result"] :
-            if response["ok"] == False :
-                logging.debug(response["description"])
-                return False
-            if "text" in message["message"] :
-                uid = message["message"]["from"]["id"]
-                txt = message["message"]["text"]
-                time= message["message"]["date"]+7200
-                user_name = message["message"]["from"]["first_name"]
-                if "last_name" in message["message"]["from"] :
-                    user_name = user_name + " " + message["message"]["from"]["last_name"]
-                if uid in self.__user_messages :
-                    self.__user_messages[uid].append(txt)
-                    self.__chatlog[uid].append(time)
-                    self.__chatlog[uid].append(u"\u03FF"+ txt)
-                else :
-                    self.__user_messages[uid] = [txt]
-                    self.__chatlog[uid] = [time]
-                    self.__chatlog[uid].append(u"\u03FF"+ txt)
-                    self.__users[uid] = (user_name, False)
+            if "message" in message:
+                if response["ok"] == False :
+                    logging.debug(response["description"])
+                    return False
+                if "text" in message["message"] :
+                    uid = message["message"]["from"]["id"]
+                    txt = message["message"]["text"]
+                    time= message["message"]["date"]+7200
+                    user_name = message["message"]["from"]["first_name"]
+                    if "last_name" in message["message"]["from"] :
+                        user_name = user_name + " " + message["message"]["from"]["last_name"]
+                    if uid in self.__user_messages :
+                        self.__user_messages[uid].append(txt)
+                        self.__chatlog[uid].append(time)
+                        self.__chatlog[uid].append(u"\u03FF"+ txt)
+                    else :
+                        self.__user_messages[uid] = [txt]
+                        self.__chatlog[uid] = [time]
+                        self.__chatlog[uid].append(u"\u03FF"+ txt)
+                        self.__users[uid] = (user_name, False)
 
-            elif "document" in message["message"] :
-                uid     = message["message"]["from"]["id"]
-                fileid  = message["message"]["document"]["file_id"]
-                filename= message["message"]["document"]["file_name"]
-                time= message["message"]["date"]+7200
-                user_name = message["message"]["from"]["first_name"]
-                if "last_name" in message["message"]["from"] :
-                    user_name = user_name + " " + message["message"]["from"]["last_name"]
-                if uid in self.__user_files :
-                    self.__user_files[uid].append((fileid, filename))
-                    self.__chatlog[uid].append(time)
-                    self.__chatlog[uid].append(u"\u03FF"+ "[File with name " + filename + " sent.]")
-                else :
-                    self.__user_files[uid] = [(fileid, filename)]
-                    self.__chatlog[uid] = [time]
-                    self.__chatlog[uid].append(u"\u03FF"+ "[File with name " + filename + " sent.]")
-                    self.__users[uid] = (user_name, False)
+                elif "document" in message["message"] :
+                    uid     = message["message"]["from"]["id"]
+                    fileid  = message["message"]["document"]["file_id"]
+                    filename= message["message"]["document"]["file_name"]
+                    time= message["message"]["date"]+7200
+                    user_name = message["message"]["from"]["first_name"]
+                    if "last_name" in message["message"]["from"] :
+                        user_name = user_name + " " + message["message"]["from"]["last_name"]
+                    if uid in self.__user_files :
+                        self.__user_files[uid].append((fileid, filename))
+                        self.__chatlog[uid].append(time)
+                        self.__chatlog[uid].append(u"\u03FF"+ "[File with name " + filename + " sent.]")
+                    else :
+                        self.__user_files[uid] = [(fileid, filename)]
+                        self.__chatlog[uid] = [time]
+                        self.__chatlog[uid].append(u"\u03FF"+ "[File with name " + filename + " sent.]")
+                        self.__users[uid] = (user_name, False)
 
         if len(response["result"]) > 0 :
             self.__offset = response["result"][-1]["update_id"] + 1
@@ -182,7 +183,7 @@ class TelegramManager():
         telegram_file_path = response["result"]["file_path"]
         url_download = self.__build_download_file_url(telegram_file_path)
         response = requests.get(url_download)
-        filepath = self.__fix_file_path(path)
+        filepath = globals.fix_file_path(path, mkdir=True)
         open(path + filename, "wb").write(response.content)
         return True
 
@@ -196,7 +197,7 @@ class TelegramManager():
         return self.__chatlog
 
     def store_chatlog(self,path) :
-        path = self.__fix_file_path(path)
+        path = globals.fix_file_path(path, mkdir=True)
         for userid in self.__chatlog :
             if self.__users[userid][1] == False :
                 f = open(path + str(userid) + ".txt","a+")

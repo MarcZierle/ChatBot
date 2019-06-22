@@ -8,8 +8,11 @@ env
 *.sh
 !train_rasa_model.sh
 !rasa/chatito/generate_samples.sh
+*.png
+*.html
 
 rasa/models/basic_model/*
+storage/*
 
 *.pkl
 

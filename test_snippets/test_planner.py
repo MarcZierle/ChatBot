@@ -1,7 +1,7 @@
 from planner.day import Day
 from planner.event import Event
-import planner.scheduler as scheduler
-from planner.scheduler import Scheduler
+import planner.planner as planner
+from planner.planner import Planner
 
 import googledistancematrix as gdm
 from googledistancematrix import querent
@@ -13,7 +13,7 @@ settings.init()
 gdm_querent = gdm.querent.Querent( api_key=settings.GOOGLE_DISTANCE_MATRIX_API_KEY )
 gdm_querent.set_travel_mode(querent.TravelMode.TRANSIT)
 
-p = Scheduler()
+p = Planner()
 
 p.set_home("Str d Pariser Kommune 30")
 p.set_planning_times(

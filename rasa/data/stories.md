@@ -12,9 +12,19 @@
     - action_utter_confirm
     - action_restart
 
-## slot filling no recognized
+## TEST: slot filling no recognized
 * save_event
     - utter_location_not_found
+    - action_restart
+
+## TEST: time entity
+* get_time{"time": "set"}
+    - action_utter_time
+    - action_restart
+
+## TEST: duration entity
+* get_duration{"duration": "set"}
+    - action_utter_duration
     - action_restart
 
 ## fallback story
