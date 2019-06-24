@@ -9,13 +9,11 @@ env
 !train_rasa_model.sh
 !run_help_servers.sh
 !rasa/chatito/generate_samples.sh
-*.png
 *.html
 duckling/
 
 rasa/models/basic_model/*
 storage/*
->>>>>>> lego
 
 *.pkl
 

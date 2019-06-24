@@ -47,7 +47,7 @@ class Planner():
             if not date:
                 raise Exception("Adding a specific event needs a day!")
 
-            day = self.__get_day(date[0], date[1], date[2])[0]
+            day = self.get_day(date[0], date[1], date[2])[0]
             day.add_event(event)
 
         self.__events.append(event)
@@ -290,7 +290,15 @@ class Planner():
         logging.debug("finished export!")
 
 
-    def __get_day(self, day, month, year):
+    def get_time_begin_day(self):
+        return self.__time_begin_day
+
+
+    def get_time_end_day(self):
+        return self.__time_end_day
+
+
+    def get_day(self, day, month, year):
         for d in self.__days:
             if d.get_day() == day and d.get_month() == month and d.get_year() == year:
                 return [d]
@@ -300,7 +308,7 @@ class Planner():
     def __get_next_day(self):
         currDay = dt.datetime.today() + dt.timedelta(days=1) #tomorrow
         while True:
-            yield self.__get_day(currDay.day, currDay.month, currDay.year)[0]
+            yield self.get_day(currDay.day, currDay.month, currDay.year)[0]
             currDay += dt.timedelta(days=1)
 
 

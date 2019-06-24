@@ -44,7 +44,7 @@ class Querent():
             The API key used for querying the Google Distance Matrix API service.
         """
         self.__api_key = api_key
-        self.__travel_mode = TravelMode.WALKING
+        self.set_travel_mode(TravelMode.TRANSIT)
 
 
     def get_api_count(self):
@@ -98,10 +98,26 @@ class Querent():
             "&mode=" +
                 self.__travel_mode +
             time)
-        # escape any character that needs to be
-        query_url = up.quote(query_url, safe='/:?&=.,+-_%|') # characters to be preserved when escaping the url
 
         return self.__send_url_request(query_url)
+
+
+    def get_place_address(self, place):
+        query_url = ("https://maps.googleapis.com/maps/api/place/findplacefromtext/"
+            + "json?"
+            + "key=" + self.__api_key
+            + "&inputtype=textquery"
+            + "&language=en"
+            + "&fields=formatted_address"
+            + "&input=" + place
+            )
+
+        response = self.__send_url_request(query_url)
+
+        if response['status'] == "OK":
+            return response['candidates'][0]['formatted_address']
+        else:
+            return None
 
 
     def set_travel_mode(self, mode):
@@ -122,6 +138,8 @@ class Querent():
             JSON-object
                 A JSON-object / dictionary of the response.
         """
+        # escape any character that needs to be
+        url_str = up.quote(url_str, safe='/:?&=.,+-_%|') # characters to be preserved when escaping the url
         response = ur.urlopen(url_str)
         Querent.__api_count = Querent.__api_count + 1
         #print(url_str)

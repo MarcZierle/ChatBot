@@ -12,6 +12,7 @@ settings.init()
 
 from settings import tel_man, rasa_model
 
+
 chat_save_it = 0
 while True:
 #    try:

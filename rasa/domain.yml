@@ -13,17 +13,25 @@ intents:
     - deny
     - show_plan
     - save_event
-    - get_time
-    - get_duration
+    - gives_time
+    - gives_place
+    - gives_duration
+    - gives_event_name
 
 actions:
     - utter_default
     - utter_greet
+    - utter_need_more_infos
+    - utter_ask_time_known
+    - utter_ask_time
+    - utter_ask_duration
+    - utter_ask_place
+    - utter_ask_event_name
+    - action_save_specific_event
+    - action_save_unspecific_event
     - utter_show_plan
-    - utter_place_not_found
-    - action_utter_confirm
-    - action_utter_time
-    - action_utter_duration
+    - action_show_plan
+    - action_set_time_duration_slot
 
 templates:
     utter_default:
@@ -35,13 +43,28 @@ templates:
         - text: "What's up?"
         - text: "All good?"
 
+    utter_ask_time_known:
+        - text: "Do you know the exact time frame?"
+
+    utter_ask_time:
+        - text: "Please tell me the time frame."
+
+    utter_ask_duration:
+        - text: "Please tell me the event's duration."
+
+    utter_ask_place:
+        - text: "Where will this event take place?"
+
+    utter_ask_event_name:
+        - text: "Please choose a name for this event."
+
     utter_show_plan:
         - text: "Here is your plan."
         - text: "Here your are."
         - text: "There you go."
         - text: "That's what has been scheduled."
 
-    utter_place_not_found:
+    utter_need_more_infos:
         - text: "Sorry. Have you given a location?"
         - text: "I need a location for that."
         - text: "Please give me a location."

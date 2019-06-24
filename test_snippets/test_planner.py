@@ -20,7 +20,7 @@ p.set_planning_times(
     globals.to_minutes(8, 0),
     globals.to_minutes(20, 0)
 )
-p.set_max_events(8)
+p.set_max_events(3)
 
 p.add_event(Event(
     "Kuchenbacken",
@@ -28,7 +28,7 @@ p.add_event(Event(
     start=globals.to_minutes(17,45),
     end=globals.to_minutes(19,00),
     place="Str d Pariser Kommune 30"),
-[8,6,2019])
+[30,6,2019])
 
 p.add_event(Event(
     "Buch lesen",
@@ -36,7 +36,7 @@ p.add_event(Event(
     start=globals.to_minutes(13,20),
     end=globals.to_minutes(14,00),
     place="Erwin Schrödinger Zentrum"),
-[8,6,2019])
+[29,6,2019])
 
 p.add_event(Event(
     "Konzert",
@@ -44,7 +44,7 @@ p.add_event(Event(
     start=globals.to_minutes(19,00),
     end=globals.to_minutes(20,00),
     place="Philharmonie Berlin"),
-[22,6,2019])
+[26,6,2019])
 
 p.add_event(Event(
     "Einkaufen",
@@ -91,5 +91,7 @@ p.add_event(Event(
 p.replan(gdm_querent)
 
 print(p)
+
+p.export_ics("import_planner_draw.ics")
 
 print("Used GDM-API - Calls: " + str(gdm_querent.get_api_count()))

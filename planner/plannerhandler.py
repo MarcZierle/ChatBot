@@ -1,9 +1,8 @@
 import globals
-from scheduler import Scheduler
+from planner.planner import Planner
 
 # relative from rasa/actions/
-__base_path = "storage/schedules/"
-#__base_path = "../../storage/schedules/"
+__base_path = "../storage/schedules/"
 
 def restore(user_id):
     try:
@@ -12,7 +11,7 @@ def restore(user_id):
             str(user_id)
         )
     except Exception:
-        planner = Scheduler()
+        planner = Planner()
         store(user_id, planner)
     return planner
 
