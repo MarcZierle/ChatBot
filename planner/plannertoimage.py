@@ -2,6 +2,7 @@ from PIL import Image, ImageDraw, ImageFont
 import globals
 import datetime
 from datetime import datetime as dt
+import os
 
 class PlannerToImage():
 
@@ -13,7 +14,8 @@ class PlannerToImage():
         self.__first_day    = self.__get_monday(day)
         self.__time_start   = planner.get_time_begin_day()
         self.__time_end     = planner.get_time_end_day()
-        self.__header_font      = ImageFont.truetype("Ubuntu-B.ttf", size=int(PlannerToImage.__HEIGHT/20))
+        path = os.path.dirname(__file__)
+        self.__header_font      = ImageFont.truetype(path+"/Dosis-Bold.ttf", size=int(PlannerToImage.__HEIGHT/20))
         self.__subtitle_font    = ImageFont.truetype("Ubuntu-B.ttf", size=int(PlannerToImage.__HEIGHT/49.6))
         self.__top_font         = ImageFont.truetype("Ubuntu-B.ttf", size=int(PlannerToImage.__HEIGHT/60))
         self.__top_font_R       = ImageFont.truetype("Ubuntu-R.ttf", size=int(PlannerToImage.__HEIGHT/60))
@@ -151,8 +153,8 @@ class PlannerToImage():
             fill_color      = (255,120,120)
             outline_color   = (200,50,50)
         else:
-            fill_color      = (120,255,120)
-            outline_color   = (50,200,50)
+            fill_color      = (120,200,120)
+            outline_color   = (50,170,50)
 
         draw.rectangle([(self.events_left+day_num*self.events_width,ev_start_y),
             (self.events_left+day_num*self.events_width+self.events_width,ev_end_y)],

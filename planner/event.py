@@ -24,7 +24,7 @@ class Event():
             self.__duration = duration;
 
         if self.__start >= self.__end and self.__type == Event.EventType.SPECIFIC:
-            raise Exception("End time must be after start time!")
+            raise Exception("End time must be after start time! (start: "+str(start)+"; end: "+str(end)+")")
 
         if not self.__duration and self.__type == Event.EventType.UNSPECIFIC:
             raise Exception("Unspecific event must have a duration!")

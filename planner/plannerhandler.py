@@ -2,24 +2,24 @@ import globals
 from planner.planner import Planner
 
 # relative from rasa/actions/
-__base_path = "../storage/schedules/"
+#__base_path = "../storage/schedules/"
 
-def restore(user_id):
+def restore(path, user_id):
     try:
         planner = globals.restore_object(
-            __base_path,
+            path,
             str(user_id)
         )
     except Exception:
         planner = Planner()
-        store(user_id, planner)
+        store(path, user_id, planner)
     return planner
 
 
-def store(user_id, planner):
+def store(path, user_id, planner):
     globals.store_object(
         planner,
-        __base_path,
+        path,
         str(user_id)
     )
 

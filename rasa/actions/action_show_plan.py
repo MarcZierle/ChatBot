@@ -21,6 +21,7 @@ class ActionShowPlan(Action):
     def name(self) -> Text:
         settings.init_api_keys()
         self.__querent = Querent(settings.GOOGLE_DISTANCE_MATRIX_API_KEY)
+        self.__storage_path = "../storage/schedules/"
         return "action_show_plan"
 
 
@@ -30,11 +31,11 @@ class ActionShowPlan(Action):
 
         userid = str(tracker.current_state()["sender_id"])
 
-        planner = ph.restore(userid)
+        planner = ph.restore(self.__storage_path, userid)
         planner.replan(self.__querent)
-        ph.store(userid, planner)
+        ph.store(self.__storage_path, userid, planner)
 
         PlannerToImage(planner, dt.today()).draw_image("../storage/schedule_images/"+str(userid)+'.png')
-        #dispatcher.utter_message(str(planner))
+        dispatcher.utter_message("/show_plan")
 
         return []

@@ -6,6 +6,8 @@ import time
 from rasa.core.agent import Agent
 from rasa.core.interpreter import RasaNLUInterpreter
 
+from planner import plannerhandler as ph
+
 import settings
 import globals
 settings.init()
@@ -40,6 +42,11 @@ while True:
 
                 response = rasa_model.parse(userid, msg)
                 for resp_part in response:
+                    if "/show_plan" in resp_part['text']:
+                        logging.debug('sending plan image to user')
+                        tel_man.send_file(userid, "storage/schedule_images/"+str(userid)+".png")
+                        continue
+
                     tel_man.send_message(userid, resp_part['text'])
 
         logging.debug('Messages done for user ' + str(userid))
@@ -54,6 +61,13 @@ while True:
                         settings.TG_DOWNLOADS_PATH + str(userid)
                         + '/', file[1]):
                     response = 'Alright, I got it!'
+
+                    if ".ics" in file[1] or ".ical" in file[1]:
+                        # add events to planner
+                        planner = ph.restore("storage/schedules/", userid)
+                        planner.import_ics(settings.TG_DOWNLOADS_PATH + str(userid)+ '/'+file[1])
+                        ph.store("storage/schedules/", userid, planner)
+                        response = response + '\nI added your events to your plan.'
                 else:
                     response = "Sorry, but I couldn't save that."
 

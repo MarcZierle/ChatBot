@@ -20,6 +20,7 @@ class ActionSaveUnspecificEvent(Action):
     def name(self) -> Text:
         settings.init_api_keys()
         self.__querent = Querent(settings.GOOGLE_DISTANCE_MATRIX_API_KEY)
+        self.__storage_path = "../storage/schedules/"
         return "action_save_unspecific_event"
 
 
@@ -34,22 +35,28 @@ class ActionSaveUnspecificEvent(Action):
         event_name = tracker.latest_message['text']
 
         if place:
-            planner = ph.restore(userid)
+            planner = ph.restore(self.__storage_path, userid)
             planner.add_event(Event(
                 event_name,
                 Event.EventType.UNSPECIFIC,
                 duration=duration,
                 place=place)
             )
-            ph.store(userid, planner)
+            ph.store(self.__storage_path, userid, planner)
 
             (hours,minutes) = globals.to_hours(duration)
             if hours == 0:
                 duration = str(minutes) + " minutes"
             elif minutes > 0:
-                duration = str(hours) + " hours and " + str(minutes) + " minutes"
+                if hours > 1:
+                    duration = str(hours) + " hours and " + str(minutes) + " minutes"
+                else:
+                    duration = str(hours) + " hour and " + str(minutes) + " minutes"
             else:
-                duration = str(hours) + " hours"
+                if hours > 1:
+                    duration = str(hours) + " hours"
+                else:
+                    duration = str(hours) + " hour"
 
             response = ("Alright. I'm planning the event "
                 + event_name

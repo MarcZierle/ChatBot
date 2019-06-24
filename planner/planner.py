@@ -48,6 +48,7 @@ class Planner():
                 raise Exception("Adding a specific event needs a day!")
 
             day = self.get_day(date[0], date[1], date[2])[0]
+            day.remove_unspecific()
             day.add_event(event)
 
         self.__events.append(event)
@@ -242,22 +243,40 @@ class Planner():
                 end   = ics_event.decoded('dtend')
                 place = ics_event.get('location')
 
+                logging.debug("importing event " + title)
+
                 #print(ics_event.decoded('dtstamp'))
-                #print(ics_event.get('rrule')['UNTIL'][0])
+                rrule = ics_event.get('rrule')
+                if rrule:
+                    rrule_last = rrule['UNTIL'][0]
+                    curr_day = start
 
-                new_event = Event(
-                    title,
-                    Event.EventType.SPECIFIC,
-                    start=globals.to_minutes(start.hour, start.minute),
-                    end=globals.to_minutes(end.hour, end.minute),
-                    place=place
-                )
+                    new_event = Event(
+                        title,
+                        Event.EventType.SPECIFIC,
+                        start=globals.to_minutes(start.hour, start.minute),
+                        end=globals.to_minutes(end.hour, end.minute),
+                        place=place
+                    )
 
-                # try/except bc of colliding events -> should at least raise an error msg or sth.
-                try:
-                    self.add_event(new_event, [start.day, start.month, start.year])
-                except:
-                    continue
+                    while curr_day <= rrule_last:
+                        # try/except bc of colliding events -> should at least raise an error msg or sth.
+                        logging.debug("importing recurring event " + title + " on " + str(curr_day))
+                        try:
+                            self.add_event(new_event, [curr_day.day, curr_day.month, curr_day.year])
+                        except Exception:
+                            pass
+                        finally:
+                            if 'WEEKLY' in rrule['FREQ'][0]:
+                                curr_day = curr_day + dt.timedelta(days=7)
+                            else:
+                                break
+                else:
+                    # try/except bc of colliding events -> should at least raise an error msg or sth.
+                    try:
+                        self.add_event(new_event, [start.day, start.month, start.year])
+                    except:
+                        continue
 
         ics_file.close()
         logging.debug("finished import!")
