@@ -10,9 +10,12 @@ from planner.event import Event
 import planner.planner as planner
 from planner.planner import Planner
 from planner import plannerhandler as ph
+from planner.plannertoimage import PlannerToImage
 
 import globals, settings
 from googledistancematrix.querent import Querent
+
+from datetime import datetime as dt
 
 class ActionShowPlan(Action):
     def name(self) -> Text:
@@ -31,6 +34,7 @@ class ActionShowPlan(Action):
         planner.replan(self.__querent)
         ph.store(userid, planner)
 
-        dispatcher.utter_message(str(planner))
+        PlannerToImage(planner, dt.today()).draw_image("../storage/schedule_images/"+str(userid)+'.png')
+        #dispatcher.utter_message(str(planner))
 
         return []
