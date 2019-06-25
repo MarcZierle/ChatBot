@@ -31,7 +31,13 @@ class ActionSaveSpecificEvent(Action):
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
         userid = str(tracker.current_state()["sender_id"])
-        place = self.__querent.get_place_address(tracker.get_slot('place'))
+
+        try:
+            place = self.__querent.get_place_address(tracker.get_slot('place'))
+        except Exception:
+            dispatcher.utter_message("Location Error")
+            return []
+
 
         time = json.loads(tracker.get_slot('time').replace("'", '"'))
         if time['additional_info']['type'] == 'interval':

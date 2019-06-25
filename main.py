@@ -33,13 +33,6 @@ while True:
 
         if msgs:
             for msg in msgs:
-                if len(msg) < 50:
-                    logging.debug('Processing message "' + msg + '"'
-                            )
-                else:
-                    logging.debug('Processing message "' + msg[:50]
-                            + '"')
-
                 response = rasa_model.parse(userid, msg)
                 for resp_part in response:
                     if "/show_plan" in resp_part['text']:

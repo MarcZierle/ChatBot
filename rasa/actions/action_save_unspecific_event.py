@@ -29,7 +29,13 @@ class ActionSaveUnspecificEvent(Action):
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
         userid = tracker.current_state()["sender_id"]
-        place = self.__querent.get_place_address(tracker.get_slot('place'))
+
+        try:
+            place = self.__querent.get_place_address(tracker.get_slot('place'))
+        except Exception:
+            dispatcher.utter_message("Location Error")
+            return []
+        
         duration = int(ast.literal_eval(tracker.get_slot('duration'))['additional_info']['normalized']['value']/60)
 
         event_name = tracker.latest_message['text']
