@@ -1,20 +1,23 @@
 import ./data/place.chatito
+import ./data/time.chatito
 
 %[save_event]('training': '10000', 'testing': '100')
-    *[60] ~[hi?] ~[please?] ~[save?] ~[an event?] ~[at] @[place] ~[thanks?]
-    *[20] ~[at] @[place]
-    *[10] ~[save] ~[at] @[place]
+    *[60] ~[hi?] ~[botname?] ~[please?] ~[save?] ~[an event?] ~[place_at] @[place] ~[thanks?]
+    *[20] ~[place_at] @[place]
+    *[10] ~[save] ~[place_at] @[place]
     *[10] @[place]
 
 
 ~[thanks]
     thank you
+    thanks
     thx
 
-~[at]
+~[place_at]
     in
     by
     near
+    at
     in the area of
 
 ~[an event]
@@ -34,9 +37,120 @@ import ./data/place.chatito
     hey
     hello
     how are you
+    hey there
 
 ~[please]
+    please
     would you kindly
+    will you
     could you please
+    can you
     could you
     is it possible that you
+
+~[botname]
+    Janus
+    janus
+    chatbot
+    chat bot
+    bot
+    telegram bot
+    telegram-bot
+    scheduler
+    schedule bot
+    schedule-bot
+
+%[greet]('training': '10000', 'testing': '100')
+    ~[greetings] ~[botname?]
+    ~[hi] ~[greetings?] ~[botname?]
+    ~[hi] ~[whats up]
+    ~[greetings] ~[whats up]
+    ~[hi] ~[greetings] ~[whats up]
+
+~[greetings]
+    greetings
+    good morning
+    good afternoon
+    good day
+    good night
+    morning
+
+~[whats up]
+    how are you
+    whats up
+    how are you doing
+    how is it going
+    are you there
+    how are things going
+    are you around
+    whatsup
+    sup
+    are you around?
+
+
+%[affirm]('training': '10000', 'testing': '100')
+    yes
+    ok
+    okay
+    exactly
+    correct
+    ja
+    yes exactly
+    sure
+
+%[deny]('training': '10000', 'testing': '100')
+    *[20] ~[no]
+    ~[no] ~[please?] ~[its not ok?]
+    ~[please?] ~[no] ~[its not ok?]
+    *[20] ~[its not ok]
+
+~[no]
+    no
+    nope
+    not really
+    that's not right
+    incorrect
+    don't do that
+
+~[its not ok]
+    i don't want that
+    didnt meant that
+    dont mean that
+    that's not what i want
+    that's not correct
+    that's wrong
+    it's not good
+    that is wrong
+    its not ok
+    its not correct
+
+%[show_plan]('training': '10000', 'testing': '100')
+    ~[hi?] ~[botname?] ~[please?] ~[show] ~[me?] ~[my?] ~[plan] ~[please?] ~[thanks?]
+
+~[show]
+    show
+    download
+    display
+    view
+
+~[my]
+    my
+    the
+
+~[plan]
+    plan
+    timetable
+    schedule 
+    calendar
+    list
+    list of events
+    program
+
+%[gives_time]('training': '10000', 'testing': '100')
+    ~[time_at] @[time] 
+
+%[gives_place]('training': '10000', 'testing': '100')
+    ~[place_at?] @[place]
+
+%[gives_duration]('training': '10000', 'testing': '100')
+    ~[for?] @[time_duration]
