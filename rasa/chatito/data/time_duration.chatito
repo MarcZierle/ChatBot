@@ -1,10 +1,9 @@
-import ./time.chatito
-
 @[time_duration]
-    ~[minute]~[ ?]~[minute_word]
     ~[minute]~[minute_word]
-    ~[hour]~[ ?]~[hour_word]
-    ~[hour]~[ ?]~[hour_word] ~[minute]~[ ?]~[minute_word]
+    ~[minute] ~[minute_word]
+    ~[minute]~[minute_word]
+    ~[hour] ~[hour_word]
+    ~[hour] ~[hour_word] ~[minute] ~[minute_word]
 
 ~[minute_word]
     min
