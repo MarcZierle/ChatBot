@@ -30,15 +30,21 @@ class ActionSaveUnspecificEvent(Action):
 
         userid = tracker.current_state()["sender_id"]
 
+        #print(str(tracker.current_state()))
+
         try:
-            place = self.__querent.get_place_address(tracker.get_slot('place'))
+            #print("place slot: " + str(tracker.get_slot('place')))
+            old_place = tracker.get_slot('place')
+            #print("old_place: " + str(old_place))
+            place = self.__querent.get_place_address(str(old_place))
         except Exception:
-            dispatcher.utter_message("Location Error")
-            return []
-        
+           dispatcher.utter_message("Uh oh, I probably made at mistake processing the location you entered, but you may try again :)")
+           return []
+
         duration = int(ast.literal_eval(tracker.get_slot('duration'))['additional_info']['normalized']['value']/60)
 
-        event_name = tracker.latest_message['text']
+        #event_name = tracker.latest_message['text']
+        event_name = tracker.get_slot('event_name')
 
         if place:
             planner = ph.restore(self.__storage_path, userid)
@@ -71,6 +77,6 @@ class ActionSaveUnspecificEvent(Action):
 
             dispatcher.utter_message(response)
         else:
-            dispatcher.utter_message("I'm sorry but I couldn't find the place you entered :(")
+            dispatcher.utter_message("I'm sorry but I couldn't find \""+old_place+"\" entered :(")
 
         return []

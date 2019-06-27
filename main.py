@@ -14,6 +14,8 @@ settings.init()
 
 from settings import tel_man, rasa_model
 
+user_gave_event_name = {}
+
 
 chat_save_it = 0
 while True:
@@ -33,14 +35,26 @@ while True:
 
         if msgs:
             for msg in msgs:
-                response = rasa_model.parse(userid, msg)
+                if userid in user_gave_event_name.keys() and not user_gave_event_name[userid]:
+                    response = rasa_model.parse(userid, msg)
+                else:
+                    logging.debug('this message is interpreted as an event name.')
+                    user_gave_event_name[userid] = False
+                    response = rasa_model.parse(userid, '/gives_event_name{"event_name":"'+msg+'"}')
+
                 for resp_part in response:
-                    if "/show_plan" in resp_part['text']:
+                    resp_part = resp_part['text']
+                    if "/show_plan" in resp_part:
                         logging.debug('sending plan image to user')
                         tel_man.send_file(userid, "storage/schedule_images/"+str(userid)+".png")
                         continue
 
-                    tel_man.send_message(userid, resp_part['text'])
+                    if "/ask_event_name" in resp_part:
+                        logging.debug('awaiting event name from user in next message.')
+                        user_gave_event_name[userid] = True
+                        resp_part = resp_part.replace("/ask_event_name", "", 1)
+
+                    tel_man.send_message(userid, resp_part)
 
         logging.debug('Messages done for user ' + str(userid))
 

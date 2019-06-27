@@ -5,6 +5,8 @@ slots:
         type: text
     duration:
         type: text
+    event_name:
+        type: text
 
 intents:
     - out_of_scope
@@ -45,18 +47,20 @@ templates:
 
     utter_ask_time_known:
         - text: "Do you know the exact time frame?"
+        - text: "Can you say when this event will start and end?"
 
     utter_ask_time:
         - text: "Please tell me the time frame."
 
     utter_ask_duration:
         - text: "Please tell me the event's duration."
+        - text: "How long does this event take?"
 
     utter_ask_place:
         - text: "Where will this event take place?"
 
     utter_ask_event_name:
-        - text: "Please choose a name for this event."
+        - text: "/ask_event_name Please choose a name for this event."
 
     utter_show_plan:
         - text: "Here is your plan."

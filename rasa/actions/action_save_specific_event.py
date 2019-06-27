@@ -33,20 +33,26 @@ class ActionSaveSpecificEvent(Action):
         userid = str(tracker.current_state()["sender_id"])
 
         try:
+            old_place = place
             place = self.__querent.get_place_address(tracker.get_slot('place'))
         except Exception:
-            dispatcher.utter_message("Location Error")
+            dispatcher.utter_message("Uh oh, I probably made at mistake processing the location you entered, but you may try again :)")
+            return []
+
+        try:
+            time = json.loads(tracker.get_slot('time').replace("'", '"'))
+            if time['additional_info']['type'] == 'interval':
+                time_start   = dt.strptime(str(time['additional_info']['from']['value']), '%Y-%m-%dT%H:%M:%S.000+02:00')
+                time_end     = dt.strptime(str(time['additional_info']['to']['value']), '%Y-%m-%dT%H:%M:%S.000+02:00')-datetime.timedelta(hours=1)
+            else:
+                dispatcher.utter_message("For planning events using an exact time frame I need a start and an end time.")
+        except Exception:
+            dispatcher.utter_message("Uh oh, I probably made at mistake processing the time you entered, but you may try again :)")
             return []
 
 
-        time = json.loads(tracker.get_slot('time').replace("'", '"'))
-        if time['additional_info']['type'] == 'interval':
-            time_start   = dt.strptime(str(time['additional_info']['from']['value']), '%Y-%m-%dT%H:%M:%S.000+02:00')
-            time_end     = dt.strptime(str(time['additional_info']['to']['value']), '%Y-%m-%dT%H:%M:%S.000+02:00')-datetime.timedelta(hours=1)
-        else:
-            dispatcher.utter_message("For planning events using an exact time frame I need a start and an end time.")
-
-        event_name = tracker.latest_message['text']
+        #event_name = tracker.latest_message['text']
+        event_name = tracker.get_slot('event_name')
 
 
         if place:
@@ -72,6 +78,6 @@ class ActionSaveSpecificEvent(Action):
 
             dispatcher.utter_message(response)
         else:
-            dispatcher.utter_message("I'm sorry but I couldn't find the place you entered :(")
+            dispatcher.utter_message("I'm sorry but I couldn't find \""+old_place+"\" :(")
 
         return []
