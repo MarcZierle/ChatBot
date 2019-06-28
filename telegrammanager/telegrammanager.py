@@ -16,7 +16,7 @@ class TelegramManager():
         self.__api_key = api_key
         self.__offset = 0
         self.__timeout = 100
-        self.__allowed_updates = "message"
+        self.__allowed_updates = "[]"#str(["message", "callback_query"])
 
         self.__users            = {}        #{userid:("Name",Anonymous = False)}
         self.__user_status      = {}
@@ -36,7 +36,7 @@ class TelegramManager():
             self.__user_files       = globals.restore_object(path, "user_files")
             self.__chatlog          = globals.restore_object(path, "chatlog")
         except Exception :
-            logging.error("")
+            logging.error("Could not restore old state")
 
         #logging.debug(self.__user_messages)
 
@@ -59,13 +59,17 @@ class TelegramManager():
             "&allowed_updates=" + self.__allowed_updates
             )
 
-    def __build_send_message_url(self, userid, msg):
-        return ("https://api.telegram.org/bot"
+    def __build_send_message_url(self, userid, msg, keyboard_buttons_text):
+        url = ("https://api.telegram.org/bot"
                  + self.__api_key
                  + "/sendMessage"
                  + "?chat_id=" + str(userid)
                  + "&text=" + msg
                   )
+        if  keyboard_buttons_text != None :
+            url += "&reply_markup=" + self.__dict_to_json({"inline_keyboard": [self.__create_inline_keyboard(keyboard_buttons_text)]})
+        print(url)
+        return url
 
     def __build_send_file_url(self, userid) :
         return ("https://api.telegram.org/bot"
@@ -93,7 +97,7 @@ class TelegramManager():
 
     def fetch_new_messages(self):
         response = (requests.get(self.__build_get_updates_url())).json()
-        #print(json.dumps(response, sort_keys=True, indent=4))
+        print(json.dumps(response, sort_keys=True, indent=4))
         for message in response["result"] :
             if "message" in message:
                 if response["ok"] == False :
@@ -154,8 +158,10 @@ class TelegramManager():
             return files
         return None
 
-    def send_message(self, userid, msg):
-        url = self.__build_send_message_url(userid, msg)
+    
+    #keyboard_buttons_text is an array of strings
+    def send_message(self, userid, msg, keyboard_buttons_text = None):
+        url = self.__build_send_message_url(userid, msg, keyboard_buttons_text)
         response = requests.post(url)
         if response.status_code == 200 :
             current_time = int((datetime.now() - datetime(1970, 1, 1)).total_seconds())   #strftime('%Y-%m-%d %H:%M:%S')
@@ -250,3 +256,26 @@ class TelegramManager():
                 return True
             seen.add(h)
         return False
+
+    def __dict_to_json(self,input_dict) :
+        return json.dumps(input_dict, indent=2)#default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
+    #def create_reply_keyboard(
+
+    def answer_callback_query(self, callback_query_id, msg = None) :
+        url = self.__build_send_message_url(userid, msg, keyboard_buttons_text)
+        response = requests.post(url)
+        if response.status_code == 200 and msg != None :
+            current_time = int((datetime.now() - datetime(1970, 1, 1)).total_seconds())   #strftime('%Y-%m-%d %H:%M:%S')
+            self.__chatlog[userid].append(current_time)
+            self.__chatlog[userid].append(u"\u037D" + msg)
+
+            
+    def __create_inline_keyboard(self, keyboard_buttons_text) :
+        inline_keyboard = []
+        num_of_iteration = 0
+        for button_text in keyboard_buttons_text :
+            button = {"text": button_text, "callback_data": str(num_of_iteration)}
+            inline_keyboard.append(button)
+            num_of_iteration += 1
+        return inline_keyboard

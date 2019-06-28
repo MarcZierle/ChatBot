@@ -1,19 +1,19 @@
 from dotenv import load_dotenv
 from pathlib import Path
 import os, logging, atexit
-import tensorflow as tf
+#import tensorflow as tf
 
 import globals
 from globals import fix_file_path
 
 from telegrammanager.telegrammanager import TelegramManager
-from rasamodelhandler import RasaModelHandler
+#from rasamodelhandler import RasaModelHandler
 
 TG_STORAGE_PATH     = fix_file_path("./storage/telegram/", True)
 TG_CHATLOG_PATH     = fix_file_path("./storage/chatlogs/", True)
 TG_DOWNLOADS_PATH   = fix_file_path("./storage/downloads/", True)
 
-RASA_MODEL_PATH     = fix_file_path("./rasa/models/basic_model/", False)
+#RASA_MODEL_PATH     = fix_file_path("./rasa/models/basic_model/", False)
 
 
 def init_api_keys():
@@ -21,8 +21,8 @@ def init_api_keys():
     load_dotenv(dotenv_path=env_path, verbose=True)
     #load_dotenv(".env", verbose=True)
 
-    global GOOGLE_DISTANCE_MATRIX_API_KEY, TELEGRAM_API_KEY
-    GOOGLE_DISTANCE_MATRIX_API_KEY  = os.getenv("GOOGLE_DISTANCE_MATRIX_API_KEY")
+    global TELEGRAM_API_KEY#, GOOGLE_DISTANCE_MATRIX_API_KEY
+#    GOOGLE_DISTANCE_MATRIX_API_KEY  = os.getenv("GOOGLE_DISTANCE_MATRIX_API_KEY")
     TELEGRAM_API_KEY                = os.getenv("TELEGRAM_API_KEY")
 
 
@@ -30,14 +30,14 @@ def init():
     init_api_keys()
 
     # surpress TensorFlow Warnings
-    tf.logging.set_verbosity(tf.logging.FATAL)
+    # tf.logging.set_verbosity(tf.logging.FATAL)
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
     logging.basicConfig(level=logging.DEBUG)
     logging.getLogger("planner").setLevel(logging.INFO)
     logging.getLogger("requests").setLevel(logging.WARNING)
     logging.getLogger("urllib3").setLevel(logging.WARNING)
-    logging.getLogger("rasa").setLevel(logging.INFO)
+#    logging.getLogger("rasa").setLevel(logging.INFO)
     atexit.register(exit_handler)
 
     # if possible restore TelegramManager state
@@ -51,10 +51,10 @@ def init():
     logging.debug("loading done!")
 
     # if possible restore RASA-Model
-    logging.debug("loading rasa model...")
-    global rasa_model
-    rasa_model = RasaModelHandler(RASA_MODEL_PATH)
-    logging.debug("loading done!")
+#    logging.debug("loading rasa model...")
+#    global rasa_model
+#    rasa_model = RasaModelHandler(RASA_MODEL_PATH)
+#    logging.debug("loading done!")
 
 
 def exit_handler():
