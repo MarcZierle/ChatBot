@@ -3,18 +3,21 @@ from pathlib import Path
 import os, logging, atexit
 import tensorflow as tf
 
+import globals
+from globals import fix_file_path
+
 from telegrammanager.telegrammanager import TelegramManager
 from rasamodelhandler import RasaModelHandler
 
-TG_STORAGE_PATH     = "./storage/telegram/"
-TG_CHATLOG_PATH     = "./storage/chatlogs/"
-TG_DOWNLOADS_PATH   = "./storage/downloads/"
+TG_STORAGE_PATH     = fix_file_path("./storage/telegram/", True)
+TG_CHATLOG_PATH     = fix_file_path("./storage/chatlogs/", True)
+TG_DOWNLOADS_PATH   = fix_file_path("./storage/downloads/", True)
 
-RASA_MODEL_PATH     = "./rasa/models/basic_model/"
+RASA_MODEL_PATH     = fix_file_path("./rasa/models/basic_model/", False)
 
 
 def init_api_keys():
-    env_path = Path('/home/marc/University/Chatbot') / '.env'
+    env_path = fix_file_path(os.getcwd() +  '/.env',False)
     load_dotenv(dotenv_path=env_path, verbose=True)
     #load_dotenv(".env", verbose=True)
 

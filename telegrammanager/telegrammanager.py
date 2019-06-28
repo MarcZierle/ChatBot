@@ -24,6 +24,7 @@ class TelegramManager():
         self.__user_files       = {}
         self.__chatlog          = {}
 
+        
     def restore(self, path):
         try :
             self.__offset           = globals.restore_object(path, "offset")
@@ -176,7 +177,6 @@ class TelegramManager():
     def get_file(self, fileid, path, filename) :
         url = self.__build_get_file_url(fileid)
         response = requests.get(url).json()
-        print(json.dumps(response, sort_keys=True, indent=4))
         if response["ok"] == False :
             logging.debug(response["description"])
             return False
