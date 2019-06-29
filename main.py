@@ -18,6 +18,9 @@ from settings import tel_man#, rasa_model
 tel_man.fetch_new_messages()
 tel_man.send_message(127069982, "Does this work?",["Yes","No"])
 tel_man.fetch_new_messages()
+for callback_query in tel_man.get_new_callback_queries(127069982) :
+    #you have to answer a callback_query so the clock icon disappears, don't know why the text stuff doesn't work
+    tel_man.answer_callback_query(callback_query[0], "Okay, you answered: "+callback_query[1])
 
 ##chat_save_it = 0
 ##while True:
