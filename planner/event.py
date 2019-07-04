@@ -9,6 +9,9 @@ class Event():
         TRAVELLING = auto()
 
 
+    num_all_events = 0
+
+
     def __init__(self, name, type, start=0, end=0, duration=0, place="Berlin"):
         self.__name = name
         self.__type = type
@@ -33,6 +36,13 @@ class Event():
             raise Exception("Specific event must have start and end time > 0!")
 
         self.__place = place
+
+        self.__id = Event.num_all_events
+        Event.num_all_events = Event.num_all_events + 1
+
+
+    def get_id(self):
+        return self.__id
 
 
     def get_name(self):

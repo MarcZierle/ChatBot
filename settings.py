@@ -36,7 +36,7 @@ def init():
     logging.getLogger("urllib3").setLevel(logging.WARNING)
     logging.getLogger("rasa").setLevel(logging.INFO)
     atexit.register(exit_handler)
-
+    return
     # if possible restore TelegramManager state
     logging.debug("loading telegram manager...")
     global tel_man

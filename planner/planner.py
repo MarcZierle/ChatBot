@@ -1,4 +1,4 @@
-import logging, datetime as dt
+import datetime as dt
 import numpy as np
 import icalendar
 
@@ -57,19 +57,19 @@ class Planner():
     #  PLANNING-ALGORITHM -- START                                         #
     ########################################################################
     def replan(self, querent):
-        logging.debug("Replaning all events...")
+        globals.debug("Replaning all events...")
         # remove all previously planned (unspecific) events
         [d.remove_unspecific() for d in self.__days]
 
         # mark all events as unplanned
         self.__unplanned_events = [e for e in self.__events if not e.is_specific()]
-        logging.debug("removed all previously planned events")
+        globals.debug("removed all previously planned events")
 
         for currDay in self.__get_next_day():
-            logging.debug("planning events on day " + str(currDay.get_day())+"/"+str(currDay.get_month())+"/"+str(currDay.get_year()))
+            globals.debug("planning events on day " + str(currDay.get_day())+"/"+str(currDay.get_month())+"/"+str(currDay.get_year()))
 
             if currDay.num_specific_events() > 0:
-                logging.debug("day has at least on specific event")
+                globals.debug("day has at least on specific event")
 
                 first_it = True
                 for sp_event in currDay.get_next_specific_event():
@@ -84,7 +84,7 @@ class Planner():
                     if first_it:
                         first_it = False
             else:
-                logging.debug("day has no specific events")
+                globals.debug("day has no specific events")
                 # no specific events for current day
                 self.__unplanned_events = self.__insert_events_to_day(
                     querent,
@@ -103,7 +103,7 @@ class Planner():
             if not self.__unplanned_events:
                 break
 
-        logging.debug("finished planning for all events")
+        globals.debug("finished planning for all events")
         #unplanned_events_str = ["- " + e.get_name() for e in self.__unplanned_events]
         #if not unplanned_events_str:
         #    print("All events could be planned!")
@@ -112,7 +112,7 @@ class Planner():
         #    for s in unplanned_events_str:
         #        print("    " + s)
         #print("\n")
-        logging.debug("Replaning Done!")
+        globals.debug("Replaning Done!")
 
 
     # trys to insert given events after/before given first_event
@@ -122,11 +122,11 @@ class Planner():
     def __insert_events_to_day(self, querent, events, day, first_event, insert_before=True):
         last_event = first_event
 
-        logging.debug("evolving from event " + first_event.get_name())
+        globals.debug("evolving from event " + first_event.get_name())
         if insert_before:
-            logging.debug("inserting next events before")
+            globals.debug("inserting next events before")
         else:
-            logging.debug("inserting next events after")
+            globals.debug("inserting next events after")
 
         while events:
             if day.num_events() >= self.__max_events:
@@ -135,7 +135,7 @@ class Planner():
             event_places = [e.get_place() for e in events]
             last_place = last_event.get_place()
 
-            logging.debug("starting api query...")
+            globals.debug("starting api query...")
             if insert_before:
                 arr_time = last_event.get_start() - (last_event.get_start()%15)
                 results = QuerentParser(querent.get_travel_details(
@@ -156,12 +156,12 @@ class Planner():
                         globals.to_hours(dep_time)[0], globals.to_hours(dep_time)[1]
                     )
                 ))
-            logging.debug("received api response!")
+            globals.debug("received api response!")
 
             durations = results.get_durations()
 
             for i in range(len(durations)):
-                logging.debug("durations: " + str(durations))
+                globals.debug("durations: " + str(durations))
 
                 closest_event = durations.index(min(durations))
                 travel_time = results.get_durations()[closest_event]
@@ -179,15 +179,15 @@ class Planner():
 
                 if (end_time >= self.__time_end_day
                 or start_time < self.__time_begin_day):
-                    logging.debug("reached daily time limits!")
+                    globals.debug("reached daily time limits!")
                     durations[closest_event] = float("inf")
                     if min(durations) == float("inf"):
-                        logging.debug("no event fits between other event and time limits!")
+                        globals.debug("no event fits between other event and time limits!")
                         return events
                     continue
 
                 try:
-                    logging.debug("trying to insert event " + events[closest_event].get_name())
+                    globals.debug("trying to insert event " + events[closest_event].get_name())
 
                     day.add_event(
                         events[closest_event],
@@ -195,7 +195,7 @@ class Planner():
                         end_time
                     )
 
-                    logging.debug("inserted event!")
+                    globals.debug("inserted event!")
 
                     if travel_time > 0:
                         day.add_event(
@@ -210,7 +210,7 @@ class Planner():
                             travel_start + travel_time
                         )
 
-                    logging.debug("removing inserted event")
+                    globals.debug("removing inserted event")
                     last_event = events[closest_event]
                     del events[closest_event]
 
@@ -218,10 +218,10 @@ class Planner():
 
                 except:
                     # collision exception while adding new event
-                    logging.debug("two events collided! trying to insert next best event")
+                    globals.debug("two events collided! trying to insert next best event")
                     durations[closest_event] = float("inf")
                     if min(durations) == float("inf"):
-                        logging.debug("no event fits between other events!")
+                        globals.debug("no event fits between other events!")
                         return events
                     continue
 
@@ -232,7 +232,7 @@ class Planner():
 
 
     def import_ics(self, path):
-        logging.debug("importing ics file from " + path + " ...")
+        globals.debug("importing ics file from " + path + " ...")
         ics_file = open(path,'rb')
         ical = icalendar.Calendar.from_ical(ics_file.read())
 
@@ -243,7 +243,7 @@ class Planner():
                 end   = ics_event.decoded('dtend')
                 place = ics_event.get('location')
 
-                logging.debug("importing event " + title)
+                globals.debug("importing event " + title)
 
                 #print(ics_event.decoded('dtstamp'))
                 rrule = ics_event.get('rrule')
@@ -261,7 +261,7 @@ class Planner():
 
                     while curr_day <= rrule_last:
                         # try/except bc of colliding events -> should at least raise an error msg or sth.
-                        logging.debug("importing recurring event " + title + " on " + str(curr_day))
+                        globals.debug("importing recurring event " + title + " on " + str(curr_day))
                         try:
                             self.add_event(new_event, [curr_day.day, curr_day.month, curr_day.year])
                         except Exception:
@@ -279,11 +279,11 @@ class Planner():
                         continue
 
         ics_file.close()
-        logging.debug("finished import!")
+        globals.debug("finished import!")
 
 
     def export_ics(self, path):
-        logging.debug("exporting ics file to " + path + " ...")
+        globals.debug("exporting ics file to " + path + " ...")
         cal = icalendar.Calendar()
 
         for d in self.__days:
@@ -306,7 +306,7 @@ class Planner():
         ics_file = open(path, 'wb')
         ics_file.write(cal.to_ical())
         ics_file.close()
-        logging.debug("finished export!")
+        globals.debug("finished export!")
 
 
     def get_time_begin_day(self):
@@ -322,6 +322,36 @@ class Planner():
             if d.get_day() == day and d.get_month() == month and d.get_year() == year:
                 return [d]
         return [self.add_day(day, month, year)]
+
+
+    def get_day_event_names(self, day, month, year):
+        return self.__get_day_event_names(self.get_day(day, month, year)[0])
+
+
+    def __get_day_event_names(self, day):
+        if not day.num_events():
+            return None
+        return day.get_event_names()
+
+
+    def remove_event_from_day(self, day, month, year, event_nr):
+        self.__remove_event_from_day(self.get_day(day, month, year)[0], event_nr)
+
+
+    def __remove_event_from_day(self, day, event_nr):
+        event_id = day.remove_event(event_nr)
+        self.__remove_event(event_id)
+
+
+    def __remove_event(self, event_id):
+        if not event_id:
+            return
+
+        for i in range(len(self.__events)):
+            e = self.__events[i]
+            if e.get_id() == event_id:
+                del self.__events[i]
+                break
 
 
     def __get_next_day(self):

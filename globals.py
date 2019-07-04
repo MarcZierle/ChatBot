@@ -1,4 +1,4 @@
-import pickle, logging, os
+import pickle, logging, inspect, os
 
 
 def to_minutes(hours, minutes):
@@ -33,3 +33,16 @@ def restore_object(path, name):
     except FileNotFoundError :
         #logging.error("Globals: restore_object: Restore File or Folder not found. Your path: \n" + path)
         raise Exception()
+
+
+# from https://stackoverflow.com/a/5500099
+logger=logging.getLogger(__name__)
+def debug(msg):
+    frame,filename,line_number,function_name,lines,index=inspect.getouterframes(
+        inspect.currentframe())[1]
+    line=lines[0]
+    indentation_level=line.find(line.lstrip())
+    logger.debug('{i} {m}'.format(
+        i='.'*indentation_level,
+        m=msg
+        ))
