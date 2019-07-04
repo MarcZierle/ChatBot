@@ -21,7 +21,7 @@ tel_man.fetch_new_messages()
 for callback_query in tel_man.get_new_callback_queries(127069982) :
     #you have to answer a callback_query so the clock icon disappears, don't know why the text stuff doesn't work
     tel_man.answer_callback_query(callback_query[0], "Okay, you answered: "+callback_query[1])
-
+tel_man.store_chatlog(settings.TG_CHATLOG_PATH)
 ##chat_save_it = 0
 ##while True:
 ###    try:

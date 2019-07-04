@@ -23,6 +23,7 @@ class TelegramManager():
         self.__user_messages            = {}        #{userid: [message,...]}
         self.__user_files               = {}        #{userid: [(fileid, filename),...]}
         self.__user_callback_queries    = {}        #{userid: [(callback_query_id, message),...]}
+        self.__allowed_message_ids      = set()     #{message_id,...}
         self.__chatlog                  = {}        #{userid: [time, message, time, message, ...]}
 
         
@@ -36,6 +37,7 @@ class TelegramManager():
             self.__user_messages            = globals.restore_object(path, "user_messages")
             self.__user_files               = globals.restore_object(path, "user_files")
             self.__user_callback_queries    = globals.restore_object(path, "user_callback_queries")
+            self.__allowed_message_ids      = globals.restore_object(path, "allowed_message_ids")
             self.__chatlog                  = globals.restore_object(path, "chatlog")
         except Exception :
             logging.error("Could not restore old state")
@@ -50,6 +52,7 @@ class TelegramManager():
         globals.store_object(self.__user_messages,          path, "user_messages")
         globals.store_object(self.__user_files,             path, "user_files")
         globals.store_object(self.__user_callback_queries,  path, "user_callback_queries")
+        globals.store_object(self.__allowed_message_ids,    path, "allowed_message_ids")    
         globals.store_object(self.__chatlog,                path, "chatlog")
 
 
@@ -71,7 +74,9 @@ class TelegramManager():
                  + "&text=" + msg
                   )
         if  keyboard_buttons_text != None :
-            url += "&reply_markup=" + self.__dict_to_json({"inline_keyboard": [self.__create_inline_keyboard(keyboard_buttons_text)]})
+            inline_keyboard = self.__dict_to_json({"inline_keyboard": self.__create_inline_keyboard(keyboard_buttons_text)})
+            url += "&reply_markup=" + inline_keyboard
+        print(url)
         return url
 
 
@@ -82,8 +87,6 @@ class TelegramManager():
                  + "?callback_query_id=" + callback_query_id)
         if msg != None :
                url += "&text=" + msg
-
-        print(url)
         return url
 
                
@@ -117,7 +120,7 @@ class TelegramManager():
 
     def fetch_new_messages(self):
         response = (requests.get(self.__build_get_updates_url())).json()
-        #print(json.dumps(response, sort_keys=True, indent=4))
+        print(json.dumps(response, sort_keys=True, indent=4))
         if response["ok"] == False :
             logging.error("Response to fetch_new_messages is not OK")
             return False
@@ -132,19 +135,20 @@ class TelegramManager():
                     txt         = message["message"]["text"]
                     # + 7200 because Telegram gives time in UTC, should be changed later
                     time        = message["message"]["date"]+7200
-                    user_name   = message["message"]["from"]["first_name"]
-                    if "last_name" in message["message"]["from"] :
-                        user_name = user_name + " " + message["message"]["from"]["last_name"]
-                    if uid in self.__user_messages :
-                        self.__user_messages[uid].append(txt)
-                        self.__chatlog[uid].append(time)
-                        self.__chatlog[uid].append(u"\u03FF"+ txt)
-                    else :
+
+                    if uid not in self.__user_messages :
+                        self.__user_messages[uid]    = []
+                    if uid not in self.__chatlog :
+                        self.__chatlog[uid]         = []
+                    if uid not in self.__users :
+                        user_name   = message["message"]["from"]["first_name"]
+                        if "last_name" in message["message"]["from"] :
+                            user_name = user_name + " " + message["message"]["from"]["last_name"]
                         self.__users[uid]           = (user_name, False)
-                        self.__user_messages[uid]   = [txt]
-                        self.__chatlog[uid]         = [time]
-                        self.__chatlog[uid].append(u"\u03FF"+ txt)
                         
+                    self.__user_messages[uid].append(txt)
+                    self.__chatlog[uid].append(time)
+                    self.__chatlog[uid].append(u"\u03FF"+ txt)                        
 
                 elif "document" in message["message"] :
                     uid         = message["message"]["from"]["id"]
@@ -152,38 +156,47 @@ class TelegramManager():
                     filename    = message["message"]["document"]["file_name"]
                     # + 7200 because Telegram gives time in UTC, should be changed later
                     time        = message["message"]["date"]+7200
-                    user_name   = message["message"]["from"]["first_name"]
-                    if "last_name" in message["message"]["from"] :
-                        user_name = user_name + " " + message["message"]["from"]["last_name"]
-                    if uid in self.__user_files :
-                        self.__user_files[uid].append((fileid, filename))
-                        self.__chatlog[uid].append(time)
-                        self.__chatlog[uid].append(u"\u03FF"+ "[File with name " + filename + " sent.]")
-                    else :
-                        self.__user_files[uid] = [(fileid, filename)]
-                        self.__chatlog[uid] = [time]
-                        self.__chatlog[uid].append(u"\u03FF"+ "[File with name " + filename + " sent.]")
-                        self.__users[uid] = (user_name, False)
+
+                    if uid not in self.__user_files :
+                        self.__user_files[uid]      = []
+                    if uid not in self.__chatlog :
+                        self.__chatlog[uid]         = []
+                    if uid not in self.__users :
+                        user_name   = message["message"]["from"]["first_name"]
+                        if "last_name" in message["message"]["from"] :
+                            user_name = user_name + " " + message["message"]["from"]["last_name"]
+                        self.__users[uid]           = (user_name, False)
+
+                    self.__user_files[uid].append((fileid, filename))
+                    self.__chatlog[uid].append(time)
+                    self.__chatlog[uid].append(u"\u03FF"+ "[File with name " + filename + " sent.]")
+
                         
             if "callback_query" in message :
                 callback_query_id   = message["callback_query"]["id"]
                 text                = message["callback_query"]["data"]
+                message_id          = message["callback_query"]["message"]["message_id"]
                 time                = int((datetime.now() - datetime(1970, 1, 1)).total_seconds())
-                user_name           = message["callback_query"]["from"]["first_name"]
                 user_id             = message["callback_query"]["from"]["id"]
-                if "last_name" in message["callback_query"]["from"] :
-                    user_name = user_name + " " + message["callback_query"]["from"]["last_name"]
+
+                if user_id not in self.__user_callback_queries :
+                    self.__user_callback_queries[user_id]   = []
+                if user_id not in self.__chatlog :
+                    self.__chatlog[user_id]                 = []
+                if user_id not in self.__users :
+                    user_name           = message["callback_query"]["from"]["first_name"]
+                    if "last_name" in message["callback_query"]["from"] :
+                        user_name = user_name + " " + message["callback_query"]["from"]["last_name"]
+                    self.__users[user_id]           = (user_name, False)
                     
-                if user_id in self.__user_callback_queries :
-                        self.__user_callback_queries[user_id].append((callback_query_id, text))
-                        self.__chatlog[user_id].append(time)
-                        self.__chatlog[user_id].append(u"\u03FF"+ "[User responded with: " + text + ".]")
+                if message_id in self.__allowed_message_ids :
+                    self.__user_callback_queries[user_id].append((callback_query_id, text))
+                    self.__chatlog[user_id].append(time)
+                    self.__chatlog[user_id].append(u"\u03FF"+ "[Responded with: " + text + ".]")
+                    self.__allowed_message_ids.remove(message_id)
                 else :
-                        self.__user_callback_queries[user_id] = [(callback_query_id, text)]
-                        self.__chatlog[user_id] = [time]
-                        self.__chatlog[user_id].append(u"\u03FF"+ "[User responded with: " + text + ".]")
-                        self.__users[user_id]   = (user_name, False)
-                        
+                    self.answer_callback_query(callback_query_id, "You already responded to that message.")
+                    
         if len(response["result"]) > 0 :
             self.__offset = response["result"][-1]["update_id"] + 1
             if len(response["result"]) >= 99 :
@@ -196,7 +209,7 @@ class TelegramManager():
             msgs = self.__user_messages[userid]
             self.__user_messages[userid] = []
             return msgs
-        return None
+        return []
 
 
     def get_new_files(self, userid) :
@@ -204,7 +217,7 @@ class TelegramManager():
             files = self.__user_files[userid]
             self.__user_files[userid] = []
             return files
-        return None
+        return []
 
 
     def get_new_callback_queries(self, user_id) :
@@ -212,18 +225,35 @@ class TelegramManager():
             callback_queries = self.__user_callback_queries[user_id]
             self.__user_callback_queries[user_id] = []
             return callback_queries
-        return None
+        return []
 
     
     #keyboard_buttons_text is an array of strings
-    def send_message(self, userid, msg, keyboard_buttons_text = None):
-        url = self.__build_send_message_url(userid, msg, keyboard_buttons_text)
-        response = requests.post(url)
-        if response.status_code == 200 :
-            current_time = int((datetime.now() - datetime(1970, 1, 1)).total_seconds())
-            self.__chatlog[userid].append(current_time)
-            self.__chatlog[userid].append(u"\u037D" + msg)
-
+    def send_message(self, user_id, msg, keyboard_buttons_text = None):
+        url = self.__build_send_message_url(user_id, msg, keyboard_buttons_text)
+        response = requests.post(url).json()
+        if response["ok"] == True :
+            message_id      = response["result"]["message_id"]
+            self.__allowed_message_ids.add(message_id)
+            current_time    = int((datetime.now() - datetime(1970, 1, 1)).total_seconds())
+            if user_id in self.__chatlog :
+                self.__chatlog[user_id].append(current_time)
+                self.__chatlog[user_id].append(u"\u037D" + msg)
+            else :
+                user_name       = response["result"]["chat"]["first_name"]
+                if "last_name" in response["result"]["chat"] :
+                    user_name = user_name + " " + response["result"]["chat"]["last_name"]
+                self.__chatlog[user_id] = [current_time]
+                self.__users[user_id]   = (user_name, False)
+            if keyboard_buttons_text :
+                i = 0
+                print(":)")
+                for button in keyboard_buttons_text :
+                    self.__chatlog[user_id].append(current_time)
+                    self.__chatlog[user_id].append(u"\u037D [ " + str(i) + ": " + button + "]")
+                    i = i+1
+        else :
+            debug.error("message: \"" + msg + "\" failed to send.") 
 
     def send_file(self, userid, filepath) :
         url = self.__build_send_file_url(userid)
@@ -336,7 +366,9 @@ class TelegramManager():
 
     def __create_inline_keyboard(self, keyboard_buttons_text) :
         inline_keyboard = []
+        i = 0
         for button_text in keyboard_buttons_text :
-            button = {"text": button_text, "callback_data": button_text}
+            button = [{"text": button_text, "callback_data": str(i)},]
             inline_keyboard.append(button)
+            i = i+1
         return inline_keyboard
