@@ -11,6 +11,7 @@ env
 !rasa/chatito/generate_samples.sh
 *.html
 duckling/
+stack/
 
 rasa/models/basic_model/*
 storage/*
