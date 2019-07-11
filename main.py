@@ -3,10 +3,10 @@ import datetime as dt
 import logging
 import time
 
-from rasa.core.agent import Agent
-from rasa.core.interpreter import RasaNLUInterpreter
+#from rasa.core.agent import Agent
+#from rasa.core.interpreter import RasaNLUInterpreter
 
-from planner import plannerhandler as ph
+#from planner import plannerhandler as ph
 
 import settings
 import globals
