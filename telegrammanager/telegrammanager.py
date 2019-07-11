@@ -13,12 +13,12 @@ class TelegramManager():
     base_url = ("https://api.telegram.org/bot")
 
     def __init__(self, api_key):
-        self.__api_key = api_key
-        self.__offset = 0
-        self.__timeout = 100
-        self.__allowed_updates = "message, callback_query"#str(["message", "callback_query"])
+        self.__api_key = api_key 
+        self.__offset = 0                                       #update_id offset
+        self.__timeout = 100                                    #timeout of long-polling
+        self.__allowed_updates = "message, callback_query"      #types of messages that get fetched
 
-        self.__users                    = {}        #{userid: ("Name",Anonymous = False)}
+        self.__users                    = {}        #{userid: ("Name",Anonymous = False, New_User = True)}
         self.__user_status              = {}        #{userid: "status"}
         self.__user_messages            = {}        #{userid: [message,...]}
         self.__user_files               = {}        #{userid: [(fileid, filename),...]}
@@ -57,13 +57,11 @@ class TelegramManager():
 
 
     def __build_get_updates_url(self):
-        return (
-            TelegramManager.base_url + self.__api_key +
+        return (TelegramManager.base_url + self.__api_key +
             "/getUpdates" +
             "?offset=" + str(self.__offset) +
             "&timeout=" + str(self.__timeout) +
-            "&allowed_updates=" + self.__allowed_updates
-            )
+            "&allowed_updates=" + self.__allowed_updates)
 
 
     def __build_send_message_url(self, userid, msg, keyboard_buttons_text = None):
@@ -71,12 +69,10 @@ class TelegramManager():
                  + self.__api_key
                  + "/sendMessage"
                  + "?chat_id=" + str(userid)
-                 + "&text=" + msg
-                  )
+                 + "&text=" + msg)
         if  keyboard_buttons_text != None :
             inline_keyboard = self.__dict_to_json({"inline_keyboard": self.__create_inline_keyboard(keyboard_buttons_text)})
             url += "&reply_markup=" + inline_keyboard
-        print(url)
         return url
 
 
@@ -120,7 +116,7 @@ class TelegramManager():
 
     def fetch_new_messages(self):
         response = (requests.get(self.__build_get_updates_url())).json()
-        print(json.dumps(response, sort_keys=True, indent=4))
+        #print(json.dumps(response, sort_keys=True, indent=4))
         if response["ok"] == False :
             logging.error("Response to fetch_new_messages is not OK")
             return False
@@ -144,7 +140,7 @@ class TelegramManager():
                         user_name   = message["message"]["from"]["first_name"]
                         if "last_name" in message["message"]["from"] :
                             user_name = user_name + " " + message["message"]["from"]["last_name"]
-                        self.__users[uid]           = (user_name, False)
+                        self.__users[uid]           = (user_name, False, True)
                         
                     self.__user_messages[uid].append(txt)
                     self.__chatlog[uid].append(time)
@@ -165,7 +161,7 @@ class TelegramManager():
                         user_name   = message["message"]["from"]["first_name"]
                         if "last_name" in message["message"]["from"] :
                             user_name = user_name + " " + message["message"]["from"]["last_name"]
-                        self.__users[uid]           = (user_name, False)
+                        self.__users[uid]           = (user_name, False, True)
 
                     self.__user_files[uid].append((fileid, filename))
                     self.__chatlog[uid].append(time)
@@ -187,7 +183,7 @@ class TelegramManager():
                     user_name           = message["callback_query"]["from"]["first_name"]
                     if "last_name" in message["callback_query"]["from"] :
                         user_name = user_name + " " + message["callback_query"]["from"]["last_name"]
-                    self.__users[user_id]           = (user_name, False)
+                    self.__users[user_id]           = (user_name, False, True)
                     
                 if message_id in self.__allowed_message_ids :
                     self.__user_callback_queries[user_id].append((callback_query_id, text))
@@ -247,7 +243,6 @@ class TelegramManager():
                 self.__users[user_id]   = (user_name, False)
             if keyboard_buttons_text :
                 i = 0
-                print(":)")
                 for button in keyboard_buttons_text :
                     self.__chatlog[user_id].append(current_time)
                     self.__chatlog[user_id].append(u"\u037D [ " + str(i) + ": " + button + "]")
@@ -345,6 +340,19 @@ class TelegramManager():
         self.__users[userid] = (self.get_username(userid),state)
 
 
+    def is_user_new(self, user_id) :
+        if user_id in self.__users :
+            if self.__users[user_id][2] :
+                self.__users[user_id] = (self.__users[user_id][0], self.__users[user_id][1], False)
+                return True
+            else :
+                return False
+
+    def set_user_new(self, user_id) :
+        if user_id in self.__users :
+            self.__users[user_id] = (self.__users[user_id][0], self.__users[user_id][1], True)
+
+            
     def __hash_user(self, userid) :
         s = (str(userid)+self.get_username(userid)).encode()
         return hashlib.md5(s).hexdigest()

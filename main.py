@@ -15,12 +15,35 @@ settings.init()
 from settings import tel_man#, rasa_model
 
 # ------ TESTING ----- #
-tel_man.fetch_new_messages()
-tel_man.send_message(127069982, "Does this work?",["Yes","No"])
+#tel_man.fetch_new_messages()
+#tel_man.send_message(127069982, "Does this work?",["Yes","No"])
 tel_man.fetch_new_messages()
 for callback_query in tel_man.get_new_callback_queries(127069982) :
     #you have to answer a callback_query so the clock icon disappears, don't know why the text stuff doesn't work
     tel_man.answer_callback_query(callback_query[0], "Okay, you answered: "+callback_query[1])
+if tel_man.is_user_new(127069982) :
+    tel_man.send_message(127069982, "Oh, so you are new.")
+else :
+    tel_man.send_message(127069982, "Been here before?")
+
+if tel_man.is_user_new(127069982) :
+    tel_man.send_message(127069982, "Oh, so you are new.")
+else :
+    tel_man.send_message(127069982, "Been here before?")
+
+tel_man.send_message(127069982, "Wanna reset that?",["Yes","No"])
+tel_man.fetch_new_messages()
+for callback_query in tel_man.get_new_callback_queries(127069982) :
+    if callback_query[1] == "0" :
+        tel_man.answer_callback_query(callback_query[0], "Alright. Will reset it now.")
+        tel_man.set_user_new(127069982)
+    else :
+        tel_man.answer_callback_query(callback_query[0], "Alright. Will keep it.")
+        
+if tel_man.is_user_new(127069982) :
+    tel_man.send_message(127069982, "Oh, so you are new.")
+else :
+    tel_man.send_message(127069982, "Been here before?")
 tel_man.store_chatlog(settings.TG_CHATLOG_PATH)
 ##chat_save_it = 0
 ##while True:
