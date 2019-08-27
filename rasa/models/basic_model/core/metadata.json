@@ -1,0 +1,38 @@
+{
+  "action_fingerprints": {
+    "action_listen": {
+      "slots": [
+        "place",
+        "time",
+        "duration"
+      ]
+    },
+    "action_restart": {
+      "slots": []
+    },
+    "action_default_fallback": {
+      "slots": []
+    },
+    "utter_greet": {
+      "slots": []
+    }
+  },
+  "python": "3.7.3",
+  "max_histories": [
+    5,
+    5,
+    5,
+    null
+  ],
+  "ensemble_name": "rasa.core.policies.ensemble.SimplePolicyEnsemble",
+  "policy_names": [
+    "rasa.core.policies.memoization.MemoizationPolicy",
+    "rasa.core.policies.keras_policy.KerasPolicy",
+    "rasa.core.policies.mapping_policy.MappingPolicy",
+    "rasa.core.policies.fallback.FallbackPolicy"
+  ],
+  "trained_at": "20190622-160313",
+  "rasa": "1.1.0",
+  "tensorflow": "1.13.1",
+  "sklearn": "0.20.3"
+}

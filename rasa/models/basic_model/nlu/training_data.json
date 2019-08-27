@@ -1,0 +1,265 @@
+{
+  "rasa_nlu_data": {
+    "common_examples": [
+      {
+        "intent": "greet",
+        "text": "hey"
+      },
+      {
+        "intent": "greet",
+        "text": "hello"
+      },
+      {
+        "intent": "greet",
+        "text": "hi"
+      },
+      {
+        "intent": "greet",
+        "text": "good morning"
+      },
+      {
+        "intent": "greet",
+        "text": "good evening"
+      },
+      {
+        "intent": "greet",
+        "text": "hey there"
+      },
+      {
+        "intent": "affirm",
+        "text": "yes"
+      },
+      {
+        "intent": "affirm",
+        "text": "indeed"
+      },
+      {
+        "intent": "affirm",
+        "text": "of course"
+      },
+      {
+        "intent": "affirm",
+        "text": "that sounds good"
+      },
+      {
+        "intent": "affirm",
+        "text": "correct"
+      },
+      {
+        "intent": "deny",
+        "text": "no"
+      },
+      {
+        "intent": "deny",
+        "text": "never"
+      },
+      {
+        "intent": "deny",
+        "text": "nope"
+      },
+      {
+        "intent": "deny",
+        "text": "I don't think so"
+      },
+      {
+        "intent": "deny",
+        "text": "don't like that"
+      },
+      {
+        "intent": "deny",
+        "text": "no way"
+      },
+      {
+        "intent": "deny",
+        "text": "not really"
+      },
+      {
+        "intent": "show_plan",
+        "text": "show me my plan"
+      },
+      {
+        "intent": "show_plan",
+        "text": "what is my schedule"
+      },
+      {
+        "intent": "show_plan",
+        "text": "what is planed for the next days"
+      },
+      {
+        "intent": "show_plan",
+        "text": "is anything planned for tomorrow"
+      },
+      {
+        "intent": "show_plan",
+        "text": "do I have in the next days"
+      },
+      {
+        "intent": "show_plan",
+        "text": "is something coming up"
+      },
+      {
+        "intent": "show_plan",
+        "text": "send me an ical file"
+      },
+      {
+        "intent": "show_plan",
+        "text": "save the plan as ics"
+      },
+      {
+        "intent": "show_plan",
+        "text": "print my plan"
+      },
+      {
+        "intent": "get_time",
+        "text": "time is 7am"
+      },
+      {
+        "intent": "get_time",
+        "text": "set time to 8am to 9am"
+      },
+      {
+        "intent": "get_time",
+        "text": "get time for tomorrow 5pm"
+      },
+      {
+        "intent": "get_duration",
+        "text": "it takes 15mins"
+      },
+      {
+        "intent": "get_duration",
+        "text": "probably 6hours only"
+      },
+      {
+        "intent": "get_duration",
+        "text": "let's say half an hour"
+      },
+      {
+        "intent": "get_duration",
+        "text": "30mins"
+      },
+      {
+        "intent": "save_event",
+        "entities": [
+          {
+            "start": 8,
+            "end": 14,
+            "value": "Berlin",
+            "entity": "place"
+          }
+        ],
+        "text": "Plan in Berlin"
+      },
+      {
+        "intent": "save_event",
+        "entities": [
+          {
+            "start": 11,
+            "end": 30,
+            "value": "Rudower Chaussee 25",
+            "entity": "place"
+          }
+        ],
+        "text": "Save it to Rudower Chaussee 25"
+      },
+      {
+        "intent": "save_event",
+        "entities": [
+          {
+            "start": 18,
+            "end": 28,
+            "value": "Ostbahnhof",
+            "entity": "place"
+          }
+        ],
+        "text": "It takes place at Ostbahnhof"
+      },
+      {
+        "intent": "save_event",
+        "entities": [
+          {
+            "start": 0,
+            "end": 35,
+            "value": "Tamara-Danz Straße 11, 10243 Berlin",
+            "entity": "place"
+          }
+        ],
+        "text": "Tamara-Danz Straße 11, 10243 Berlin, that's were it is"
+      },
+      {
+        "intent": "save_event",
+        "entities": [
+          {
+            "start": 19,
+            "end": 36,
+            "value": "Fleischerei Huber",
+            "entity": "place"
+          }
+        ],
+        "text": "I want it to be at Fleischerei Huber"
+      },
+      {
+        "intent": "save_event",
+        "entities": [
+          {
+            "start": 15,
+            "end": 33,
+            "value": "Kaufland Storkower",
+            "entity": "place"
+          }
+        ],
+        "text": "Schedule it in Kaufland Storkower, would you"
+      },
+      {
+        "intent": "save_event",
+        "entities": [
+          {
+            "start": 0,
+            "end": 16,
+            "value": "Ziegelstraße 45a",
+            "entity": "place"
+          }
+        ],
+        "text": "Ziegelstraße 45a"
+      },
+      {
+        "intent": "save_event",
+        "entities": [
+          {
+            "start": 25,
+            "end": 58,
+            "value": "Mäusegasse 33, 46393 Braunschweig",
+            "entity": "place"
+          }
+        ],
+        "text": "the event takes place at Mäusegasse 33, 46393 Braunschweig"
+      },
+      {
+        "intent": "save_event",
+        "entities": [
+          {
+            "start": 0,
+            "end": 19,
+            "value": "Super Computerstore",
+            "entity": "place"
+          }
+        ],
+        "text": "Super Computerstore is the chosen location"
+      },
+      {
+        "intent": "save_event",
+        "entities": [
+          {
+            "start": 22,
+            "end": 53,
+            "value": "Winterfell-Allee 194 - 200 Köln",
+            "entity": "place"
+          }
+        ],
+        "text": "location is headed at Winterfell-Allee 194 - 200 Köln"
+      }
+    ],
+    "regex_features": [],
+    "lookup_tables": [],
+    "entity_synonyms": []
+  }
+}
