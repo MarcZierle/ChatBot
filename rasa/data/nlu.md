@@ -49,7 +49,7 @@
 - let's say half an hour
 - 30mins
 
-## intent:save_event
+## intent:plan_event
 - Plan in [Berlin](place)
 - Save it to [Rudower Chaussee 25](place)
 - It takes place at [Ostbahnhof](place)
@@ -60,3 +60,4 @@
 - the event takes place at [Mäusegasse 33, 46393 Braunschweig](place)
 - [Super Computerstore](place) is the chosen location
 - location is headed at [Winterfell-Allee 194 - 200 Köln](place)
+

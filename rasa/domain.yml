@@ -1,12 +1,12 @@
 slots:
     place:
-        type: text
+        type: unfeaturized
     time:
-        type: text
+        type: unfeaturized
     duration:
-        type: text
+        type: unfeaturized
     event_name:
-        type: text
+        type: unfeaturized
 
 intents:
     - out_of_scope
@@ -14,11 +14,14 @@ intents:
     - affirm
     - deny
     - show_plan
-    - save_event
+    - plan_event
     - gives_time
     - gives_place
     - gives_duration
     - gives_event_name
+
+forms: 
+    - plan_event_form
 
 actions:
     - utter_default
@@ -34,6 +37,7 @@ actions:
     - utter_show_plan
     - action_show_plan
     - action_set_time_duration_slot
+    - utter_slots_values
 
 templates:
     utter_default:
@@ -76,3 +80,6 @@ templates:
         - text: "Sorry. Have you given a location?"
         - text: "I need a location for that."
         - text: "Please give me a location."
+        
+    utter_slots_values:
+        - text: "These are the current slot values\nPlace: {place}\nDuration: {duration}\nTime: {time}\nEvent Name: {event_name}"
