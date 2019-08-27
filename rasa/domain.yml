@@ -39,6 +39,7 @@ templates:
     utter_default:
         - text: "Sorry, I couldn't understand that."
         - text: "Sorry, I didn't quite catch that."
+        - text: "Can you say that in other words?"
 
     utter_greet:
         - text: "Hey there!"
@@ -58,9 +59,12 @@ templates:
 
     utter_ask_place:
         - text: "Where will this event take place?"
+        - text: "Where is the event going to be?"
+        - text: "What's the location of the event?"
 
     utter_ask_event_name:
         - text: "/ask_event_name Please choose a name for this event."
+        - text: "/ask_event_name What should the event be named?"
 
     utter_show_plan:
         - text: "Here is your plan."
