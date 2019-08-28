@@ -46,7 +46,7 @@ while True:
                     resp_part = resp_part['text']
                     if "/show_plan" in resp_part:
                         logging.debug('sending plan image to user')
-                        tel_man.send_file(userid, "storage/schedule_images/"+str(userid)+".png")
+                        tel_man.send_file(userid, "./ChatBot/storage/schedule_images/"+str(userid)+".png")
                         continue
 
                     if "/ask_event_name" in resp_part:

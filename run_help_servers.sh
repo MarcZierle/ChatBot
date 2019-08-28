@@ -1,5 +1,5 @@
 #!/bin/bash
-cd duckling
+cd ./ChatBot/duckling
 ../stack/stack exec duckling-example-exe &
 
 cd ../rasa/

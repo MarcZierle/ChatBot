@@ -1,4 +1,5 @@
 from typing import Any, Text, Dict, List
+import os
 
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
@@ -21,7 +22,8 @@ class ActionShowPlan(Action):
     def name(self) -> Text:
         settings.init_api_keys()
         self.__querent = Querent(settings.GOOGLE_DISTANCE_MATRIX_API_KEY)
-        self.__storage_path = "../storage/schedules/"
+        self.__path = os.path.dirname(__file__)
+        self.__storage_path = self.__path+"/../../storage/schedules/"
         return "action_show_plan"
 
 
@@ -35,7 +37,7 @@ class ActionShowPlan(Action):
         planner.replan(self.__querent)
         ph.store(self.__storage_path, userid, planner)
 
-        PlannerToImage(planner, dt.today()).draw_image("../storage/schedule_images/"+str(userid)+'.png')
+        PlannerToImage(planner, dt.today()).draw_image(self.__path+"/../../storage/schedule_images/"+str(userid)+'.png')
         dispatcher.utter_message("/show_plan")
 
         return []

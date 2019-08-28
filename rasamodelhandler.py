@@ -10,7 +10,7 @@ class RasaModelHandler():
 
     loop = None
 
-    def __init__(self, model_path="./rasa/models/basic_model"):
+    def __init__(self, model_path="./ChatBot/rasa/models/basic_model"):
         self.__model_path   = model_path
 
         if not RasaModelHandler.loop:

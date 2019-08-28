@@ -14,14 +14,14 @@ class PlannerToImage():
         self.__first_day    = self.__get_monday(day)
         self.__time_start   = planner.get_time_begin_day()
         self.__time_end     = planner.get_time_end_day()
-        path = os.path.dirname(__file__)
-        self.__header_font      = ImageFont.truetype(path+"/Dosis-Bold.ttf", size=int(PlannerToImage.__HEIGHT/20))
-        self.__subtitle_font    = ImageFont.truetype("Ubuntu-B.ttf", size=int(PlannerToImage.__HEIGHT/49.6))
-        self.__top_font         = ImageFont.truetype("Ubuntu-B.ttf", size=int(PlannerToImage.__HEIGHT/60))
-        self.__top_font_R       = ImageFont.truetype("Ubuntu-R.ttf", size=int(PlannerToImage.__HEIGHT/60))
-        self.__regular_font     = ImageFont.truetype("Ubuntu-R.ttf", size=int(PlannerToImage.__HEIGHT/82))
-        self.__event_name_font  = ImageFont.truetype("Ubuntu-R.ttf", size=int(PlannerToImage.__HEIGHT/82))
-        self.__time_font        = ImageFont.truetype("Ubuntu-R.ttf", size=int(PlannerToImage.__HEIGHT/82))
+        self.__path = os.path.dirname(__file__)+"/../assets"
+        self.__header_font      = ImageFont.truetype(self.__path+"/fonts/Dosis-Bold.ttf", size=int(PlannerToImage.__HEIGHT/20))
+        self.__subtitle_font    = ImageFont.truetype(self.__path+"/fonts/Ubuntu-B.ttf", size=int(PlannerToImage.__HEIGHT/49.6))
+        self.__top_font         = ImageFont.truetype(self.__path+"/fonts/Ubuntu-B.ttf", size=int(PlannerToImage.__HEIGHT/60))
+        self.__top_font_R       = ImageFont.truetype(self.__path+"/fonts/Ubuntu-R.ttf", size=int(PlannerToImage.__HEIGHT/60))
+        self.__regular_font     = ImageFont.truetype(self.__path+"/fonts/Ubuntu-R.ttf", size=int(PlannerToImage.__HEIGHT/82))
+        self.__event_name_font  = ImageFont.truetype(self.__path+"/fonts/Ubuntu-R.ttf", size=int(PlannerToImage.__HEIGHT/82))
+        self.__time_font        = ImageFont.truetype(self.__path+"/fonts/Ubuntu-R.ttf", size=int(PlannerToImage.__HEIGHT/82))
         self.__spaceing = PlannerToImage.__HEIGHT / 80
 
 

@@ -6,17 +6,17 @@ import tensorflow as tf
 from telegrammanager.telegrammanager import TelegramManager
 from rasamodelhandler import RasaModelHandler
 
-TG_STORAGE_PATH     = "./storage/telegram/"
-TG_CHATLOG_PATH     = "./storage/chatlogs/"
-TG_DOWNLOADS_PATH   = "./storage/downloads/"
+TG_STORAGE_PATH     = "./ChatBot/storage/telegram/"
+TG_CHATLOG_PATH     = "./ChatBot/storage/chatlogs/"
+TG_DOWNLOADS_PATH   = "./ChatBot/storage/downloads/"
 
-RASA_MODEL_PATH     = "./rasa/models/basic_model/"
+RASA_MODEL_PATH     = "./ChatBot/rasa/models/basic_model/"
 
 
 def init_api_keys():
     #env_path = Path('/home/marc/University/Chatbot') / '.env'
     #load_dotenv(dotenv_path=env_path, verbose=True)
-    load_dotenv(".env", verbose=True)
+    load_dotenv("./ChatBot/.env", verbose=True)
 
     global GOOGLE_DISTANCE_MATRIX_API_KEY, TELEGRAM_API_KEY
     GOOGLE_DISTANCE_MATRIX_API_KEY  = os.getenv("GOOGLE_DISTANCE_MATRIX_API_KEY")
