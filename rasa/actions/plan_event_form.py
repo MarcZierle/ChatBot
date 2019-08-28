@@ -25,7 +25,6 @@ class PlanEventForm(FormAction):
             slots.append("duration")
         else :
             slots.append("is_specific")
-
         return slots
 
 
@@ -39,7 +38,7 @@ class PlanEventForm(FormAction):
 
         return []
 
-
+    
     def slot_mappings(self) -> Dict[Text, Union[Dict, List[Dict]]]:
         return{
             "time": self.from_entity(entity="time"),
@@ -84,3 +83,4 @@ class PlanEventForm(FormAction):
         except:
             pass
         return {"time": None}
+
