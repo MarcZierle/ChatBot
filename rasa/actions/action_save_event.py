@@ -9,6 +9,7 @@ import json
 import datetime
 from datetime import datetime as dt
 
+import ast, iso8601
 from planner.day import Day
 from planner.event import Event
 import planner.planner as planner
@@ -71,9 +72,9 @@ class ActionSaveEvent(Action):
 	
 	
 	def save_specific_event(self, dispatcher: CollectingDispatcher, tracker: Tracker, userid, place, event_name, time):
-		time = dict(time)
-		time_start = dt.strptime(str(time("from")), '%Y-%m-%dT%H:%M:%S.000+02:00')
-		time_end = dt.strptime(str(time("to")), '%Y-%m-%dT%H:%M:%S.000+02:00')#-datetime.timedelta(hours=1)
+		time = ast.literal_eval(time)
+		time_start 	= iso8601.parse_date(str(time["from"]))
+		time_end 	= iso8601.parse_date(str(time["to"]))
 		planner = ph.restore(self.__storage_path, userid)
 		try:
 			planner.add_event(Event(

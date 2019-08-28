@@ -12,13 +12,13 @@ def to_hours(minutes):
 def fix_file_path(path, mkdir=False) :
         if os.name == "nt" :
             path = path.replace("/", "\\")
-            #globals.debug(path)
-            #globals.debug(os.name)
-            globals.debug("Fixed file path: " + path)
-        if not os.path.exists(path) and mkdir:
-            os.makedirs(path)
+            #debug(path)
+            #debug(os.name)
+            debug("Fixed file path: " + path)
+        if mkdir:
+            os.makedirs(os.path.dirname(path),exist_ok=True)
 
-            globals.debug("created new directory with path: " + path)
+            debug("created new directory with path: " + os.path.dirname(path))
         return path
 
 def store_object(obj, path, name):
