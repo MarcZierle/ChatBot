@@ -7,6 +7,8 @@ slots:
         type: unfeaturized
     event_name:
         type: unfeaturized
+    is_specific:
+        type: bool
 
 intents:
     - out_of_scope
@@ -20,7 +22,7 @@ intents:
     - gives_duration
     - gives_event_name
 
-forms: 
+forms:
     - plan_event_form
 
 actions:
@@ -38,6 +40,7 @@ actions:
     - action_show_plan
     - action_set_time_duration_slot
     - utter_slots_values
+    - utter_ask_is_specific
 
 templates:
     utter_default:
@@ -67,8 +70,8 @@ templates:
         - text: "What's the location of the event?"
 
     utter_ask_event_name:
-        - text: "/ask_event_name Please choose a name for this event."
-        - text: "/ask_event_name What should the event be named?"
+        - text: "Please choose a name for this event."
+        - text: "What should the event be named?"
 
     utter_show_plan:
         - text: "Here is your plan."
@@ -80,6 +83,9 @@ templates:
         - text: "Sorry. Have you given a location?"
         - text: "I need a location for that."
         - text: "Please give me a location."
-        
+
     utter_slots_values:
         - text: "These are the current slot values\nPlace: {place}\nDuration: {duration}\nTime: {time}\nEvent Name: {event_name}"
+
+    utter_ask_is_specific:
+        - text: "Do you know the exact time frame?"

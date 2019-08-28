@@ -41,31 +41,31 @@ def init():
     atexit.register(exit_handler)
 
     # if possible restore TelegramManager state
-    logging.debug("loading telegram manager...")
+    globals.debug("loading telegram manager...")
     global tel_man
     tel_man = TelegramManager( api_key=TELEGRAM_API_KEY )
     try:
         tel_man.restore(TG_STORAGE_PATH)
     except Exception:
         pass
-    logging.debug("loading done!")
+    globals.debug("loading done!")
 
     # if possible restore RASA-Model
-    logging.debug("loading rasa model...")
+    globals.debug("loading rasa model...")
     global rasa_model
     rasa_model = RasaModelHandler(RASA_MODEL_PATH)
-    logging.debug("loading done!")
+    globals.debug("loading done!")
 
 
 def exit_handler():
-    logging.debug("exiting server...")
+    globals.debug("exiting server...")
 
-    logging.debug("saving telegram chatlogs...")
+    globals.debug("saving telegram chatlogs...")
     tel_man.store_chatlog(TG_CHATLOG_PATH)
-    logging.debug("saving done!")
+    globals.debug("saving done!")
 
-    logging.debug("saving telegram manager...")
+    globals.debug("saving telegram manager...")
     tel_man.store(TG_STORAGE_PATH)
-    logging.debug("saving done!")
+    globals.debug("saving done!")
 
-    logging.debug("exiting done!")
+    globals.debug("exiting done!")
