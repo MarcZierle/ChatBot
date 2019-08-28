@@ -13,7 +13,7 @@ env
 duckling/
 stack/
 
-#rasa/models/basic_model/*
+rasa/models/basic_model/*
 storage/*
 
 *.pkl
