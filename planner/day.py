@@ -60,6 +60,23 @@ class Day():
         return datetime(self.__year, self.__month, self.__day).strftime("%A")
 
 
+    def get_event_names(self):
+        return [e.get_name() for e in self.__events if not e.is_travelling()]
+
+
+    def remove_event(self, event_nr):
+        try:
+            event_id = [e.get_id() for e in self.__events if not e.is_travelling()][event_nr]
+            for i in range(len(self.__events)):
+                e = self.__events[i]
+                if e.get_id() == event_id:
+                    del self.__events[i]
+                    break
+            return event_id
+        except Exception:
+            return None
+
+
     def add_event(self, event, start=None, end=None):
         if not event.is_specific():
             if not start or not end:

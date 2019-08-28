@@ -19,6 +19,7 @@ pipeline:
         timezone: "Europe/Berlin"
 
 policies:
+    -   name: FormPolicy
     -   name: MemoizationPolicy
     -   name: KerasPolicy
     -   name: MappingPolicy

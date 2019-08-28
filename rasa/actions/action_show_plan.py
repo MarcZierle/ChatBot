@@ -37,7 +37,8 @@ class ActionShowPlan(Action):
         planner.replan(self.__querent)
         ph.store(self.__storage_path, userid, planner)
 
-        PlannerToImage(planner, dt.today()).draw_image(self.__path+"/../../storage/schedule_images/"+str(userid)+'.png')
+        path = globals.fix_file_path(self.__path+"/../../storage/schedule_images/",True)
+        PlannerToImage(planner, dt.today()).draw_image(path+str(userid)+'.png')
         dispatcher.utter_message("/show_plan")
 
         return []

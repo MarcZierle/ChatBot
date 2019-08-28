@@ -92,6 +92,11 @@ p.replan(gdm_querent)
 
 print(p)
 
-p.export_ics("import_planner_draw.ics")
+#p.export_ics("import_planner_draw.ics")
+
+print(p.get_day_event_names(6,7,2019))
+p.remove_event_from_day(6,7,2019, 1)
+
+print(p)
 
 print("Used GDM-API - Calls: " + str(gdm_querent.get_api_count()))

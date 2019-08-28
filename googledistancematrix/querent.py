@@ -105,11 +105,11 @@ class Querent():
     def get_place_address(self, place):
         query_url = ("https://maps.googleapis.com/maps/api/place/findplacefromtext/"
             + "json?"
-            + "key=" + self.__api_key
+            + "key=" + str(self.__api_key)
             + "&inputtype=textquery"
             + "&language=en"
             + "&fields=formatted_address"
-            + "&input=" + place
+            + "&input=" + str(place)
             )
 
         response = self.__send_url_request(query_url)
