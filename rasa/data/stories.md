@@ -10,7 +10,7 @@
 	- plan_event_form
 	- form{"name": "plan_event_form"}
 	- form{"name": null}
-	- utter_slots_values
+	- action_save_event
 	- action_restart
 
 

@@ -34,13 +34,11 @@ actions:
     - utter_ask_duration
     - utter_ask_place
     - utter_ask_event_name
-    - action_save_specific_event
-    - action_save_unspecific_event
     - utter_show_plan
-    - action_show_plan
-    - action_set_time_duration_slot
     - utter_slots_values
     - utter_ask_is_specific
+    - action_save_event
+    - action_show_plan
 
 templates:
     utter_default:
