@@ -7,6 +7,8 @@ slots:
         type: unfeaturized
     event_name:
         type: unfeaturized
+    is_specific:
+        type: bool
 
 intents:
     - out_of_scope
@@ -32,12 +34,11 @@ actions:
     - utter_ask_duration
     - utter_ask_place
     - utter_ask_event_name
-    - action_save_specific_event
-    - action_save_unspecific_event
     - utter_show_plan
-    - action_show_plan
-    - action_set_time_duration_slot
     - utter_slots_values
+    - utter_ask_is_specific
+    - action_save_event
+    - action_show_plan
 
 templates:
     utter_default:
@@ -83,3 +84,6 @@ templates:
         
     utter_slots_values:
         - text: "These are the current slot values\nPlace: {place}\nDuration: {duration}\nTime: {time}\nEvent Name: {event_name}"
+
+    utter_ask_is_specific:
+        - text: "Do you know the exact time frame?"

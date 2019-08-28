@@ -109,7 +109,7 @@ class Querent():
             + "&inputtype=textquery"
             + "&language=en"
             + "&fields=formatted_address"
-            + "&input=" + place
+            + "&input=" + str(place)
             )
 
         response = self.__send_url_request(query_url)
