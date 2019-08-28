@@ -21,13 +21,17 @@ intents:
     - gives_place
     - gives_duration
     - gives_event_name
+    - get_infos
+    - set_home
 
 forms:
     - plan_event_form
+    - set_home_form
 
 actions:
     - utter_default
     - utter_greet
+    - utter_infos
     - utter_need_more_infos
     - utter_ask_time_known
     - utter_ask_time
@@ -48,9 +52,14 @@ templates:
 
     utter_greet:
         - text: "Hey there!"
-        - text: "What's up?"
-        - text: "All good?"
+        - text: "What's up."
+        - text: "Hey."
+        - text: "Hello there!"
+        - text: "Hi :)"
 
+    utter_infos:
+        - text: "Hey. I'm Janus, a planner bot. I can schedule events including travel time, import an existing plan or show you your current one."
+        
     utter_ask_time_known:
         - text: "Do you know the exact time frame?"
         - text: "Can you say when this event will start and end?"
@@ -63,9 +72,10 @@ templates:
         - text: "How long does this event take?"
 
     utter_ask_place:
-        - text: "Where will this event take place?"
-        - text: "Where is the event going to be?"
-        - text: "What's the location of the event?"
+        - text: "Where will this take place?"
+        - text: "Where is that going to be?"
+        - text: "What's the location?"
+        - text: "Can you give me a location?"
 
     utter_ask_event_name:
         - text: "Please choose a name for this event."

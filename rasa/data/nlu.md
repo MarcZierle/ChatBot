@@ -4,24 +4,51 @@
 -->
 
 ## intent:greet
+- /start
 - hey
 - hello
 - hi
 - good morning
 - good evening
 - hey there
+- hi there
+- hello there
+- good day
+- greetings
+
+## intent:get_infos
+- help
+- /help
+- Help
+- infos
+- Tell me about yourself.
+- Who are you?
+- What can you do?
+
+## intent:set_home
+- set home
+- /set home
+- set my home
+- change my home
+- set start location
+- set my home
+- set my home point
 
 ## intent:affirm
 - yes
+- yep
 - indeed
 - of course
 - that sounds good
+- sure
+- absolutely
 - correct
 
 ## intent:deny
 - no
 - never
 - nope
+- nah
 - I don't think so
 - don't like that
 - no way
@@ -44,9 +71,9 @@
 - get time for tomorrow 5pm
 
 ## intent:get_duration
-- it takes 15mins
-- probably 6hours only
-- let's say half an hour
+- it takes [15min](duration)
+- probably [6 hours](duration) only
+- let's say [half an hour](duration)
 - 30mins
 
 ## intent:plan_event
