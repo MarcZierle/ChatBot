@@ -24,6 +24,16 @@ intents:
     - get_infos
     - set_home
     - remove_event
+    - how_are_you
+    - feeling_good
+    - feeling_bad
+    - okay
+    - goodbye
+    - whats_up
+    - talk_to_me
+    - weather
+    - small-talk
+    - emoji
 
 forms:
     - plan_event_form
@@ -44,7 +54,17 @@ actions:
     - utter_slots_values
     - utter_ask_is_specific
     - action_save_event
-    - action_show_plan
+    - action_show_plan   
+    - utter_im_fine
+    - utter_good
+    - utter_cheer_up
+    - utter_okay
+    - utter_goodbye
+    - utter_not_much
+    - utter_talk
+    - utter_weather
+    - utter_small-talk
+    - utter_emoji
 
 templates:
     utter_default:
@@ -55,6 +75,8 @@ templates:
     utter_greet:
         - text: "Hey there!"
         - text: "What's up."
+        - text: "What's up?"
+        - text: "Hey, how are you?"
         - text: "Hey."
         - text: "Hello there!"
         - text: "Hi :)"
@@ -100,3 +122,55 @@ templates:
 
     utter_ask_is_specific:
         - text: "Do you know the exact time frame?"
+
+    utter_im_fine:
+        - text: "Oh, I'm fine. Thanks for asking. How about you?"
+        - text: "Feeling good. And you?"
+        - text: "Couldn't be better. What about you?"
+        
+    utter_good:
+        - text: "Nice. Keep going!"
+        - text: "Nice!"
+        - text: "Oh, that's good 👍"
+        
+    utter_cheer_up:
+        - text: "Oh, you will probably feel better tomorrow."
+        - text: "Oh well..."
+        - text: "I hope using this bot helps at least."
+        
+    utter_okay:
+        - text: "Okay"
+        - text: "okay"
+        - text: "OK!"
+        - text: "k"
+     
+    utter_goodbye:
+        - text: "Bye!"
+        - text: "See you soon!"
+        - text: "Bye."
+        - text: "Bye-bye!"
+        - text: "Ciao!"
+        
+    utter_not_much:
+        - text: "Not much. Just checking my Telegram messages."
+        - text: "Oh, not much."
+        
+    utter_talk:
+        - text: "😐"
+        - text: "Ask me something else."
+        
+    utter_weather:
+        - text: "I can't look up the weather right now but I'm sure it's good."
+        - text: "Pretty hot lately."
+        - text: "The weather is nice."
+        
+    utter_small-talk:
+        - text: "Not a big fan of small-talk but I can try."
+        - text: "I can try."
+        
+    utter_emoji:
+        - text: "😁"
+        - text: "^_^"
+        - text: ":)"
+        - text: "😺"
+        - text: ":D"
