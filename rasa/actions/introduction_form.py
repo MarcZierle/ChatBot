@@ -15,15 +15,15 @@ from planner import plannerhandler as ph
 import iso8601
 
 
-class RemoveEventForm(FormAction):
+class IntroductionForm(FormAction):
 
     def name(self):
-        return "remove_event_form"
+        return "introduction_form"
 
 
     @staticmethod
     def required_slots(tracker: Tracker) -> List[Text]:
-        return ["time"]
+        return ["place", "time"]
 
 
     def submit(
@@ -33,10 +33,18 @@ class RemoveEventForm(FormAction):
         domain: Dict[Text, Any],
     ) -> List[Dict]:
 
-        time = str(tracker.get_slot("time"))
-        dispatcher.utter_message("/remove_event" + time)
-
         return []
+
+
+    def validate_place(
+        self,
+        value: Text,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> Optional[Text]:
+
+        return {"place" : None}
 
 
     def validate_time(
@@ -47,10 +55,16 @@ class RemoveEventForm(FormAction):
         domain: Dict[Text, Any],
     ) -> Optional[Text]:
 
-        time = str(tracker.get_slot("time"))
         try:
-            time = iso8601.parse_date(time)
-            return {"time" : str(time)}
+            time = dict(value)
+            if 'to' in time and 'from' in time:
+                start_time = iso8601.parse_date(time['from'])
+                end_time = iso8601.parse_date(time['to'])
+                if start_time < end_time:
+                    return {"time": str(time)}
+                else:
+                    dispatcher.utter_message("It would be better to begin a day before ending it.")
         except:
-            dispatcher.utter_message("Please give me just a day.")
-            return {"time" : None}
+            pass
+        dispatcher.utter_message("Please tell me a time interval ranging from 12:00 AM to 23:59 PM.")
+        return {"time": None}
