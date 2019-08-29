@@ -38,6 +38,18 @@ while True:
 
         if msgs:
             for msg in msgs:
+
+                if "/stop" in msg:
+                    if str(userid) == "521748695" or str(userid) == "127069982":
+                        tel_man.send_message(userid,"Aye captain! Ye olde server will be stopped.")
+                        exit()
+                    else:
+                        tel_man.send_message(userid,"No permissions!")
+                        continue
+
+                if tel_man.is_user_new(userid):
+                    msg = "/introduction"
+
                 response = rasa_model.parse(userid, msg)
 
                 for resp_text in response:
@@ -45,7 +57,8 @@ while True:
 
                     if "/show_plan" in resp_text:
                         globals.debug('sending plan image to user')
-                        tel_man.send_file(userid, "storage/schedule_images/"+str(userid)+".png")
+                        os.system("cp storage/schedule_images/"+str(userid)+".png storage/schedule_images/my_schedule.png")
+                        tel_man.send_file(userid, "storage/schedule_images/my_schedule.png")
                         continue
 
                     if "/remove_event" in resp_text:

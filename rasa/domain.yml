@@ -24,11 +24,13 @@ intents:
     - get_infos
     - set_home
     - remove_event
+    - introduction
 
 forms:
     - plan_event_form
     - set_home_form
     - remove_event_form
+    - introduction_form
 
 actions:
     - utter_default
@@ -45,6 +47,10 @@ actions:
     - utter_ask_is_specific
     - action_save_event
     - action_show_plan
+    - utter_welcome
+    - utter_introduction
+    - utter_explain_home_and_interval
+    - utter_introduction_end
 
 templates:
     utter_default:
@@ -54,7 +60,7 @@ templates:
 
     utter_greet:
         - text: "Hey there!"
-        - text: "What's up."
+        - text: "What's up?"
         - text: "Hey."
         - text: "Hello there!"
         - text: "Hi :)"
@@ -87,7 +93,6 @@ templates:
     utter_show_plan:
         - text: "Here is your plan."
         - text: "Here your are."
-        - text: "There you go."
         - text: "That's what has been scheduled."
 
     utter_need_more_infos:
@@ -100,3 +105,15 @@ templates:
 
     utter_ask_is_specific:
         - text: "Do you know the exact time frame?"
+
+    utter_welcome:
+        - text: "Hi there! My name is Janus. I'd say I'm pretty good planing your events, appointments and just everything, that you need to keep track of."
+
+    utter_introduction:
+        - text: "If you want me to schedule an event - just ask me to!\nBut what to do in case you don't now when exactly to plan something? No problem - you can tell me how long you think it might take and I'll take care of everything else :)"
+
+    utter_explain_home_and_interval:
+        - text: "Every event you tell me to plan I attempt to find its appropriate time in your schedule. Therefore you need to tell me the location where you want to start and end your day, and the time frame that I can use for planning."
+
+    utter_introduction_end:
+        - text: "Everything seems to be set now. Now let's go simplifying your schedule!"

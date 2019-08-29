@@ -13,7 +13,7 @@ class TelegramManager():
     base_url = ("https://api.telegram.org/bot")
 
     def __init__(self, api_key):
-        self.__api_key = api_key 
+        self.__api_key = api_key
         self.__offset = 0                                       #update_id offset
         self.__timeout = 100                                    #timeout of long-polling
         self.__allowed_updates = "message, callback_query"      #types of messages that get fetched
@@ -26,8 +26,11 @@ class TelegramManager():
         self.__allowed_message_ids      = set()     #{message_id,...}
         self.__chatlog                  = {}        #{userid: [time, message, time, message, ...]}
 
-        
+
     def restore(self, path):
+        if not globals.restore_object(path, "offset"):
+            return
+        
         try :
             self.__offset                   = globals.restore_object(path, "offset")
             self.__timeout                  = globals.restore_object(path, "timeout")
@@ -52,7 +55,7 @@ class TelegramManager():
         globals.store_object(self.__user_messages,          path, "user_messages")
         globals.store_object(self.__user_files,             path, "user_files")
         globals.store_object(self.__user_callback_queries,  path, "user_callback_queries")
-        globals.store_object(self.__allowed_message_ids,    path, "allowed_message_ids")    
+        globals.store_object(self.__allowed_message_ids,    path, "allowed_message_ids")
         globals.store_object(self.__chatlog,                path, "chatlog")
 
 
@@ -85,7 +88,7 @@ class TelegramManager():
                url += "&text=" + msg
         return url
 
-               
+
     def __build_send_file_url(self, userid) :
         return ("https://api.telegram.org/bot"
                  + self.__api_key
@@ -120,7 +123,7 @@ class TelegramManager():
         if response["ok"] == False :
             logging.error("Response to fetch_new_messages is not OK")
             return False
-        
+
         for message in response["result"] :
             if "message" in message:
                 if response["ok"] == False :
@@ -141,10 +144,10 @@ class TelegramManager():
                         if "last_name" in message["message"]["from"] :
                             user_name = user_name + " " + message["message"]["from"]["last_name"]
                         self.__users[uid]           = (user_name, False, True)
-                        
+
                     self.__user_messages[uid].append(txt)
                     self.__chatlog[uid].append(time)
-                    self.__chatlog[uid].append(u"\u03FF"+ txt)                        
+                    self.__chatlog[uid].append(u"\u03FF"+ txt)
 
                 elif "document" in message["message"] :
                     uid         = message["message"]["from"]["id"]
@@ -167,7 +170,7 @@ class TelegramManager():
                     self.__chatlog[uid].append(time)
                     self.__chatlog[uid].append(u"\u03FF"+ "[File with name " + filename + " sent.]")
 
-                        
+
             if "callback_query" in message :
                 callback_query_id   = message["callback_query"]["id"]
                 text                = message["callback_query"]["data"]
@@ -184,7 +187,7 @@ class TelegramManager():
                     if "last_name" in message["callback_query"]["from"] :
                         user_name = user_name + " " + message["callback_query"]["from"]["last_name"]
                     self.__users[user_id]           = (user_name, False, True)
-                    
+
                 if message_id in self.__allowed_message_ids :
                     self.__user_callback_queries[user_id].append((callback_query_id, text))
                     self.__chatlog[user_id].append(time)
@@ -192,7 +195,7 @@ class TelegramManager():
                     self.__allowed_message_ids.remove(message_id)
                 else :
                     self.answer_callback_query(callback_query_id, "You already responded to that message.")
-                    
+
         if len(response["result"]) > 0 :
             self.__offset = response["result"][-1]["update_id"] + 1
             if len(response["result"]) >= 99 :
@@ -223,7 +226,7 @@ class TelegramManager():
             return callback_queries
         return []
 
-    
+
     #keyboard_buttons_text is an array of strings
     def send_message(self, user_id, msg, keyboard_buttons_text = None):
         url = self.__build_send_message_url(user_id, msg, keyboard_buttons_text)
@@ -248,7 +251,7 @@ class TelegramManager():
                     self.__chatlog[user_id].append(u"\u037D [ " + str(i) + ": " + button + "]")
                     i = i+1
         else :
-            debug.error("message: \"" + msg + "\" failed to send.") 
+            debug.error("message: \"" + msg + "\" failed to send.")
 
     def send_file(self, userid, filepath) :
         url = self.__build_send_file_url(userid)
@@ -266,7 +269,7 @@ class TelegramManager():
         url = self.__build_answer_callback_query_url(callback_query_id, msg)
         response = requests.post(url)
 
-            
+
     def get_file(self, fileid, path, filename) :
         url = self.__build_get_file_url(fileid)
         response = requests.get(url).json()
@@ -336,8 +339,8 @@ class TelegramManager():
                 return self.__user_messages[userid].pop(0)
 
 
-    def set_anonymous_state(self, userid, state) :
-        self.__users[userid] = (self.get_username(userid),state)
+    #def set_anonymous_state(self, userid, state) :
+    #    self.__users[userid] = (self.get_username(userid),state)
 
 
     def is_user_new(self, user_id) :
@@ -352,7 +355,7 @@ class TelegramManager():
         if user_id in self.__users :
             self.__users[user_id] = (self.__users[user_id][0], self.__users[user_id][1], True)
 
-            
+
     def __hash_user(self, userid) :
         s = (str(userid)+self.get_username(userid)).encode()
         return hashlib.md5(s).hexdigest()
