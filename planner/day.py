@@ -65,16 +65,17 @@ class Day():
 
 
     def remove_event(self, event_nr):
-        try:
-            event_id = [e.get_id() for e in self.__events if not e.is_travelling()][event_nr]
-            for i in range(len(self.__events)):
-                e = self.__events[i]
-                if e.get_id() == event_id:
-                    del self.__events[i]
-                    break
-            return event_id
-        except Exception:
-            return None
+        #try:
+        print([e.get_id() for e in self.__events if not e.is_travelling()])
+        event_id = [e.get_id() for e in self.__events if not e.is_travelling()][event_nr]
+        for i in range(len(self.__events)):
+            e = self.__events[i]
+            if e.get_id() == event_id:
+                del self.__events[i]
+                break
+        return event_id
+        #except Exception:
+        #    return None
 
 
     def add_event(self, event, start=None, end=None):

@@ -1,89 +1,238 @@
-slots:
-    place:
-        type: unfeaturized
-    time:
-        type: unfeaturized
-    duration:
-        type: unfeaturized
-    event_name:
-        type: unfeaturized
-    is_specific:
-        type: bool
+--- 
+actions: 
+  - utter_default
+  - utter_greet
+  - utter_infos
+  - utter_need_more_infos
+  - utter_ask_time_known
+  - utter_ask_time
+  - utter_ask_duration
+  - utter_ask_place
+  - utter_ask_event_name
+  - utter_show_plan
+  - utter_slots_values
+  - utter_ask_is_specific
+  - action_save_event
+  - utter_im_fine
+  - utter_good
+  - utter_cheer_up
+  - utter_okay
+  - utter_goodbye
+  - utter_not_much
+  - utter_talk
+  - utter_weather
+  - utter_small-talk
+  - utter_emoji
+  - action_show_plan
+  - utter_welcome
+  - utter_introduction
+  - utter_explain_home_and_interval
+  - utter_introduction_end
+forms: 
+  - plan_event_form
+  - set_home_form
+  - remove_event_form
+  - introduction_form
+intents: 
+  - out_of_scope
+  - greet
+  - affirm
+  - deny
+  - show_plan
+  - plan_event
+  - gives_time
+  - gives_place
+  - gives_duration
+  - gives_event_name
+  - get_infos
+  - set_home
+  - remove_event
+  - how_are_you
+  - feeling_good
+  - feeling_bad
+  - okay
+  - goodbye
+  - whats_up
+  - talk_to_me
+  - weather
+  - small-talk
+  - emoji
+  - introduction
+slots: 
+  duration: 
+    type: unfeaturized
+  event_name: 
+    type: unfeaturized
+  is_specific: 
+    type: bool
+  place: 
+    type: unfeaturized
+  time: 
+    type: unfeaturized
+templates: 
+  utter_ask_duration: 
+    - 
+      text: "Please tell me the event's duration."
+    - 
+      text: "How long does this event take?"
+  utter_ask_event_name: 
+    - 
+      text: "Please choose a name for this event."
+    - 
+      text: "What should the event be named?"
+  utter_ask_is_specific: 
+    - 
+      text: "Do you know the exact time frame?"
+  utter_ask_place: 
+    - 
+      text: "Where will this take place?"
+    - 
+      text: "Where is that going to be?"
+    - 
+      text: "What's the location?"
+    - 
+      text: "Can you give me a location?"
+  utter_ask_time: 
+    - 
+      text: "Please tell me the time and date."
+    - 
+      text: "What time and date are we talking about?"
+  utter_ask_time_known: 
+    - 
+      text: "Do you know the exact time frame?"
+    - 
+      text: "Can you say when this event will start and end?"
+  utter_cheer_up: 
+    - 
+      text: "Oh, you will probably feel better tomorrow."
+    - 
+      text: "Oh well..."
+    - 
+      text: "I hope using this bot helps at least."
+  utter_default: 
+    - 
+      text: "Sorry, I couldn't understand that."
+    - 
+      text: "Sorry, I didn't quite catch that."
+    - 
+      text: "Can you say that in other words?"
+  utter_emoji: 
+    - 
+      text: 😁
+    - 
+      text: ^_^
+    - 
+      text: ":)"
+    - 
+      text: 😺
+    - 
+      text: ":D"
+  utter_explain_home_and_interval: 
+    - 
+      text: "Every event you tell me to plan I attempt to find its appropriate time in your schedule. Therefore you need to tell me the location where you want to start and end your day, and the time frame that I can use for planning."
+  utter_good: 
+    - 
+      text: "Nice. Keep going!"
+    - 
+      text: Nice!
+    - 
+      text: "Oh, that's good 👍"
+  utter_goodbye: 
+    - 
+      text: Bye!
+    - 
+      text: "See you soon!"
+    - 
+      text: Bye.
+    - 
+      text: Bye-bye!
+    - 
+      text: Ciao!
+  utter_greet: 
+    - 
+      text: "Hey there!"
+    - 
+      text: "What's up?"
+    - 
+      text: "Hey, how are you?"
+    - 
+      text: Hey.
+    - 
+      text: "Hello there!"
+    - 
+      text: "Hi :)"
+  utter_im_fine: 
+    - 
+      text: "Oh, I'm fine. Thanks for asking. How about you?"
+    - 
+      text: "Feeling good. And you?"
+    - 
+      text: "Couldn't be better. What about you?"
+  utter_infos: 
+    - 
+      text: "Hey. I'm Janus, a planner bot. I can schedule events including travel time, import an existing plan or show you your current one."
+  utter_introduction: 
+    - 
+      text: |-
+          If you want me to schedule an event - just ask me to!
+          But what to do in case you don't now when exactly to plan something? No problem - you can tell me how long you think it might take and I'll take care of everything else :)
+  utter_introduction_end: 
+    - 
+      text: "Everything seems to be set now. Now let's go simplifying your schedule!"
+  utter_need_more_infos: 
+    - 
+      text: "Sorry. Have you given a location?"
+    - 
+      text: "I need a location for that."
+    - 
+      text: "Please give me a location."
+  utter_not_much: 
+    - 
+      text: "Not much. Just checking my Telegram messages."
+    - 
+      text: "Oh, not much."
+  utter_okay: 
+    - 
+      text: Okay
+    - 
+      text: okay
+    - 
+      text: OK!
+    - 
+      text: k
+  utter_show_plan: 
+    - 
+      text: "Here is your plan."
+    - 
+      text: "Here your are."
+    - 
+      text: "That's what has been scheduled."
+  utter_slots_values: 
+    - 
+      text: |-
+          These are the current slot values
+          Place: {place}
+          Duration: {duration}
+          Time: {time}
+          Event Name: {event_name}
+  utter_small-talk: 
+    - 
+      text: "Not a big fan of small-talk but I can try."
+    - 
+      text: "I can try."
+  utter_talk: 
+    - 
+      text: 😐
+    - 
+      text: "Ask me something else."
+  utter_weather: 
+    - 
+      text: "I can't look up the weather right now but I'm sure it's good."
+    - 
+      text: "Pretty hot lately."
+    - 
+      text: "The weather is nice."
+  utter_welcome: 
+    - 
+      text: "Hi there! My name is Janus. I'd say I'm pretty good planing your events, appointments and just everything, that you need to keep track of."
 
-intents:
-    - out_of_scope
-    - greet
-    - affirm
-    - deny
-    - show_plan
-    - plan_event
-    - gives_time
-    - gives_place
-    - gives_duration
-    - gives_event_name
-
-forms:
-    - plan_event_form
-
-actions:
-    - utter_default
-    - utter_greet
-    - utter_need_more_infos
-    - utter_ask_time_known
-    - utter_ask_time
-    - utter_ask_duration
-    - utter_ask_place
-    - utter_ask_event_name
-    - utter_show_plan
-    - utter_slots_values
-    - utter_ask_is_specific
-    - action_save_event
-    - action_show_plan
-
-templates:
-    utter_default:
-        - text: "Sorry, I couldn't understand that."
-        - text: "Sorry, I didn't quite catch that."
-        - text: "Can you say that in other words?"
-
-    utter_greet:
-        - text: "Hey there!"
-        - text: "What's up?"
-        - text: "All good?"
-
-    utter_ask_time_known:
-        - text: "Do you know the exact time frame?"
-        - text: "Can you say when this event will start and end?"
-
-    utter_ask_time:
-        - text: "Please tell me the time frame."
-
-    utter_ask_duration:
-        - text: "Please tell me the event's duration."
-        - text: "How long does this event take?"
-
-    utter_ask_place:
-        - text: "Where will this event take place?"
-        - text: "Where is the event going to be?"
-        - text: "What's the location of the event?"
-
-    utter_ask_event_name:
-        - text: "Please choose a name for this event."
-        - text: "What should the event be named?"
-
-    utter_show_plan:
-        - text: "Here is your plan."
-        - text: "Here your are."
-        - text: "There you go."
-        - text: "That's what has been scheduled."
-
-    utter_need_more_infos:
-        - text: "Sorry. Have you given a location?"
-        - text: "I need a location for that."
-        - text: "Please give me a location."
-
-    utter_slots_values:
-        - text: "These are the current slot values\nPlace: {place}\nDuration: {duration}\nTime: {time}\nEvent Name: {event_name}"
-
-    utter_ask_is_specific:
-        - text: "Do you know the exact time frame?"

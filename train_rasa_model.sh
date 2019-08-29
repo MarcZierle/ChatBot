@@ -3,7 +3,7 @@ cd rasa
 rm models/*.tar.gz
 
 echo "Generating new RASA model..."
-../../bin/python -m rasa train #--data data/ chatito/out/training_samples.json
+../../bin/python -m rasa train --data data/ chatito/out/training_samples.json
 echo "Done!"
 echo ""
 

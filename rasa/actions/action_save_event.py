@@ -21,29 +21,29 @@ from googledistancematrix.querent import Querent
 
 
 class ActionSaveEvent(Action):
-	
+
 	def name(self) -> Text:
 		settings.init_api_keys()
 		self.__querent = Querent(settings.GOOGLE_DISTANCE_MATRIX_API_KEY)
 		self.__storage_path = "../storage/schedules/"
 		return "action_save_event"
-		
+
 
 	def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
 		userid 	= tracker.current_state()["sender_id"]
-		
+
 		place 		= str(tracker.get_slot("place"))
 		event_name 	= str(tracker.get_slot("event_name"))
 		is_specific	= tracker.get_slot("is_specific")
-		
+
 		time 		= tracker.get_slot("time")
 		duration	= tracker.get_slot("duration")
-		
+
 		if not place or not event_name:
 			dispatcher.utter_message("Looks like there was an error with extracting the location or event name")
 			return []
-		
+
 		place = self.__querent.get_place_address(place)
 		print(str(settings.GOOGLE_DISTANCE_MATRIX_API_KEY)+"\n\n\n")
 		if not place:
@@ -68,10 +68,10 @@ class ActionSaveEvent(Action):
 					#save_unspecific_event
 					self.save_unspecific_event(dispatcher, tracker, userid, place, event_name, duration)
 			else:
-				dispatcher_utter_message("Event time or duration couldn't be extracted correctly.")
-		return []	
-	
-	
+				dispatcher.utter_message("Event time or duration couldn't be extracted correctly.")
+		return []
+
+
 	def save_specific_event(self, dispatcher: CollectingDispatcher, tracker: Tracker, userid, place, event_name, time):
 		time = ast.literal_eval(time)
 		time_start 	= iso8601.parse_date(str(time["from"]))
@@ -97,10 +97,10 @@ class ActionSaveEvent(Action):
 			+ " from " + time_start.strftime("%I:%M %p") + " to " + time_end.strftime("%I:%M %p") + ".")
 
 		dispatcher.utter_message(response)
-		
-		
+
+
 	def save_unspecific_event(self, dispatcher: CollectingDispatcher, tracker: Tracker, userid, place, event_name, duration):
-		
+
 		duration = int(duration)
 		planner = ph.restore(self.__storage_path, userid)
 		planner.add_event(Event(

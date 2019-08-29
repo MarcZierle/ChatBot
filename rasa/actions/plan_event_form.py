@@ -6,7 +6,7 @@ from rasa_sdk.forms import FormAction
 
 from rasa.core.trackers import DialogueStateTracker
 
-import ast, json, datetime
+import ast, json, datetime, iso8601
 from datetime import datetime as dt
 
 
@@ -34,11 +34,10 @@ class PlanEventForm(FormAction):
         tracker: Tracker,
         domain: Dict[Text, Any],
     ) -> List[Dict]:
-        dispatcher.utter_message("Event planned.")
 
         return []
 
-    
+
     def slot_mappings(self) -> Dict[Text, Union[Dict, List[Dict]]]:
         return{
             "time": self.from_entity(entity="time"),
@@ -79,8 +78,10 @@ class PlanEventForm(FormAction):
         try:
             time = dict(value)#json.loads(str(value).replace("'", '"'))
             if 'to' in time or 'from' in time:
+                end_time = iso8601.parse_date(str(time['to'])) - datetime.timedelta(hours=1)
+                time['to'] = end_time.isoformat()
+                print(str(time))
                 return {"time": str(time)}
         except:
             pass
         return {"time": None}
-

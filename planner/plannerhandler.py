@@ -5,14 +5,13 @@ from planner.planner import Planner
 #__base_path = "../storage/schedules/"
 
 def restore(path, user_id):
-    try:
-        planner = globals.restore_object(
-            path,
-            str(user_id)
-        )
-    except Exception:
+    planner = globals.restore_object(
+        path,
+        str(user_id)
+    )
+    if not planner:
         planner = Planner()
-        store(path, user_id, planner)
+        globals.store_object(planner, path, user_id)
     return planner
 
 

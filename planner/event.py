@@ -1,4 +1,5 @@
 from enum import Enum, auto
+import globals
 
 class Event():
 
@@ -7,9 +8,6 @@ class Event():
         SPECIFIC = auto()
         UNSPECIFIC = auto()
         TRAVELLING = auto()
-
-
-    num_all_events = 0
 
 
     def __init__(self, name, type, start=0, end=0, duration=0, place="Berlin"):
@@ -36,9 +34,17 @@ class Event():
             raise Exception("Specific event must have start and end time > 0!")
 
         self.__place = place
+        self.__id = self.__get_next_event_id()
 
-        self.__id = Event.num_all_events
-        Event.num_all_events = Event.num_all_events + 1
+
+    def __get_next_event_id(self):
+        event_id_file_path = "../storage/schedules/"
+        next_id = globals.restore_object(globals.fix_file_path(event_id_file_path, True), "next_event_id")
+        if not next_id:
+            next_id = 1
+        next_id = next_id + 1
+        globals.store_object(next_id, globals.fix_file_path(event_id_file_path, True), "next_event_id")
+        return next_id-1
 
 
     def get_id(self):
