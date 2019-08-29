@@ -18,6 +18,9 @@ import iso8601
 class IntroductionForm(FormAction):
 
     def name(self):
+        settings.init_api_keys()
+		self.__querent = Querent(settings.GOOGLE_DISTANCE_MATRIX_API_KEY)
+		self.__storage_path = "../storage/schedules/"
         return "introduction_form"
 
 
@@ -44,7 +47,14 @@ class IntroductionForm(FormAction):
         domain: Dict[Text, Any],
     ) -> Optional[Text]:
 
-        return {"place" : None}
+        if not place or not event_name:
+			dispatcher.utter_message("Looks like there was an error with extracting the location.")
+			return []
+
+		place = self.__querent.get_place_address(place)
+		if not place:
+			dispatcher_utter_message("The following location couldn't be found: " + tracker.get_slot("place"))
+			return []
 
 
     def validate_time(
