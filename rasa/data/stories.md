@@ -38,3 +38,45 @@
 ## fallback story
 * out_of_scope
     - action_default_fallback
+
+
+<!-- Small-Talk -->
+## how are you - good
+* how_are_you
+	- utter_im_fine
+* feeling_good
+	- utter_good
+	
+## how are you - bad
+* how_are_you
+	- utter_im_fine
+* feeling_bad
+	- utter_cheer_up
+	
+## okay
+* okay
+	- utter_okay
+	
+## goodbye
+* goodbye
+	- utter_goodbye
+	
+## whats up
+* whats_up
+	- utter_not_much
+	
+## talk_to_me
+* talk_to_me
+	-utter_talk
+	
+## weather
+* weather
+	-utter_weather
+	
+## small-talk
+* small-talk
+	-utter_small-talk
+	
+## emoji
+* emoji
+	-utter_emoji

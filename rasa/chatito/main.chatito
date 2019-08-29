@@ -1,7 +1,7 @@
 import ./data/place.chatito
 
 %[save_event]('training': '10000', 'testing': '100')
-	*[60%] ~[save] ~[an event] ~[at] @[place]
+    *[60%] ~[save] ~[an event] ~[at] @[place]
     *[10%] ~[hi?] ~[please?] ~[save?] ~[an event?] ~[at] @[place] ~[thanks?]
     *[10%] ~[at] @[place]
     *[10%] ~[save] ~[at] @[place]
@@ -9,26 +9,26 @@ import ./data/place.chatito
 
 
 ~[thanks]
-	thanks
+    thanks
     thank you
     thx
 
 ~[at]
-	at
+    at
     in
     by
     near
     in the area of
 
 ~[an event]
-	an event
+    an event
     a location
     a happening
     a place
 
 ~[save]
     schedule
-	save
+    save
     plan
     register
 
@@ -39,7 +39,7 @@ import ./data/place.chatito
     how are you
 
 ~[please]
-	please
+    please
     would you kindly
     could you please
     could you

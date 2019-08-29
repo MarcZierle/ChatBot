@@ -5,7 +5,7 @@ import ./zip_codes.chatito
 
 @[place]
     *[45%] ~[street] ~[number]
-	*[10%] ~[street] ~[number?]
+    *[10%] ~[street] ~[number?]
     *[25%] ~[street] ~[number] ~[city]
     *[5%] ~[street] ~[number?] ~[zip_code] ~[city]
     *[5%] ~[zip_code] ~[city]
