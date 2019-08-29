@@ -46,7 +46,7 @@ class ActionSaveEvent(Action):
 		
 		place = self.__querent.get_place_address(place)
 		if not place:
-			dispatcher_utter_message("The following location couldn't be found: " + tracker.get_slot("place"))
+			dispatcher.utter_message("The following location couldn't be found: " + tracker.get_slot("place"))
 			return []
 		if not (is_specific == None):
 			is_specific = (is_specific == "True")
@@ -67,7 +67,7 @@ class ActionSaveEvent(Action):
 					#save_unspecific_event
 					self.save_unspecific_event(dispatcher, tracker, userid, place, event_name, duration)
 			else:
-				dispatcher_utter_message("Event time or duration couldn't be extracted correctly.")
+				dispatcher.utter_message("Event time or duration couldn't be extracted correctly.")
 		return []	
 	
 	

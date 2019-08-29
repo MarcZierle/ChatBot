@@ -80,3 +80,37 @@
 ## emoji
 * emoji
 	-utter_emoji
+
+## interactive_story_1
+* greet
+    - utter_greet
+* how_are_you
+    - utter_im_fine
+* feeling_good
+    - utter_good
+* goodbye
+    - utter_goodbye
+
+## interactive_story_1
+* help
+    - utter_infos
+* plan_event{"place": "unter den linden 6", "time": "{'to': '2019-08-30T16:01:00.000+02:00', 'from': '2019-08-30T14:00:00.000+02:00'}"}
+    - slot{"place": "unter den linden 6"}
+    - slot{"time": "{'to': '2019-08-30T16:01:00.000+02:00', 'from': '2019-08-30T14:00:00.000+02:00'}"}
+    - plan_event_form
+    - form{"name": "plan_event_form"}
+    - slot{"place": "unter den linden 6"}
+    - slot{"place": "unter den linden 6"}
+    - slot{"requested_slot": "event_name"}
+* form: plan_event{"event_name": "Das ist ein Test-Event"}
+    - slot{"event_name": "Das ist ein Test-Event"}
+    - form: plan_event_form
+    - slot{"event_name": "Das ist ein Test-Event"}
+    - slot{"requested_slot": "is_specific"}
+* form: affirm
+    - form: plan_event_form
+    - slot{"is_specific": "True"}
+    - form{"name": null}
+    - slot{"requested_slot": null}
+    - action_save_event
+    - action_restart
