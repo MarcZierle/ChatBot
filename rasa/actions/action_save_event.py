@@ -45,8 +45,9 @@ class ActionSaveEvent(Action):
 			return []
 		
 		place = self.__querent.get_place_address(place)
+		print(str(settings.GOOGLE_DISTANCE_MATRIX_API_KEY)+"\n\n\n")
 		if not place:
-			dispatcher_utter_message("The following location couldn't be found: " + tracker.get_slot("place"))
+			dispatcher.utter_message("The following location couldn't be found: " + tracker.get_slot("place"))
 			return []
 		if not (is_specific == None):
 			is_specific = (is_specific == "True")

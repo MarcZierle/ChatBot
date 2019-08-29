@@ -19,7 +19,7 @@ RASA_MODEL_PATH     = "./ChatBot/rasa/models/basic_model/"
 def init_api_keys():
     #env_path = Path('/home/marc/University/Chatbot') / '.env'
     #load_dotenv(dotenv_path=env_path, verbose=True)
-    load_dotenv("./ChatBot/.env", verbose=True)
+    load_dotenv("/vol/fob-vol2/mi16/zierlema/ChatBotServer/ChatBot/.env", verbose=True)
 
     global TELEGRAM_API_KEY, GOOGLE_DISTANCE_MATRIX_API_KEY
     GOOGLE_DISTANCE_MATRIX_API_KEY  = os.getenv("GOOGLE_DISTANCE_MATRIX_API_KEY")

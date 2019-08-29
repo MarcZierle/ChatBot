@@ -25,7 +25,7 @@ class PlannerToImage():
         self.__subtitle_font    = ImageFont.truetype(self.__path+"/fonts/Ubuntu-B.ttf", size=int(PlannerToImage.__HEIGHT/49.6))
         self.__top_font         = ImageFont.truetype(self.__path+"/fonts/Ubuntu-B.ttf", size=int(PlannerToImage.__HEIGHT/60))
         self.__top_font_R       = ImageFont.truetype(self.__path+"/fonts/Ubuntu-R.ttf", size=int(PlannerToImage.__HEIGHT/60))
-        self.__regular_font     = ImageFont.truetype(self.__path+"/fonts/Ubuntu-R.ttf", size=int(PlannerToImage.__HEIGHT/82))
+        self.__add_info_font    = ImageFont.truetype(self.__path+"/fonts/Ubuntu-R.ttf", size=int(PlannerToImage.__HEIGHT/82))
         self.__event_name_font  = ImageFont.truetype(self.__path+"/fonts/Ubuntu-R.ttf", size=int(PlannerToImage.__HEIGHT/82))
         self.__time_font        = ImageFont.truetype(self.__path+"/fonts/Ubuntu-R.ttf", size=int(PlannerToImage.__HEIGHT/82))
         self.__spaceing = PlannerToImage.__HEIGHT / 80
