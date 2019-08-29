@@ -11,7 +11,7 @@ def restore(path, user_id):
     )
     if not planner:
         planner = Planner()
-        globals.store(path, user_id, planner)
+        globals.store_object(planner, path, user_id)
     return planner
 
 

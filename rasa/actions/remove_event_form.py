@@ -39,7 +39,7 @@ class RemoveEventForm(FormAction):
         return []
 
 
-    def validate_place(
+    def validate_time(
         self,
         value: Text,
         dispatcher: CollectingDispatcher,

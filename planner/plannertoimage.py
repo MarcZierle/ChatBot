@@ -69,7 +69,7 @@ class PlannerToImage():
         if red_logo.mode == "RGBA":
           for y in range(red_logo.size[1]):
             for x in range(red_logo.size[0]):
-              if pixel_data[x, y][3] < 255:
+              if pixel_data[x, y][3] < 250:
                 pixel_data[x, y] = (255, 255, 255, 255)
 
         img.paste(red_logo,
@@ -79,6 +79,56 @@ class PlannerToImage():
         draw.text((self.img_left+logo_spaceing_left,self.img_top+logo_txt_w),
             PlannerToImage.bot_name,
             font=self.__header_font, fill="black")
+
+
+        legend_travel_text = "The time you will need to travel between events"
+        legend_specific_text = "Events which JANUS won't change"
+        legend_unspecific_text = "Events JANUS changes for optimal schedules"
+
+        legend_travel_size  = self.__add_info_font.getsize(legend_travel_text)
+        legend_specific_size  = self.__add_info_font.getsize(legend_specific_text)
+        legend_unspecific_size  = self.__add_info_font.getsize(legend_unspecific_text)
+
+
+        draw.text(
+            (self.img_right - legend_travel_size[0] - legend_travel_size[1] - 1*self.__spaceing, self.plan_top - 7*self.__spaceing),
+            legend_travel_text,
+            font = self.__add_info_font, fill=(50,50,50))
+
+        draw.rectangle(
+            [   (self.img_right-legend_travel_size[1],self.plan_top - 7*self.__spaceing),
+                (self.img_right,self.plan_top - 7*self.__spaceing + legend_travel_size[1])],
+            fill=(180,180,180), outline=(50,50,50), width=2)
+
+        draw.text(
+            (self.img_right - legend_specific_size[0] - legend_specific_size[1] - 1*self.__spaceing, self.plan_top - 5*self.__spaceing),
+            legend_specific_text,
+            font = self.__add_info_font, fill=(255,120,120))
+
+        draw.rectangle(
+            [   (self.img_right-legend_specific_size[1],self.plan_top - 5*self.__spaceing),
+                (self.img_right,self.plan_top - 5*self.__spaceing + legend_specific_size[1])],
+            fill=(255,120,120), outline=(200,50,50), width=2)
+
+        draw.text(
+            (self.img_right - legend_unspecific_size[0] - legend_unspecific_size[1] - 1*self.__spaceing, self.plan_top - 3*self.__spaceing),
+            legend_unspecific_text,
+            font = self.__add_info_font, fill=(50,170,50))
+
+        draw.rectangle(
+            [   (self.img_right-legend_unspecific_size[1],self.plan_top - 3*self.__spaceing),
+                (self.img_right,self.plan_top - 3*self.__spaceing + legend_unspecific_size[1])],
+            fill=(120,200,120), outline=(50,170,50), width=2)
+
+
+        header_text = ("Your Schedule for the Week of "
+            + self.__first_day.strftime("%B %d") + " to " + (self.__first_day+datetime.timedelta(days=6)).strftime("%B %d, %Y"))
+        header_text_size = self.__header_font.getsize(header_text)
+
+        draw.text(
+            (self.img_right - header_text_size[0], self.img_top-header_text_size[1] + 4*self.__spaceing),
+            header_text,
+            font = self.__header_font, fill=(0,0,0))
 
         #now = dt.today()
         #draw.text( (self.img_left,self.img_top + self.__header_font.getsize(".")[1] + self.__spaceing),

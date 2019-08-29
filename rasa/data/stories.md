@@ -6,9 +6,6 @@
 * get_infos
 	- utter_infos
 
-<!--------------------------->
-<!-- START: EVENT PLANNING -->
-<!--------------------------->
 ## plan event form
 * plan_event
 	- plan_event_form
@@ -31,9 +28,16 @@
 	- form{"name": null}
 	- action_restart
 
-<!------------------------->
-<!-- END: EVENT PLANNING -->
-<!------------------------->
+## introducing new users to JANUS
+* introduction
+    - utter_welcome
+    - utter_introduction
+    - utter_explain_home_and_interval
+    - introduction_form
+    - form{"name":"introduction_form"}
+	- form{"name": null}
+    - utter_introduction_end
+	- action_restart
 
 ## user requests the generated plan
 * show_plan
