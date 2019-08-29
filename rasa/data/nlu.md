@@ -34,6 +34,17 @@
 - set my home
 - set my home point
 
+## intent:remove_event
+- cancel an event
+- remove an event
+- I don't wan't that event any more.
+- I do not want it!
+- I changed my mind about an event.
+- remove
+- delete
+- delete that event from my schedule
+- free my schedule from that event
+
 ## intent:affirm
 - yes
 - yep
@@ -87,4 +98,3 @@
 - the event takes place at [Mäusegasse 33, 46393 Braunschweig](place)
 - [Super Computerstore](place) is the chosen location
 - location is headed at [Winterfell-Allee 194 - 200 Köln](place)
-

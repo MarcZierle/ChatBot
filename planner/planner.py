@@ -335,12 +335,12 @@ class Planner():
 
 
     def remove_event_from_day(self, day, month, year, event_nr):
-        self.__remove_event_from_day(self.get_day(day, month, year)[0], event_nr)
+        return self.__remove_event_from_day(self.get_day(day, month, year)[0], event_nr)
 
 
     def __remove_event_from_day(self, day, event_nr):
         event_id = day.remove_event(event_nr)
-        self.__remove_event(event_id)
+        return self.__remove_event(event_id)
 
 
     def __remove_event(self, event_id):
@@ -350,8 +350,9 @@ class Planner():
         for i in range(len(self.__events)):
             e = self.__events[i]
             if e.get_id() == event_id:
+                event_name = self.__events[i].get_name()
                 del self.__events[i]
-                break
+                return event_name
 
 
     def __get_next_day(self):

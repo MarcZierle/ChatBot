@@ -23,10 +23,12 @@ intents:
     - gives_event_name
     - get_infos
     - set_home
+    - remove_event
 
 forms:
     - plan_event_form
     - set_home_form
+    - remove_event_form
 
 actions:
     - utter_default
@@ -59,13 +61,14 @@ templates:
 
     utter_infos:
         - text: "Hey. I'm Janus, a planner bot. I can schedule events including travel time, import an existing plan or show you your current one."
-        
+
     utter_ask_time_known:
         - text: "Do you know the exact time frame?"
         - text: "Can you say when this event will start and end?"
 
     utter_ask_time:
-        - text: "Please tell me the time frame."
+        - text: "Please tell me the time and date."
+        - text: "What time and date are we talking about?"
 
     utter_ask_duration:
         - text: "Please tell me the event's duration."

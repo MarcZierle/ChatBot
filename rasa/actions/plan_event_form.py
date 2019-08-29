@@ -34,11 +34,10 @@ class PlanEventForm(FormAction):
         tracker: Tracker,
         domain: Dict[Text, Any],
     ) -> List[Dict]:
-        dispatcher.utter_message("Event planned.")
-
+    
         return []
 
-    
+
     def slot_mappings(self) -> Dict[Text, Union[Dict, List[Dict]]]:
         return{
             "time": self.from_entity(entity="time"),
@@ -83,4 +82,3 @@ class PlanEventForm(FormAction):
         except:
             pass
         return {"time": None}
-

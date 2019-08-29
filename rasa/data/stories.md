@@ -5,7 +5,7 @@
 ## user asks for information about bot
 * get_infos
 	- utter_infos
-	
+
 <!--------------------------->
 <!-- START: EVENT PLANNING -->
 <!--------------------------->
@@ -23,7 +23,14 @@
 	- form{"name":"set_home_form"}
 	- form{"name": null}
 	- action_restart
-	
+
+## remove event from day
+* remove_event
+    - remove_event_form
+    - form{"name":"remove_event_form"}
+	- form{"name": null}
+	- action_restart
+
 <!------------------------->
 <!-- END: EVENT PLANNING -->
 <!------------------------->
