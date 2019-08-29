@@ -101,6 +101,7 @@
 - hey, how are you
 - Hey, how are you?
 - how are you?
+- how are you
 - what's up
 - Whats up?
 - Feeling good, and you?
