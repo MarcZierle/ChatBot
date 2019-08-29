@@ -1,6 +1,6 @@
 import ./data/place.chatito
 
-%[save_event]('training': '10000', 'testing': '100')
+%[plan_event]('training': '1000', 'testing': '100')
     *[60%] ~[save] ~[an event] ~[at] @[place]
     *[10%] ~[hi?] ~[please?] ~[save?] ~[an event?] ~[at] @[place] ~[thanks?]
     *[10%] ~[at] @[place]
