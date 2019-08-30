@@ -50,7 +50,12 @@
 * out_of_scope
     - action_default_fallback
 
-
+## reset conversation
+* reset_conversation
+	- utter_reset_conversation
+	- action_restart
+	
+	
 <!-- Small-Talk -->
 ## how are you - good
 * how_are_you
@@ -71,6 +76,7 @@
 ## goodbye
 * goodbye
 	- utter_goodbye
+	- action_restart
 	
 ## whats up
 * whats_up
