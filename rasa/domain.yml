@@ -28,6 +28,7 @@ actions:
   - utter_introduction
   - utter_explain_home_and_interval
   - utter_introduction_end
+  - utter_reset_conversation
 forms: 
   - plan_event_form
   - set_home_form
@@ -58,6 +59,7 @@ intents:
   - small-talk
   - emoji
   - introduction
+  - reset_conversation
 slots: 
   duration: 
     type: unfeaturized
@@ -236,3 +238,6 @@ templates:
     - 
       text: "Hi there! My name is Janus. I'd say I'm pretty good planing your events, appointments and just everything, that you need to keep track of."
 
+  utter_reset_conversation:
+    - 
+      text: "Okay, your conversation state has been reset."
