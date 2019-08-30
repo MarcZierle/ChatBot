@@ -57,8 +57,8 @@ while True:
 
                     if "/show_plan" in resp_text:
                         globals.debug('sending plan image to user')
-                        os.system("cp storage/schedule_images/"+str(userid)+".png storage/schedule_images/my_schedule.png")
-                        tel_man.send_file(userid, "storage/schedule_images/my_schedule.png")
+                        os.system("cp ChatBot/storage/schedule_images/"+str(userid)+".png ChatBot/storage/schedule_images/my_schedule.png")
+                        tel_man.send_file(userid, "ChatBot/storage/schedule_images/my_schedule.png")
                         continue
 
                     if "/remove_event" in resp_text:
@@ -67,7 +67,7 @@ while True:
 
                         globals.debug('user wants to delete an event on day ' + str(time_stamp))
 
-                        planner = ph.restore("storage/schedules/", userid)
+                        planner = ph.restore("ChatBot/storage/schedules/", userid)
                         event_names = planner.get_day_event_names(time_stamp.day, time_stamp.month, time_stamp.year)
 
                         if event_names:
@@ -95,11 +95,11 @@ while True:
                 cancel_bt = remove_event_for_user_on_day[userid][1]
 
                 if callback_answer < cancel_bt:
-                    planner = ph.restore("storage/schedules/", userid)
+                    planner = ph.restore("ChatBot/storage/schedules/", userid)
                     event_name = planner.remove_event_from_day(
                         time_stamp.day,time_stamp.month,time_stamp.year,
                         int(callback_answer))
-                    ph.store("storage/schedules/", userid, planner)
+                    ph.store("ChatBot/storage/schedules/", userid, planner)
                     tel_man.send_message(userid,"Alright, I removed " + event_name
                         + " from " + time_stamp.strftime("%A") + ', ' + time_stamp.strftime("%d.%m.%y") + '.')
                 else:

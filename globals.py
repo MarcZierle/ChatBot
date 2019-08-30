@@ -27,7 +27,7 @@ def fix_file_path(path, mkdir=False):
 
 def store_object(obj, path, name):
     path = fix_file_path(path, True)
-    pickle.dump(obj, open(path + name + ".pkl", "wb"), protocol=pickle.HIGHEST_PROTOCOL)
+    pickle.dump(obj, open(path + str(name) + ".pkl", "wb"), protocol=pickle.HIGHEST_PROTOCOL)
 
 
 def restore_object(path, name):
