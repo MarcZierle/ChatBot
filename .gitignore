@@ -13,6 +13,11 @@ env
 duckling/
 stack/
 
+*.log
+*.aux
+*.toc
+*.swp
+
 rasa/models/basic_model/*
 storage/*
 

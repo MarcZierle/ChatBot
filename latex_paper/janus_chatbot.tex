@@ -1,0 +1,84 @@
+\documentclass[a4paper, 12pt, oneside, openany]{book}
+
+%\renewcommand{\familydefault}{\sfdefault}
+\usepackage{fontspec}
+\usepackage[svgnames]{xcolor}
+\usepackage[ngerman]{babel}
+%\usepackage[utf8]{inputenc}
+%\usepackage[T1]{fontenc}
+\babelprovide[import=ja, script=Kana]{japanese}
+
+\defaultfontfeatures{Scale=MatchUppercase, Ligatures=TeX}
+
+\babelfont{rm}[
+   Ligatures = {Discretionary, TeX},
+   UprightFont = *-regular ,
+   BoldFont = *-bold ,
+   ItalicFont = *-regularit ,
+   BoldItalicFont = *-boldit ,
+   Extension = .ttf ]{cmss}
+
+\usepackage{csquotes}
+\MakeOuterQuote{"}
+
+\usepackage{tikz}
+\usepackage{booktabs}
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage[skins]{tcolorbox}
+\usepackage{makecell}
+
+\setlength\parindent{0pt}
+
+\usepackage{etoolbox}
+\patchcmd{\chapter}{\if@openright\cleardoublepage\else\clearpage\fi}{}{}{}
+
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries}{}{20pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{-50pt}{40pt}
+
+\renewcommand{\arraystretch}{1.2}
+
+\usepackage{geometry}
+\geometry{
+	left=3cm,
+	right=3cm,
+	footskip=0.5cm,
+	bottom=3.9cm
+}
+\renewcommand*\baselinestretch{1.2}\selectfont
+
+\newcommand{\definition}[2]{
+  	\refstepcounter{subsection}%
+  	\addcontentsline{toc}{subsection}{\protect\numberline{\thesubsection}#1}%
+  	\subsectionmark{#1}
+	\hfil
+	\begin{tcolorbox}
+	[colback=white, colframe=red!75!black, fonttitle=\bfseries\large, title=#1]
+	#2
+	\end{tcolorbox}
+	\hfil
+}
+
+\newcommand{\example}[1]{
+	\begin{minipage}{\linewidth}
+	\textbf{\large Beispiel}\\[0.7em]
+	\setlength{\parindent}{0.5cm}
+	\indent
+	#1
+	\noindent
+	\setlength{\parindent}{0pt}
+	\end{minipage}
+	\\
+}
+
+
+\begin{document}
+	\input{title}
+
+	\tableofcontents
+
+	\input{introduction}
+\end{document}
