@@ -15,6 +15,8 @@ settings.init()
 
 from settings import tel_man, rasa_model
 
+survey_link = "https://forms.gle/1doFP9G4LbG83cuH9"
+
 
 remove_event_for_user_on_day = {}
 
@@ -44,11 +46,38 @@ while True:
                         tel_man.send_message(userid,"Aye captain! Ye olde server will be stopped.")
                         exit()
                     else:
-                        tel_man.send_message(userid,"No permissions!")
+                        tel_man.send_message(userid,"No permissions for stopping the server!")
                         continue
 
-                if tel_man.is_user_new(userid):
+                if "/feedback" in msg:
+                    tel_man.send_message(userid,
+                        "If you are feeling comfortable using JANUS and think, "
+                        + "you have seen everything there is, then be sure to complete "
+                        + "our survey on your chatting experience:\n"
+                        + survey_link + "\n"
+                        + "Thank you!")
+                    continue
+
+                if "/help" in msg:
+                    tel_man.send_message(userid,
+                        "Here is small list of everything I can do for you:\n"
+                        + "• Plan an event at a specific location and time %26 date or duration. "
+                        + "If you don't know the exact time and date an event should be scheduled, you can just "
+                        + "give JANUS the duration of how long you expect it to take.\n"
+                        + "(e.g. \"Plan an event at [address].\")\n"
+                        + "• Show your scheduled events.\n"
+                        + "(e.g. \"What has been scheduled?\")\n"
+                        + "• Remove a planned event from your schedule.\n"
+                        + "(e.g. \"Cancel an event.\")\n"
+                        + "• Giving /feedback\n"
+                        + "• /cancel to reset the current conversation state.")
+                    continue
+
+                if "/cancel" in msg:
+                    msg = "/reset_conversation"
+                elif tel_man.is_user_new(userid):
                     msg = "/introduction"
+
 
                 response = rasa_model.parse(userid, msg)
 

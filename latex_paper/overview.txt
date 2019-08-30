@@ -1,0 +1,11 @@
+M - introduction
+	- Motivation & Idee
+	- Funktionsumfang / Anforderung
+L - Dialog Konzept
+M - Technisches Konzept
+	- Komponentenarchitektur & Implementation
+	- Daten / Kommunikation
+	- APIs (eigene & 3rd Party)
+L - Installation
+L/M - Nutzerfeedback-Auswertung
+L/M - Reflektion / Auswertung / Fazit

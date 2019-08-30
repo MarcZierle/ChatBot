@@ -76,7 +76,7 @@ class IntroductionForm(FormAction):
 
         place = self.__querent.get_place_address(place)
         if not place:
-            dispatcher_utter_message("The following location couldn't be found: " + tracker.get_slot("place"))
+            dispatcher.utter_message("The following location couldn't be found: " + tracker.get_slot("place"))
             return {"place": None}
 
         return {"place": str(place)}
