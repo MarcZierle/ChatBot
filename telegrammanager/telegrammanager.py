@@ -292,6 +292,15 @@ class TelegramManager():
         return self.__users[userid][0]
 
 
+    def delete_user(self, user_id):
+        self.__users.pop(user_id,None)
+        self.__user_status.pop(user_id, None)
+        self.__user_messages.pop(user_id, None)
+        self.__user_files.pop(user_id, None)
+        self.__user_callback_queries.pop(user_id, None)
+        self.__chatlog.pop(user_id, None)
+        
+        
     def get_chatlog(self) :
         return self.__chatlog
 

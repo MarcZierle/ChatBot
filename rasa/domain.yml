@@ -235,4 +235,3 @@ templates:
   utter_welcome: 
     - 
       text: "Hi there! My name is Janus. I'd say I'm pretty good planing your events, appointments and just everything, that you need to keep track of."
-
