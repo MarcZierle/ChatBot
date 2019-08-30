@@ -35,6 +35,7 @@ forms:
   - remove_event_form
   - introduction_form
 intents: 
+  - help
   - out_of_scope
   - greet
   - affirm
