@@ -1,0 +1,93 @@
+\chapter{Installation}
+
+Diese Installationsanweisungen wurden auf Ubuntu-Distributionen getestet\\
+Superuser-Rechte sind hier vorausgesetzt\\
+\\
+\\
+\\
+Öffnen Sie die Konsole und geben Sie folgenden Befehl ein\\
+
+\begin{framed}
+\texttt{\$ sudo apt-get install python3 pip3 curl libpcre3 libpcre3-dev git}
+\end{framed}
+\hfill\\\\
+\begin{tabular}{cl}
+	python3 & Programm ist in Python geschrieben\\
+	pip3 & Für die Installation der nötigen Module\\
+	curl & Zum Installieren von stack \\
+	libpcre3 & Zum Installieren von stack \\
+	libpcre3-dev & Zum Installieren von stack \\
+	git & Zum Runterladen von dem ChatBot und Duckling \\
+\end{tabular}
+\newpage
+\begin{framed}
+\texttt{\$ pip3 install rasa tensorflow spacy python-dotenv pillow \textbackslash \\ $\phantom{.}\qquad$ iso8601  icalendar}
+\end{framed}
+\hfill\\\\
+\begin{tabular}{cl}
+	rasa & Für Natural-Language-Processing und Rasa Core\\
+	tensorflow & Benötigt für Rasa\\
+	spacy & Benötigt für Rasa\\
+	python-dotenv & Zum Laden von .env Dateien für die API-Keys \\
+	pillow & Image-Library zum Erstellen von Bilddateien \\
+	icalendar & Zum In-/Exportieren von .ical oder .ics Kalender-Dateien \\
+	iso8601 & Zum Parsen von String zu Datetime-Objekten 
+\end{tabular}
+\\\\\\\\
+Benötigt für Spacy
+\begin{framed}
+	\texttt{\$ python3 -m spacy download en\_core\_web\_md \\
+		\$ python3 -m spacy link en\_core\_web\_md en}
+\end{framed}
+\hfill\\\\
+Zum Runterladen von dem ChatBot und Duckling. Duckling wird benutzt um Zeiten aus Text zu extrahieren.
+\begin{framed}
+	\texttt{\$ git clone https://github.com/MarcZierle/ChatBot \\
+		\$ cd ChatBot \\ 
+		\$ git clone  https://github.com/facebook/duckling}
+\end{framed}
+\hfill\\\\
+\newpage
+Zum Installieren von Duckling. Dafür wird Stack benötigt was auch erst installiert werden muss. \texttt{\$ stack build} kann eine Weile zum Installieren benötigen.\\
+\begin{framed}
+	\texttt{\$ cd duckling \\
+	\$ curl -sSL https://get.haskellstack.org/ | sh \\
+	\$ stack init \\
+	\$ sudo stack build \\
+	\$ cd ..}
+\end{framed}
+\hfill\\\\
+
+
+Als nächstes muss d Rasa Modell trainiert werden. Dazu einfach das Shell-Skript \texttt{train\_rasa\_model.sh} ausführen. \\
+\begin{framed}
+	\texttt{\$ ./trains\_rasa\_model.sh}
+\end{framed}
+\hfill\\
+Der ChatBot Ordner muss noch dem \texttt{PYTHONPATH} hinzugefügt werden mit z.B \\
+\begin{framed}
+	\texttt{\$ export PYTHONPATH="/home/ChatBot"}
+\end{framed}
+\hfill\\
+
+Der absolute Pfad des ChatBot Ordners muss auch noch in der \texttt{settings.py} eingetragen werden. \\
+\begin{framed}
+	6$\qquad$ ...\\
+	7$\qquad$\texttt{env\_path = Path('/home/ChatBot') / '.env'}\\
+	8$\qquad$ ...
+\end{framed}
+\hfill\\
+
+Danach muss der Help Server für die Custom Actions für Rasa und für Duckling mit \texttt{run\_help\_servers.sh \&} gestartet werden.\\
+ \begin{framed}
+ 	\texttt{\$ ./run\_help\_servers.sh \&}
+ \end{framed}
+ \hfill\\
+ 
+Zum Starten des Programms dann die \texttt{main.py} starten.\\
+  \begin{framed}
+ 	\texttt{\$ python3 main.py}
+ \end{framed}
+ \hfill\\\\
+ 
+Nach dem Beenden der \texttt{main.py} kann der Help Server Prozess mit \texttt{\$ pkill rasa} beendet werden.
