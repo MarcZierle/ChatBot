@@ -1,9 +1,10 @@
 \chapter{Technische Konzeption}
 
 \section{Komponentenarchitektur}
-Für die Realisierung unseres Chatbots haben wir folgende Kernkomponenten identifiziert:
+\includegraphics[width=\linewidth]{components}
+\\
 
-%\includegraphics[width=0.75\linewidth]{}
+Für die Realisierung unseres Chatbots haben wir folgende Kernkomponenten identifiziert:
 
 \begin{center}
 	\begin{tabular}{c|l}
@@ -19,6 +20,8 @@ Für die Realisierung unseres Chatbots haben wir folgende Kernkomponenten identi
 
 
 \section{Datenfluss und Kommunikation zwischen Komponenten}
+\includegraphics[width=\linewidth]{communication}\\
+
 Zur Verdeutlichung der Kommunikationsprozesse zwischen den Komponenten folgt nun ein ideal-typischer Durchlauf durch unser System.\\
 
 Die Telegram-API erlaubt es einem, neue Nachrichten mittels eines HTTP-Requests an den Telegram-Server abzufragen. Die genutze Strategie ist ein Long-Polling, bei dem unser Client den Request an Telegram übermittelt und erst, bei eintreffen einer neuen Nutzernachricht, eine Rückmeldung von Telegram erhält. Ist dies geschehen, überprüfen wir zunächst die Nachricht auf gesonderte Commands (bswp. "/help", "/feedback", etc.), die daraufhin ihre entsprechende Funktion ausführen. Sind diese in der Nachricht nicht enthalten, lassen wir diese durch die RASA-Pipeline analysieren. Dabei ist selbstverständlich der RASA-NLU Prozess zu erwähnen, der, entsprechend unserer vordefinierten und trainierten Story- und NLU-Daten, eine Intent-Klassifikation vornimmt. In einigen Fällen kann es passieren, dass die Ausführung einer RASA-Custom-Action notwendig wird, bspw. wenn der Nutzer ein neues Event planen möchte. Im speziellen Fall der Eventplanung nutzen wir von RASA eine Form-Action, um ein effizienteres und robusteres Setzen von Slots zu gewährleisten, als dies bei der Definition von vielen einzelnen Stories möglich wäre. Uhrzeiten, Daten und Zeitintervalle werden vom Duckling-Extractor von Facebook ermittelt. Da hierbei allerdings nur eine automatisierte Kommunikation zwischen RASA und Duckling erfolgt, auf die wir kaum Einfluss nehmen können, haben wir von weiteren Ausführungen diesbezüglich abgesehen.\\
