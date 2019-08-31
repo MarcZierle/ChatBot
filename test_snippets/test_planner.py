@@ -8,7 +8,8 @@ from googledistancematrix import querent
 from googledistancematrix.querent import Querent
 
 import settings, globals
-settings.init()
+#settings.init()
+settings.init_api_keys()
 
 gdm_querent = gdm.querent.Querent( api_key=settings.GOOGLE_DISTANCE_MATRIX_API_KEY )
 gdm_querent.set_travel_mode(querent.TravelMode.TRANSIT)

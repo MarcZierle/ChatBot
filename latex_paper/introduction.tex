@@ -1,4 +1,31 @@
-\chapter{Ein Oberkapitel}
-\section{Ein Unterkapitel}
+\chapter{Einführung}
+\section{Motivation und Idee}
 
-Hallo Welt! :)
+Am Samstag zu 14 Uhr zum Zahnarzt. Anschließend ein treffen mit der Familie. Und eingekauft werden muss ja auch noch irgendwann. In der heutigen Welt kann es zunehmend schwieriger werden, alle Termine im Auge zu behalten und dabei eine möglichst effiziente Zeitplanung zu betreiben.\\
+
+Genau dort setzt unser JANUS-Chatbot an. Nutzer sollen in der Lage sein, ihre Termine und Ereignisse dem Chatbot anzuvertrauen und nebenbei plant JANUS vollautomatisiert jene Termine, für die lediglich bekannt ist, wie viel Zeit sie einnehmen werden, jedoch noch kein genaues Datum feststeht. Dabei soll eine möglichst optimale "Route" von Terminen in Bezug zur Fahrzeit von einem Event zum nächsten berücksichtigt werden. 
+
+
+\section{Anforderungen}
+Im Folgenden eine Übersicht der wesentlichen Anforderung an die Funktionalität unseres Chatbots:
+
+\subsection{Terminplanung}
+Für einen zuplanenden Termin werden drei Informationen vom Nutzer benötigt und erfragt:
+\begin{itemize}
+	\item Location - der Ort, an dem der Termin stattfinden wird
+	\item Event Name - ein Name, unter dem der Termin dem Nutzer in einer Übersicht angezeigt wird
+	\item Time / Duration - eine exaktes Datum samt Uhrzeit an dem der Termin stattfinden wird; alternativ kann auch eine Dauer angegeben werden
+\end{itemize}
+Nutzer können zwei Arten von Terminen planen, die wir nachfolgend als \textit{spezifische Events} und \textit{unspezifische Events} unterteilen.\\
+Die Location und ein Event Name sind Pflichtangaben für jeden zuplanenden Termin. Im Unterschied zu einem spezifischen Termin, bei dem das Datum und die Start- und Enduhrzeit im Vorhinein feststehen, brauch bei einem unspezifischen Termin lediglich eine Dauer in Stunden oder Minuten angegeben werden.\\
+
+Hat ein Nutzer alle seine zuplanenden Termine angegeben, wird JANUS diese in der Art anordnen, sodass die Reisezeit zwischen ihnen möglichst minimiert wird. Dabei beginnt und endet die Planung eines Tages beim Zuhause des Nutzers, wobei jener oder jene den Zeitraum angeben kann, in dem ihm oder ihr eine Terminplanung passt. Im Konkreten gehen wir dabei greedy vor, um einen optimalen Plan gegen eine zu hohe Berechnungszeit abzuwägen. Dabei erzielen wir zwar keine optimalen Pläne im theoretischen Sinne, aber zufriedenstellende Ergebnisse in kurzer Zeit.
+
+\subsection{Anzeigen von Terminen}
+Alle Termine, die von einem Nutzer und JANUS geplant wurden, sollen in einer visuellen Repräsentation angezeigt werden können. Draus soll erkenntlich werden, welche Terminzeiten vom Nutzer festgelegt wurden, und welche vom Chatbot. Außerdem erfährt der Nutzer hierüber, wie viel Zeit für eine Fahrt zwischen Terminen benötigt wird.
+
+\subsection{Entfernen von geplanten Terminen}
+Einmal geplante Termine soll der Nutzer wieder aus seinem Plan entfernen können. Hierzu wird dem Chatbot ein Tag mitgeteilt, an dem sich der zuentfernende Termin befindet. Daraufhin erhält er oder sie eine Liste aller an diesem Tag geplanten Terminen, aus denen einer zum Entfernen ausgewählt wird.
+
+\subsection{Small-Talk}
+Um eine natürliche Konversation mit JANUS zu fördern, sollte der Chatbot auf Anfragen und Antworten außerhalb seines eigentlichen Aufgabenbereichs angemessen reagieren. Beispielsweise sollte auf die Frage "How are you?" die mögliche Antwort "I'm fine. And you?" folgen. 
